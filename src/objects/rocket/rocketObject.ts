@@ -1,5 +1,5 @@
 import GameContext from '../../core/gameContext';
-import { Rectangle } from '../shapes';
+import { Circle, Rectangle } from '../shapes';
 import Vector from '../../physics/vector';
 import Rocket from './rocket';
 import { ObjectType } from '../objectType';
@@ -23,7 +23,7 @@ class RocketObject extends CollisionableObject<Rectangle> {
     this.rocket.acceleration = this.getAcceleration(context);
     this.position = this.calculatePosition(context);
     this.rocket.velocity = this.calculateVelocity(context);
-    // this.rocket.direction = this.calculateDirection(context);
+    this.rocket.direction = this.calculateDirection(context);
     this.isColliding = this.checkIsColliding(context);
 
     if (this.position.y > document.body.scrollHeight) {
@@ -38,7 +38,22 @@ class RocketObject extends CollisionableObject<Rectangle> {
     if (this.isColliding) {
       canvasRenderingContext.strokeStyle = '#F00'
     }
+    canvasRenderingContext.translate(this.position.x, this.position.y);
+    console.log(this.rocket.direction.angleTo(new Vector(0, 1)));
+    canvasRenderingContext.rotate(this.rocket.direction.angleTo(new Vector(0, 1)))
+    canvasRenderingContext.translate(-this.position.x, -this.position.y);
     RenderUtils.renderRectangle(canvasRenderingContext, this.position, this.collisionMask as Rectangle);
+    if (context.pressedKeys.isKeyPressed('w')) {
+      canvasRenderingContext.strokeStyle = '#E5EB4A'
+      canvasRenderingContext.fillStyle = '#E5EB4A'
+      RenderUtils.renderCircle(canvasRenderingContext, this.position.clone().add(new Vector(0, -this.collisionMask.h / 2 - 2)), new Circle(4));
+      canvasRenderingContext.fill();
+
+      canvasRenderingContext.strokeStyle = '#EB9A4A'
+      canvasRenderingContext.fillStyle = '#EB9A4A'
+      RenderUtils.renderCircle(canvasRenderingContext, this.position.clone().add(new Vector(0, -this.collisionMask.h / 2)), new Circle(2));
+      canvasRenderingContext.fill();
+    }
   }
 
   private getAcceleration(context: GameContext) {
@@ -100,7 +115,11 @@ class RocketObject extends CollisionableObject<Rectangle> {
   }
 
   private calculateDirection(context: GameContext) {
-    return this.rocket.velocity.clone().normalize();
+    if (this.rocket.velocity.length() > 0) {
+      return this.rocket.velocity.clone().normalize();
+    }
+
+    return this.rocket.direction;
   }
 
   private calculateAccelerationByPlanet(planet: PlanetObject) {
@@ -109,7 +128,6 @@ class RocketObject extends CollisionableObject<Rectangle> {
 
       const directionalVectorToPlanet = new Vector(planet.position.x - this.position.x, planet.position.y - this.position.y).normalize();
       // TODO: review this formula below
-      console.log(distanceToPlanet);
       directionalVectorToPlanet.scalar(planet.gravitationalForce / distanceToPlanet);
       return directionalVectorToPlanet;
     }

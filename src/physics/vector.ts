@@ -47,7 +47,7 @@ class Vector {
   }
 
   sub(v: Vector) {
-    this.set(-v.x, -v.y);
+    this.set(this.x - v.x, this.y - v.y);
     return this;
   }
 

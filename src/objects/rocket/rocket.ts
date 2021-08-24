@@ -1,6 +1,5 @@
 import Physics from "../physicsObject";
 import RocketThruster from "./rocketThruster";
-
 class Rocket extends Physics {
 
   private thruster: RocketThruster;

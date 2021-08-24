@@ -25,6 +25,7 @@ class PlanetObject extends CollisionableObject<Circle> {
     canvasRenderingContext.arc(this.position.x, this.position.y, this.collisionMask.radius + 300, 0, 2 * Math.PI);
     canvasRenderingContext.stroke();
     canvasRenderingContext.restore();
+    RenderUtils.renderCircle(canvasRenderingContext, this.position, new Circle(1));
     RenderUtils.renderCircle(canvasRenderingContext, this.position, this.collisionMask);
   }
 

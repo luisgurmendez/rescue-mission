@@ -32,11 +32,13 @@ class Game {
   private stepController: StepController = new StepController();
 
   constructor() {
+    // Inits canvas rendering context
+    this.canvasRenderingContext = CanvasGenerator.generateCanvas();
     this.worldDimensions = new Rectangle(10000, 10000);
-
+    const rocket = new RocketObject(new Vector(200, 500));
     this.objects = [
-      new RocketObject(new Vector((document.body.scrollWidth / 2) - 380, document.body.scrollHeight - 50)),
-      new PlanetObject(new Vector(document.body.scrollWidth / 2, 150))
+      new PlanetObject(new Vector()),
+      rocket,
     ];
     this.clock = new Clock();
     this.pressedKeys = new Keyboard();
@@ -46,10 +48,8 @@ class Game {
     this.stats.showPanel(0);
     document.body.appendChild(this.stats.dom);
 
-    // Inits canvas rendering context
-    this.canvasRenderingContext = CanvasGenerator.generateCanvas();
-    console.log(this.camera);
-    console.log(this.pressedKeys);
+    this.camera.init(this.canvasRenderingContext);
+    this.camera.follow(rocket);
   }
 
   start() {
@@ -78,6 +78,7 @@ class Game {
    */
   private update() {
     const gameContext = this.generateGameContext();
+    this.camera.step(gameContext);
     this.stepController.step(gameContext);
     this.renderController.render(gameContext);
   }
@@ -96,7 +97,8 @@ class Game {
       this.isPaused,
       this.objects,
       this.pressedKeys,
-      this.canvasRenderingContext
+      this.canvasRenderingContext,
+      this.camera
     );
   }
 }

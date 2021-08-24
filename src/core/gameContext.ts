@@ -1,7 +1,7 @@
 import { Collisions } from "../controllers/CollisionsController";
 import BaseObject from "../objects/baseObject";
 import Keyboard from "../utils/keyboard";
-import Clock from "./clock";
+import Camera from "./camera";
 
 class GameContext {
   readonly collisions: Collisions;
@@ -14,6 +14,7 @@ class GameContext {
   readonly objects: BaseObject[];
   readonly pressedKeys: Keyboard;
   readonly canvasRenderingContext: CanvasRenderingContext2D;
+  readonly camera: Camera;
 
   constructor(
     collisions: Collisions,
@@ -21,7 +22,8 @@ class GameContext {
     isPaused: boolean,
     objects: BaseObject[],
     pressedKeys: Keyboard,
-    canvasRenderingContext: CanvasRenderingContext2D
+    canvasRenderingContext: CanvasRenderingContext2D,
+    camera: Camera
   ) {
     this.collisions = collisions;
     this.dt = dt;
@@ -29,6 +31,7 @@ class GameContext {
     this.objects = objects;
     this.pressedKeys = pressedKeys;
     this.canvasRenderingContext = canvasRenderingContext;
+    this.camera = camera;
   }
 }
 
