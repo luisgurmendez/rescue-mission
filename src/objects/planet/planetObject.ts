@@ -4,15 +4,18 @@ import GameContext from "../../core/gameContext";
 import RenderUtils from "../../utils/renderUtils";
 import { ObjectType } from "../../objects/objectType";
 import CollisionableObject from "../../objects/collisionableObject";
+import GameObject from "../../objects/gameObject";
 
-class PlanetObject extends CollisionableObject<Circle> {
+class PlanetObject extends GameObject implements CollisionableObject<Circle> {
 
   public gravitationalForce: number;
+  public collisionMask: Circle;
 
   constructor(position: Vector) {
-    super(new Circle(100), position);
+    super(position);
     this.gravitationalForce = 10000;
     this.type = ObjectType.PLANET;
+    this.collisionMask = new Circle(100);
   }
 
   step() { }

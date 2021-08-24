@@ -150,7 +150,6 @@ class Intersections {
 
   static isCircleIntersectingCircle(a: Circle, b: Circle, apos: Vector, bpos: Vector) {
     const distanceBetweenCircles = apos.distanceTo(bpos);
-    console.log(distanceBetweenCircles);
     return distanceBetweenCircles <= a.radius + b.radius;
   }
 }

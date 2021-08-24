@@ -14,6 +14,7 @@ import CanvasGenerator from "./canvas";
 import Camera from "./camera";
 import CollisionableObject, { isCollisionableObject } from "../objects/collisionableObject";
 import { Rectangle } from "../objects/shapes";
+import MoonObject from "../objects/planet/moonObject";
 
 class Game {
 
@@ -38,6 +39,7 @@ class Game {
     const rocket = new RocketObject(new Vector(200, 500));
     this.objects = [
       new PlanetObject(new Vector()),
+      new MoonObject(new Vector(0, 200)),
       rocket,
     ];
     this.clock = new Clock();
