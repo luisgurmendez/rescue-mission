@@ -1,5 +1,5 @@
 
-export type Shape = Rectangle | Circle;
+export type Shape = Rectangle | Circle | NullShape;
 
 export class Rectangle {
   public w: number;
@@ -19,3 +19,4 @@ export class Circle {
   }
 }
 
+export class NullShape { };
