@@ -1,9 +1,9 @@
 import Stepable from "./Stepable";
 import Renderable from './Renderable';
-import GameContext from "core/gameContext";
+import GameContext from "../core/gameContext";
 import { ObjectType } from "./objectType";
 
-abstract class BaseObject implements Stepable, Renderable {
+class BaseObject implements Stepable, Renderable {
 
   public id: string;
   public type: ObjectType = ObjectType.BASE_OBJECT;

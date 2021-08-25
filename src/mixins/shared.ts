@@ -1,13 +1,18 @@
-import { CollisionableMixin } from "./collisionable";
-import { PhysicableMixin } from "./physics";
-import { PositionableMixin } from "./positional";
 
 export type GConstructor<T = {}> = new (...args: any[]) => T;
 
-class Obj { }
+// class Obj { }
 
-const R = PhysicableMixin(PositionableMixin(CollisionableMixin(Obj)));
+// const R = PhysicableMixin(PositionableMixin(CollisionableMixin(Obj)));
 
-class Rock extends R { }
+// interface S{
+//   s: ()=>void;
+// }
+// abstract class Rock extends R implements S { 
+//   s(){};
+// }
 
-const a = new Rock();
+
+// class RO extends Rock{}
+
+// const ro = new RO();

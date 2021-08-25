@@ -23,6 +23,7 @@
     "baseUrl": "./src",
     "strict": true,
     "skipLibCheck": true,
+    "noEmitOnError": false,
     "types": [],
     "noImplicitAny": true,
     "sourceMap": true,

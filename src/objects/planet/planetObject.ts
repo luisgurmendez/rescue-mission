@@ -9,6 +9,7 @@ import GameObject from "../../objects/gameObject";
 class PlanetObject extends GameObject implements CollisionableObject<Circle> {
 
   public gravitationalForce: number;
+  public gravitationalThreshold = 400;
   public collisionMask: Circle;
 
   constructor(position: Vector) {

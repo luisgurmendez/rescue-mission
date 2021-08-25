@@ -1,11 +1,9 @@
-import GameContext from "core/gameContext";
+import GameContext from "../core/gameContext";
 import Vector from "../physics/vector";
 import GameObject from "./gameObject";
 import PlanetObject from "./planet/planetObject";
 
 // TODO add Mixins!
-
-
 
 
 // TODO: add gravitational forces calculations in this class as well as setting acc, vel, direct, 

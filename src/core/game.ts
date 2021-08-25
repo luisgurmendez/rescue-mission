@@ -3,7 +3,7 @@ import RenderController from "../controllers/RenderController";
 import StepController from "../controllers/StepController";
 
 import BaseObject from "../objects/baseObject";
-import RocketObject from "../objects/rocket/rocketObject";
+import Rocket from "../objects/rocket/rocket";
 import Vector from "../physics/vector";
 import Keyboard from "../utils/keyboard";
 import Clock from "./clock";
@@ -36,7 +36,7 @@ class Game {
     // Inits canvas rendering context
     this.canvasRenderingContext = CanvasGenerator.generateCanvas();
     this.worldDimensions = new Rectangle(10000, 10000);
-    const rocket = new RocketObject(new Vector(200, 500));
+    const rocket = new Rocket(new Vector(200, 500));
     this.objects = [
       new PlanetObject(new Vector()),
       new MoonObject(new Vector(0, 200)),

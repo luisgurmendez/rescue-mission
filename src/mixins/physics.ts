@@ -1,7 +1,7 @@
 
 import Vector from "../physics/vector";
 import { PositionableConstructor, Positionable } from "./positional";
-import { GConstructor, PublicConstructor } from "./shared";
+import { GConstructor } from "./shared";
 
 export interface Physicable extends Positionable {
   velocity: Vector;
