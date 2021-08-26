@@ -1,4 +1,4 @@
-import CollisionsController from "../controllers/CollisionsController";
+import CollisionsController, { CollisionableObject } from "../controllers/CollisionsController";
 import RenderController from "../controllers/RenderController";
 import StepController from "../controllers/StepController";
 
@@ -9,12 +9,12 @@ import Keyboard from "../utils/keyboard";
 import Clock from "./clock";
 import GameContext from "./gameContext";
 import Stats from 'stats.js'
-import PlanetObject from "../objects/planet/planetObject";
+import Planet from "../objects/planet/planet";
 import CanvasGenerator from "./canvas";
 import Camera from "./camera";
-import CollisionableObject, { isCollisionableObject } from "../objects/collisionableObject";
 import { Rectangle } from "../objects/shapes";
-import MoonObject from "../objects/planet/moonObject";
+import Moon from "../objects/planet/moon";
+import { isCollisionableObject } from "../mixins/collisionable";
 
 class Game {
 
@@ -38,8 +38,8 @@ class Game {
     this.worldDimensions = new Rectangle(10000, 10000);
     const rocket = new Rocket(new Vector(200, 500));
     this.objects = [
-      new PlanetObject(new Vector()),
-      new MoonObject(new Vector(0, 200)),
+      new Planet(new Vector()),
+      new Moon(new Vector(0, 200)),
       rocket,
     ];
     this.clock = new Clock();
@@ -90,7 +90,7 @@ class Game {
   }
 
   private generateGameContext(): GameContext {
-    const collisionableObjects: CollisionableObject[] = this.objects.filter(isCollisionableObject);
+    const collisionableObjects: CollisionableObject[] = this.objects.filter(isCollisionableObject) as CollisionableObject[];
     const collisions = this.collisionController.getCollisions(collisionableObjects);
     const dt = this.clock.getDelta();
     return new GameContext(

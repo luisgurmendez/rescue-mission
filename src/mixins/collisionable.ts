@@ -5,7 +5,7 @@
 import { NullShape, Shape } from "../objects/shapes";
 import { GConstructor } from "./shared";
 
-export interface Collisionable<S extends Shape> {
+export interface Collisionable<S extends Shape = Shape> {
   collisionMask: S;
   isColliding: boolean;
 }
@@ -20,9 +20,6 @@ export function CollisionableMixin<S extends Shape>() {
       collisionMask = new NullShape() as unknown as S;
       isColliding = false;
       // isColliding = false;
-      constructor(...args: any[]) {
-        super(args);
-      }
 
       //  private checkIsColliding(context: GameContext) {
       //   const collisions = context.collisions[this.id]
@@ -30,4 +27,8 @@ export function CollisionableMixin<S extends Shape>() {
       // }
     }
   }
+}
+
+export function isCollisionableObject(obj: any): obj is Collisionable {
+  return typeof obj === 'object' && (obj as unknown as Collisionable).collisionMask !== undefined;
 }

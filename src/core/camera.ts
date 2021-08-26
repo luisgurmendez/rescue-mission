@@ -1,4 +1,4 @@
-import GameObject from "../objects/gameObject";
+import { Positionable } from "../mixins/positional";
 import { Rectangle } from "../objects/shapes";
 import Stepable from "../objects/Stepable";
 import Vector from "../physics/vector";
@@ -12,7 +12,7 @@ class Camera implements Stepable {
   position: Vector;
   viewport: Rectangle;
   private _zoom: number;
-  following: GameObject | null;
+  following: Positionable | null;
 
   constructor() {
     this.position = new Vector(document.body.scrollWidth / 2, document.body.scrollHeight / 2);
@@ -76,7 +76,7 @@ class Camera implements Stepable {
   }
 
 
-  follow(obj: GameObject) {
+  follow(obj: Positionable) {
     this.following = obj;
   }
 

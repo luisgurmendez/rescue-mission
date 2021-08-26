@@ -14,9 +14,6 @@ export function GravitationalMixin<TBase extends PhysicableConstructor>(Base: TB
   return class M extends Base implements Gravitationable {
     gravitationalThreshold = 0;
     gravitationalForce = 0;
-    constructor(...args: any[]) {
-      super(args);
-    }
   };
 }
 

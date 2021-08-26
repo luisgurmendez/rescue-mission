@@ -11,9 +11,7 @@ export type AffectedByGravitationalConstructor = GConstructor<AffectedByGravitat
 
 export function AffectedByGravitationableMixin<TBase extends PhysicableConstructor>(Base: TBase): AffectedByGravitationalConstructor & TBase {
   return class M extends Base implements AffectedByGravitationable {
-    constructor(...args: any[]) {
-      super(args);
-    }
+
     calculateGravitationalAcceleration(objects: Gravitationable[]) {
       const acceleration = new Vector();
 

@@ -1,10 +1,13 @@
 import { Rectangle, Circle } from "../objects/shapes";
-import GameObject from "../objects/gameObject";
 import Vector from "../physics/vector";
-import CollisionableObject, { isCollisionableObject } from "../objects/collisionableObject";
+import { Collisionable, isCollisionableObject } from "../mixins/collisionable";
+import { Positionable } from "../mixins/positional";
+import BaseObject from "../objects/baseObject";
+
+export type CollisionableObject = Collisionable & Positionable & BaseObject
 
 export interface Collisions {
-  [objectId: string]: GameObject[];
+  [objectId: string]: Collisionable[];
 }
 
 class CollisionsController {
@@ -26,7 +29,6 @@ class CollisionsController {
               } else {
                 collisions[primaryObj.id].push(secondaryObj);
               }
-              primaryObj.onCollision && primaryObj.onCollision(secondaryObj);
             }
 
           }
