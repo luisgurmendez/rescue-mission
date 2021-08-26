@@ -9,7 +9,6 @@ class BaseObject implements Stepable, Renderable {
   public type: ObjectType = ObjectType.BASE_OBJECT;
 
   constructor(id: string = generateId()) {
-    console.log('generating base obj with id', id);
     this.id = id;
   }
 
@@ -26,6 +25,5 @@ export default BaseObject;
 
 function generateId() {
   const id = Math.round((Math.random() * 10000)).toString(16);
-  console.log(id)
   return id;
 }

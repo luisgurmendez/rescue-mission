@@ -8,6 +8,7 @@ class RocketThruster {
     this.thrustPower = thrustPower;
   }
 
+  // TODO: thrust sound!
   thrust(): number {
     if (!this.isEmpty()) {
       this.fuel -= 1;

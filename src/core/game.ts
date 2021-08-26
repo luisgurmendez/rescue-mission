@@ -36,7 +36,8 @@ class Game {
     // Inits canvas rendering context
     this.canvasRenderingContext = CanvasGenerator.generateCanvas();
     this.worldDimensions = new Rectangle(10000, 10000);
-    const rocket = new Rocket(new Vector(200, 500));
+    const rocket = new Rocket(new Vector(0, 500));
+    console.log(rocket);
     this.objects = [
       new Planet(new Vector()),
       new Moon(new Vector(0, 200)),

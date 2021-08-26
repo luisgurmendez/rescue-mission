@@ -25,7 +25,7 @@ class Rocket extends RocketMixins {
   public hasLaunched: boolean = false;
 
   constructor(position: Vector) {
-    super();
+    super('rocket');
     this.position = position;
     this.mass = 549054; // falcon 9 weight
     this.type = ObjectType.ROCKET;
@@ -40,13 +40,41 @@ class Rocket extends RocketMixins {
     this.velocity = this.calculateVelocity(context.dt);
     this.direction = this.calculateDirection();
     this.isColliding = this.checkIsColliding(context);
+
+    if (context.pressedKeys.isKeyPressed('a')) {
+      this.direction.add(new Vector(-0.01, 0)).normalize()
+    }
+
+    if (context.pressedKeys.isKeyPressed('d')) {
+      this.direction.add(new Vector(0.01, 0)).normalize()
+    }
+
   }
 
   render(context: GameContext): void {
     const canvasRenderingContext = context.canvasRenderingContext;
+    canvasRenderingContext.strokeStyle = '#FFF'
+
     if (this.isColliding) {
       canvasRenderingContext.strokeStyle = '#F00'
     }
+
+
+    if (!this.hasLaunched) {
+      canvasRenderingContext.save();
+      canvasRenderingContext.beginPath();
+      canvasRenderingContext.setLineDash([5, 15]);
+      // canvasRenderingContext.translate(this.position.x, this.position.y);
+      console.log(this.direction);
+      canvasRenderingContext.moveTo(this.position.x, this.position.y);
+      const line = this.direction.clone().scalar(1000) //.add(this.position);
+      console.log(line);
+      line.add(this.position);
+      canvasRenderingContext.lineTo(line.x, line.y);
+      canvasRenderingContext.stroke();
+      canvasRenderingContext.restore();
+    }
+
     canvasRenderingContext.translate(this.position.x, this.position.y);
     canvasRenderingContext.rotate(this.direction.angleTo(new Vector(0, 1)))
     canvasRenderingContext.translate(-this.position.x, -this.position.y);
@@ -62,6 +90,7 @@ class Rocket extends RocketMixins {
       RenderUtils.renderCircle(canvasRenderingContext, this.position.clone().add(new Vector(0, -this.collisionMask.h / 2)), new Circle(2));
       canvasRenderingContext.fill();
     }
+
   }
 
   calculateDirection() {
@@ -74,7 +103,6 @@ class Rocket extends RocketMixins {
 
   calculateAcceleration(context: GameContext) {
     const thrustAcceleration = this.getThrustAcceleration(context);
-    thrustAcceleration.scalar(-1);
     const planets = context.objects.filter(isGravitationable) as (BaseObject & Gravitationable)[];
     const appliedAcceleration = this.calculateGravitationalAcceleration(planets);
     const acceleration = thrustAcceleration.clone().add(appliedAcceleration)
@@ -85,13 +113,14 @@ class Rocket extends RocketMixins {
     let thrustAcceleration = new Vector();
     const isKeyPressed = context.pressedKeys.isKeyPressed;
     if (isKeyPressed('w')) {
+      this.hasLaunched = true;
       // thrustAcceleration = this.rocket.direction.clone().scalar(this.thrust());
-      thrustAcceleration = this.direction.clone().scalar(-40); // TODO uncomment top
+      thrustAcceleration = this.direction.clone().scalar(40); // TODO uncomment top
     }
 
     if (isKeyPressed('s')) {
       // thrustAcceleration = this.rocket.direction.clone().scalar(this.thrust());
-      thrustAcceleration = this.direction.clone().scalar(40); // TODO uncomment top
+      thrustAcceleration = this.direction.clone().scalar(-40); // TODO uncomment top
     }
     return thrustAcceleration;
   }

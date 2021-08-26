@@ -46,6 +46,9 @@ class Planet extends MoonMixins {
 
   render(context: GameContext) {
     const canvasRenderingContext = context.canvasRenderingContext;
+    canvasRenderingContext.fillStyle = '#FFF'
+    canvasRenderingContext.strokeStyle = '#FFF'
+
     canvasRenderingContext.save();
     canvasRenderingContext.beginPath();
     canvasRenderingContext.setLineDash([5, 15]);

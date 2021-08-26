@@ -22,7 +22,7 @@ class Planet extends PlanetMixins {
   constructor(position: Vector) {
     super();
     this.position = position;
-    this.gravitationalForce = 10000;
+    this.gravitationalForce = 13000;
     this.type = ObjectType.PLANET;
     this.collisionMask = new Circle(100);
     this.gravitationalThreshold = 400;
@@ -32,14 +32,16 @@ class Planet extends PlanetMixins {
 
   render(context: GameContext) {
     const canvasRenderingContext = context.canvasRenderingContext;
+    canvasRenderingContext.fillStyle = '#33F';
+    canvasRenderingContext.strokeStyle = '#33F';
     canvasRenderingContext.save();
     canvasRenderingContext.beginPath();
     canvasRenderingContext.setLineDash([5, 15]);
     canvasRenderingContext.arc(this.position.x, this.position.y, this.gravitationalThreshold, 0, 2 * Math.PI);
     canvasRenderingContext.stroke();
     canvasRenderingContext.restore();
-    RenderUtils.renderCircle(canvasRenderingContext, this.position, new Circle(1));
     RenderUtils.renderCircle(canvasRenderingContext, this.position, this.collisionMask);
+    canvasRenderingContext.fill();
   }
 
 }
