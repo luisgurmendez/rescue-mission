@@ -9,6 +9,7 @@ class RenderController {
 
   render(gameContext: GameContext) {
     const { canvasRenderingContext, camera, objects } = gameContext;
+    const { canvas } = canvasRenderingContext;
     const renderableObjects = objects.filter(isRenderable);
 
     const renderElements: RenderElement[] = [];
@@ -36,7 +37,8 @@ class RenderController {
     // render normal elements..
     this.safetlyRender(canvasRenderingContext, () => {
       canvasRenderingContext.scale(camera.zoom, camera.zoom);
-      canvasRenderingContext.translate(gameContext.camera.position.x, gameContext.camera.position.y)
+      // Make the center of the screen aligned with the camera's position
+      canvasRenderingContext.translate(camera.position.x + (canvas.width / 2), camera.position.y + (canvas.height / 2))
       normalRenderElements.forEach(element => {
         if (isRenderable(element)) {
           this.safetlyRender(canvasRenderingContext, () => {

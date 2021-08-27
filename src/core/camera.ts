@@ -23,8 +23,8 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
   constructor() {
     super('camera');
-    this.position = new Vector(document.body.scrollWidth / 2, document.body.scrollHeight / 2);
-    // this.position = new Vector(0, 0);
+    // this.position = new Vector(document.body.scrollWidth / 2, document.body.scrollHeight / 2);
+    this.position = new Vector(0, 0);
     // this.viewport = new Rectangle(document.body.scrollWidth, document.body.scrollHeight);
     this._zoom = 1;
     this.following = null;
