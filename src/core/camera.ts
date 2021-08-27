@@ -1,17 +1,17 @@
-import { Disposable } from "../behaviors/disposable";
+import Disposable from "../behaviors/disposable";
 import BaseObject from "../objects/baseObject";
 import RenderElement from "../render/renderElement";
 import Renderable from "../behaviors/renderable";
 import Stepable from "../behaviors/stepable";
 import { Positionable, PositionType } from "../mixins/positional";
-import { Rectangle } from "../objects/shapes";
 import Vector from "../physics/vector";
 import GameContext from "./gameContext";
+import Initializable from "../behaviors/initializable";
 
 const MAX_ZOOM = 7;
 const MIN_ZOOM = 0.01;
 
-class Camera extends BaseObject implements Positionable, Stepable, Disposable, Renderable {
+class Camera extends BaseObject implements Positionable, Stepable, Disposable, Renderable, Initializable {
 
   position: Vector;
   // viewport: Rectangle;
@@ -20,6 +20,8 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   dispose?: () => void = undefined;
   locked: boolean = false;
   positionType: PositionType = 'overlay';
+  shouldInitialize = true;
+  shouldDispose = false;
 
   constructor() {
     super('camera');
@@ -30,8 +32,9 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     this.following = null;
   }
 
-  init(context: CanvasRenderingContext2D) {
-    const canvas = context.canvas;
+  init(gameContext: GameContext) {
+    const { canvasRenderingContext } = gameContext
+    const canvas = canvasRenderingContext.canvas;
 
     let startDragOffset = new Vector();
     let mouseDown = false;
@@ -55,6 +58,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
         this.position.x += mousex / (this.zoom * deltaZoom) - mousex / this.zoom;
         this.position.y += mousey / (this.zoom * deltaZoom) - mousey / this.zoom;
       }
+
     }
 
     // TODO: Fix moving camera with zoom!!
@@ -107,8 +111,8 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener('wheel', handleCanvasWheel);
     }
-  }
 
+  }
 
   follow(obj: Positionable) {
     this.following = obj;
@@ -145,7 +149,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   step(context: GameContext) {
     const canvas = context.canvasRenderingContext.canvas;
     if (this.following !== null) {
-      this.position = this.following.position.clone().scalar(-1).add(new Vector(canvas.width / 2, canvas.height / 2)).scalar(1 / this.zoom);
+      this.position = this.following.position.clone().scalar(-1 / this.zoom);
     }
     // TODO: Dont let the camera go beyond world's boundaries.
   }

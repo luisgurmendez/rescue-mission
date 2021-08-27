@@ -13,6 +13,7 @@ import { Gravitationable, isGravitationable } from '../../mixins/gravitational';
 import Renderable from '../../behaviors/renderable';
 import Stepable from '../../behaviors/stepable';
 import RenderElement from '../../render/renderElement';
+import ParticleGenerator from '../particle/particleGenerator';
 
 const RocketMixins = AffectedByGravitationableMixin(
   PhysicableMixin(
@@ -83,18 +84,6 @@ class Rocket extends RocketMixins implements Renderable, Stepable {
     canvasRenderingContext.rotate(this.direction.angleTo(new Vector(0, 1)))
     canvasRenderingContext.translate(-this.position.x, -this.position.y);
     RenderUtils.renderRectangle(canvasRenderingContext, this.position, this.collisionMask as Rectangle);
-    if (context.pressedKeys.isKeyPressed('w')) {
-      canvasRenderingContext.strokeStyle = '#E5EB4A'
-      canvasRenderingContext.fillStyle = '#E5EB4A'
-      RenderUtils.renderCircle(canvasRenderingContext, this.position.clone().add(new Vector(0, -this.collisionMask.h / 2 - 2)), new Circle(4));
-      canvasRenderingContext.fill();
-
-      canvasRenderingContext.strokeStyle = '#EB9A4A'
-      canvasRenderingContext.fillStyle = '#EB9A4A'
-      RenderUtils.renderCircle(canvasRenderingContext, this.position.clone().add(new Vector(0, -this.collisionMask.h / 2)), new Circle(2));
-      canvasRenderingContext.fill();
-    }
-
   }
 
   calculateDirection() {
@@ -119,7 +108,11 @@ class Rocket extends RocketMixins implements Renderable, Stepable {
     if (isKeyPressed('w')) {
       this.hasLaunched = true;
       // thrustAcceleration = this.rocket.direction.clone().scalar(this.thrust());
-      thrustAcceleration = this.direction.clone().scalar(40); // TODO uncomment top
+      thrustAcceleration = this.direction.clone().scalar(10); // TODO uncomment top
+
+      const particleGenerator = new ParticleGenerator();
+      // particles
+      context.objects.push(...particleGenerator.generate({ position: this.position.clone() }));
     }
 
     if (isKeyPressed('s')) {

@@ -3,11 +3,8 @@ import Game from './core/game';
 (async function () {
 
   const game = new Game();
-
-  function update() {
-
-  }
-
+  console.log(game);
+  function update() { }
   const init = game.loop(update);
   init();
 })();

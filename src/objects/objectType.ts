@@ -6,4 +6,5 @@ export enum ObjectType {
   PLANET,
   ROCKET,
   BUTTON,
+  PARTICLE
 }

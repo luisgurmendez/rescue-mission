@@ -3,7 +3,6 @@ import Stepable from "../behaviors/stepable";
 import { NoRender } from "../render/renderElement";
 import GameContext from "../core/gameContext";
 import { ObjectType } from "./objectType";
-
 class BaseObject implements Renderable, Stepable {
 
   public id: string;

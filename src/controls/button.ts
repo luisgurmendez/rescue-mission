@@ -6,9 +6,10 @@ import { Positionable, PositionType } from "../mixins/positional";
 import Vector from "../physics/vector";
 import BaseObject from "../objects/baseObject";
 import { ObjectType } from "../objects/objectType";
-import { Disposable } from "../behaviors/disposable";
+import Disposable from "../behaviors/disposable";
 import Camera from "../core/camera";
 import RenderElement from "../render/renderElement";
+import Initializable from "behaviors/initializable";
 
 const defaultButtonStyles: Required<ButtonStyles> = {
   backgroundColor: '#FFF',
@@ -25,7 +26,7 @@ interface ButtonStyles {
 }
 
 // TODO: fix pressing a relatively positioned element
-class Button extends BaseObject implements Renderable, Pressable, Positionable, Disposable {
+class Button extends BaseObject implements Renderable, Pressable, Positionable, Disposable, Initializable {
 
   pressArea: Rectangle;
   position: Vector;
@@ -34,6 +35,8 @@ class Button extends BaseObject implements Renderable, Pressable, Positionable, 
   text: string;
   dispose = () => { };
   positionType: PositionType = 'overlay';
+  shouldInitialize = true;
+  shouldDispose = false;
 
   constructor(
     text: string,
@@ -51,7 +54,8 @@ class Button extends BaseObject implements Renderable, Pressable, Positionable, 
     this.pressArea = new Rectangle(0, 0);
   }
 
-  init = (canvasRenderingContext: CanvasRenderingContext2D, camera: Camera) => {
+  init(gameContext: GameContext) {
+    const { canvasRenderingContext, camera } = gameContext;
     this.setFont(canvasRenderingContext);
     const width = canvasRenderingContext.measureText(this.text).width;
     // https://stackoverflow.com/a/13318387/5794675
@@ -89,16 +93,17 @@ class Button extends BaseObject implements Renderable, Pressable, Positionable, 
     if (y > this.position.y && y < this.position.y + this.pressArea.h
       && x > this.position.y && x < this.position.x + this.pressArea.w) {
       alert('clicked an element');
+      this.onPress();
+      this.shouldDispose = true;
     }
   }
-
 
   // TODO: Implement the PressController so that there is just 1 click listener?
   private setPressListener = (canvasRenderingContext: CanvasRenderingContext2D, camera: Camera) => {
     const { canvas } = canvasRenderingContext;
     canvas.addEventListener('click', this.handleCanvasPress, false);
     this.dispose = () => {
-      canvas.removeEventListener('click', this.handleCanvasPress);
+      canvas.removeEventListener('click', this.handleCanvasPress, false);
     }
   }
 

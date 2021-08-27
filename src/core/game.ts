@@ -1,6 +1,5 @@
 import CollisionsController, { CollisionableObject } from "../controllers/CollisionsController";
 import RenderController from "../controllers/RenderController";
-import StepController from "../controllers/StepController";
 
 import BaseObject from "../objects/baseObject";
 import Rocket from "../objects/rocket/rocket";
@@ -17,6 +16,7 @@ import Moon from "../objects/planet/moon";
 import { isCollisionableObject } from "../mixins/collisionable";
 import Button from "../controls/button";
 import SpaceBackground from "../objects/spaceBackground";
+import ObjectLifecycleController from "../controllers/ObjectLifecycleController";
 
 class Game {
 
@@ -24,7 +24,7 @@ class Game {
 
   private objects: BaseObject[] = [];
   private pressedKeys: Keyboard = new Keyboard();
-  private isPaused: boolean = true;
+  private isPaused: boolean = false;
   private stats: Stats;
   private canvasRenderingContext: CanvasRenderingContext2D;
   private camera: Camera;
@@ -32,7 +32,7 @@ class Game {
 
   private collisionController: CollisionsController = new CollisionsController();
   private renderController: RenderController = new RenderController();
-  private stepController: StepController = new StepController();
+  private objectLifecycleController: ObjectLifecycleController = new ObjectLifecycleController();
 
   constructor() {
     // Inits canvas rendering context
@@ -44,15 +44,13 @@ class Game {
     (window as any).camera = this.camera;
     const background = new SpaceBackground();
     console.log(this.camera);
-
-    button.init(this.canvasRenderingContext, this.camera);
     this.objects = [
       background,
       new Planet(new Vector()),
       new Moon(new Vector(0, 200)),
       rocket,
       button,
-      this.camera,
+      this.camera
     ];
     this.clock = new Clock();
     this.pressedKeys = new Keyboard();
@@ -61,8 +59,7 @@ class Game {
     this.stats.showPanel(0);
     document.body.appendChild(this.stats.dom);
 
-    this.camera.init(this.canvasRenderingContext);
-    // this.camera.follow(rocket);
+    this.camera.follow(rocket);
   }
 
   start() {
@@ -91,9 +88,10 @@ class Game {
    */
   private update() {
     const gameContext = this.generateGameContext();
-    this.camera.step(gameContext);
-    this.stepController.step(gameContext);
+    this.objectLifecycleController.initialize(gameContext);
+    this.objectLifecycleController.step(gameContext);
     this.renderController.render(gameContext);
+    this.objects = this.objectLifecycleController.dispose(gameContext.objects);
   }
 
   private afterUpdate() {
