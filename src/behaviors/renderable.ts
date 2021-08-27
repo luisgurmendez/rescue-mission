@@ -1,8 +1,9 @@
+import RenderElement, { RenderFn } from "../render/renderElement";
 import GameContext from "../core/gameContext";
 
 interface Renderable {
   // TODO: should objects render themselves in the canvas or should they return a RenderElement obj or smth like that?
-  render(context: GameContext): void;
+  render(): RenderElement;
 }
 
 export function isRenderable(object: any): object is Renderable {

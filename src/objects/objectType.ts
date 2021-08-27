@@ -5,4 +5,5 @@ export enum ObjectType {
   COLLISIONABLE_OBJECT,
   PLANET,
   ROCKET,
+  BUTTON,
 }

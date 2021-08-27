@@ -1,5 +1,5 @@
+import { isStepable } from "../behaviors/stepable";
 import GameContext from "../core/gameContext";
-import { isStepable } from "../objects/Stepable";
 
 class StepController {
 

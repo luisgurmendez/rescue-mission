@@ -2,7 +2,7 @@ import GameContext from '../../core/gameContext';
 import { Circle, Rectangle } from '../shapes';
 import Vector from '../../physics/vector';
 import { ObjectType } from '../objectType';
-import RenderUtils from '../../utils/renderUtils';
+import RenderUtils from '../../render/utils';
 import RocketThruster from './rocketThruster';
 import { PhysicableMixin } from '../../mixins/physics';
 import { CollisionableMixin } from '../../mixins/collisionable';
@@ -10,6 +10,9 @@ import { PositionableMixin } from '../../mixins/positional';
 import BaseObject from '../../objects/baseObject';
 import { AffectedByGravitationableMixin } from '../../mixins/affectedByGravitational';
 import { Gravitationable, isGravitationable } from '../../mixins/gravitational';
+import Renderable from '../../behaviors/renderable';
+import Stepable from '../../behaviors/stepable';
+import RenderElement from '../../render/renderElement';
 
 const RocketMixins = AffectedByGravitationableMixin(
   PhysicableMixin(
@@ -19,7 +22,7 @@ const RocketMixins = AffectedByGravitationableMixin(
   )
 );
 
-class Rocket extends RocketMixins {
+class Rocket extends RocketMixins implements Renderable, Stepable {
 
   private thruster: RocketThruster;
   public hasLaunched: boolean = false;
@@ -41,17 +44,21 @@ class Rocket extends RocketMixins {
     this.direction = this.calculateDirection();
     this.isColliding = this.checkIsColliding(context);
 
-    if (context.pressedKeys.isKeyPressed('a')) {
+    if (context.pressedKeys.isKeyPressed('a') && !this.hasLaunched) {
       this.direction.add(new Vector(-0.01, 0)).normalize()
     }
 
-    if (context.pressedKeys.isKeyPressed('d')) {
+    if (context.pressedKeys.isKeyPressed('d') && !this.hasLaunched) {
       this.direction.add(new Vector(0.01, 0)).normalize()
     }
 
   }
 
-  render(context: GameContext): void {
+  render() {
+    return new RenderElement(this._render);
+  }
+
+  _render = (context: GameContext): void => {
     const canvasRenderingContext = context.canvasRenderingContext;
     canvasRenderingContext.strokeStyle = '#FFF'
 
@@ -59,16 +66,13 @@ class Rocket extends RocketMixins {
       canvasRenderingContext.strokeStyle = '#F00'
     }
 
-
     if (!this.hasLaunched) {
       canvasRenderingContext.save();
       canvasRenderingContext.beginPath();
       canvasRenderingContext.setLineDash([5, 15]);
       // canvasRenderingContext.translate(this.position.x, this.position.y);
-      console.log(this.direction);
       canvasRenderingContext.moveTo(this.position.x, this.position.y);
       const line = this.direction.clone().scalar(1000) //.add(this.position);
-      console.log(line);
       line.add(this.position);
       canvasRenderingContext.lineTo(line.x, line.y);
       canvasRenderingContext.stroke();

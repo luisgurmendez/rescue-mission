@@ -15,6 +15,8 @@ import Camera from "./camera";
 import { Rectangle } from "../objects/shapes";
 import Moon from "../objects/planet/moon";
 import { isCollisionableObject } from "../mixins/collisionable";
+import Button from "../controls/button";
+import SpaceBackground from "../objects/spaceBackground";
 
 class Game {
 
@@ -36,23 +38,31 @@ class Game {
     // Inits canvas rendering context
     this.canvasRenderingContext = CanvasGenerator.generateCanvas();
     this.worldDimensions = new Rectangle(10000, 10000);
-    const rocket = new Rocket(new Vector(0, 500));
-    console.log(rocket);
+    const rocket = new Rocket(new Vector(0, 700));
+    const button = new Button('Button!', new Vector(80, 50), () => { });
+    this.camera = new Camera();
+    (window as any).camera = this.camera;
+    const background = new SpaceBackground();
+    console.log(this.camera);
+
+    button.init(this.canvasRenderingContext, this.camera);
     this.objects = [
+      background,
       new Planet(new Vector()),
       new Moon(new Vector(0, 200)),
       rocket,
+      button,
+      this.camera,
     ];
     this.clock = new Clock();
     this.pressedKeys = new Keyboard();
-    this.camera = new Camera();
 
     this.stats = new Stats();
     this.stats.showPanel(0);
     document.body.appendChild(this.stats.dom);
 
     this.camera.init(this.canvasRenderingContext);
-    this.camera.follow(rocket);
+    // this.camera.follow(rocket);
   }
 
   start() {

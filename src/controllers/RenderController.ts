@@ -1,35 +1,46 @@
 import { Rectangle } from "../objects/shapes";
 import Vector from "../physics/vector";
-import RenderUtils from "../utils/renderUtils";
+import RenderUtils from '../render/utils';
 import GameContext from "../core/gameContext";
-import { isRenderable } from "../objects/Renderable";
+import Renderable, { isRenderable } from "../behaviors/renderable";
+import RenderElement from "../render/renderElement";
+
 class RenderController {
 
   render(gameContext: GameContext) {
-    const { canvasRenderingContext, camera } = gameContext;
+    const { canvasRenderingContext, camera, objects } = gameContext;
+    const renderableObjects = objects.filter(isRenderable);
+
+    const renderElements: RenderElement[] = [];
+    renderableObjects.forEach(obj => {
+      if (isRenderable(obj)) {
+        this.safetlyRender(canvasRenderingContext, () => {
+          const renderElement = obj.render();
+          renderElements.push(renderElement);
+        })
+      }
+    });
+
+    const overlayRenderElements = renderElements.filter(element => element.positionType === 'overlay');
+    const normalRenderElements = renderElements.filter(element => element.positionType === 'normal');
+
     this.clearCanvas(canvasRenderingContext);
 
-    // Renders background
-    canvasRenderingContext.fillStyle = "#000";
-    RenderUtils.renderRectangle(canvasRenderingContext,
-      new Vector(0, 0),
-      new Rectangle(canvasRenderingContext.canvas.width * 2, canvasRenderingContext.canvas.height * 2)
-    )
-    canvasRenderingContext.fill();
+    // render overlay elements.
+    overlayRenderElements.forEach(element => {
+      this.safetlyRender(canvasRenderingContext, () => {
+        element.render(gameContext)
+      })
+    })
 
-    // Renders camera position
-    canvasRenderingContext.font = "30px Arial";
-    canvasRenderingContext.fillStyle = "#FFF";
-    canvasRenderingContext.fillText(`(${gameContext.camera.position.x.toFixed(0)},${gameContext.camera.position.y.toFixed(0)})`, 80, 30);
-
+    // render normal elements..
     this.safetlyRender(canvasRenderingContext, () => {
       canvasRenderingContext.scale(camera.zoom, camera.zoom);
       canvasRenderingContext.translate(gameContext.camera.position.x, gameContext.camera.position.y)
-      const objects = gameContext.objects;
-      objects.forEach(obj => {
-        if (isRenderable(obj)) {
+      normalRenderElements.forEach(element => {
+        if (isRenderable(element)) {
           this.safetlyRender(canvasRenderingContext, () => {
-            obj.render(gameContext);
+            element.render(gameContext);
           })
         }
       })

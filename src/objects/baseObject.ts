@@ -1,9 +1,10 @@
-import Stepable from "./Stepable";
-import Renderable from './Renderable';
+import Renderable from "../behaviors/renderable";
+import Stepable from "../behaviors/stepable";
+import { NoRender } from "../render/renderElement";
 import GameContext from "../core/gameContext";
 import { ObjectType } from "./objectType";
 
-class BaseObject implements Stepable, Renderable {
+class BaseObject implements Renderable, Stepable {
 
   public id: string;
   public type: ObjectType = ObjectType.BASE_OBJECT;
@@ -12,13 +13,12 @@ class BaseObject implements Stepable, Renderable {
     this.id = id;
   }
 
-  render(context: GameContext) {
-    throw new Error("Method not implemented.");
+  render() {
+    return new NoRender();
   }
 
-  step(context: GameContext): void {
-    throw new Error("Method not implemented.");
-  }
+  step(gameContext: GameContext) { }
+
 }
 
 export default BaseObject;

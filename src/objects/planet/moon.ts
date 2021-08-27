@@ -6,13 +6,14 @@ import GameContext from '../../core/gameContext';
 import { Circle } from '../shapes';
 import Vector from '../../physics/vector';
 import { ObjectType } from '../objectType';
-import RenderUtils from '../../utils/renderUtils';
+import RenderUtils from '../../render/utils';
 import { PhysicableMixin } from '../../mixins/physics';
 import { CollisionableMixin } from '../../mixins/collisionable';
 import { PositionableMixin } from '../../mixins/positional';
 import BaseObject from '../../objects/baseObject';
 import { Gravitationable, GravitationalMixin, isGravitationable } from '../../mixins/gravitational';
 import { AffectedByGravitationableMixin } from '../../mixins/affectedByGravitational';
+import RenderElement from '../../render/renderElement';
 
 const MoonMixins = AffectedByGravitationableMixin(
   GravitationalMixin(
@@ -24,7 +25,7 @@ const MoonMixins = AffectedByGravitationableMixin(
   )
 );
 
-class Planet extends MoonMixins {
+class Moon extends MoonMixins {
 
   constructor(position: Vector) {
     super();
@@ -44,7 +45,11 @@ class Planet extends MoonMixins {
     this.velocity = this.calculateVelocity(context.dt);
   }
 
-  render(context: GameContext) {
+  render() {
+    return new RenderElement(this._render);
+  }
+
+  _render = (context: GameContext) => {
     const canvasRenderingContext = context.canvasRenderingContext;
     canvasRenderingContext.fillStyle = '#FFF'
     canvasRenderingContext.strokeStyle = '#FFF'
@@ -70,4 +75,4 @@ class Planet extends MoonMixins {
 
 }
 
-export default Planet;
+export default Moon;
