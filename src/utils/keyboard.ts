@@ -36,6 +36,10 @@ class Keyboard {
     return !!this.pressedKeys[key]
   }
 
+  public clearPressedKeys() {
+    this.pressedKeys = {};
+  }
+
   public clean() {
     document.removeEventListener('keydown', this.keyDownHanlder)
     document.removeEventListener('keyup', this.keyUpHanlder)

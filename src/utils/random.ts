@@ -23,6 +23,12 @@ class RandomUtils {
     return Math.random() > prob;
   }
 
+  static generateId() {
+    const id = Math.round((Math.random() * 10000)).toString(16);
+    return id;
+  }
+
+
 }
 
 export default RandomUtils;

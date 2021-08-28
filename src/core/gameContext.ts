@@ -15,6 +15,8 @@ class GameContext {
   readonly pressedKeys: Keyboard;
   readonly canvasRenderingContext: CanvasRenderingContext2D;
   readonly camera: Camera;
+  pause: () => void;
+  unPause: () => void;
 
   constructor(
     collisions: Collisions,
@@ -23,7 +25,9 @@ class GameContext {
     objects: BaseObject[],
     pressedKeys: Keyboard,
     canvasRenderingContext: CanvasRenderingContext2D,
-    camera: Camera
+    camera: Camera,
+    pause: () => void,
+    unPause: () => void
   ) {
     this.collisions = collisions;
     this.dt = dt;
@@ -32,6 +36,8 @@ class GameContext {
     this.pressedKeys = pressedKeys;
     this.canvasRenderingContext = canvasRenderingContext;
     this.camera = camera;
+    this.pause = pause;
+    this.unPause = unPause;
   }
 }
 

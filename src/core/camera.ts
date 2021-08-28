@@ -8,8 +8,8 @@ import Vector from "../physics/vector";
 import GameContext from "./gameContext";
 import Initializable from "../behaviors/initializable";
 
-const MAX_ZOOM = 7;
-const MIN_ZOOM = 0.01;
+const MAX_ZOOM = 14;
+const MIN_ZOOM = 0.5;
 
 class Camera extends BaseObject implements Positionable, Stepable, Disposable, Renderable, Initializable {
 

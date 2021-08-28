@@ -18,15 +18,21 @@ const PlanetMixins = GravitationalMixin(
   )
 );
 
+
+// TODO: add a isMoon variable to make planets affectedByGravitational. This way we can eliminate the Moon class
+// TODO: add color and density
+// TODO: add hover func to see a planet's properties
 class Planet extends PlanetMixins {
+
+  hasRing: boolean = true;
 
   constructor(position: Vector) {
     super();
     this.position = position;
-    this.gravitationalForce = 13000;
+    this.gravitationalForce = 1300;
     this.type = ObjectType.PLANET;
-    this.collisionMask = new Circle(100);
-    this.gravitationalThreshold = 600;
+    this.collisionMask = new Circle(80);
+    this.gravitationalThreshold = 350;
   }
 
   step() { }
@@ -48,8 +54,34 @@ class Planet extends PlanetMixins {
     canvasRenderingContext.restore();
     RenderUtils.renderCircle(canvasRenderingContext, this.position, this.collisionMask);
     canvasRenderingContext.fill();
-  }
 
+
+    // Renders planet ring
+    if (this.hasRing) {
+
+      // To rotate the ring :
+      // canvasRenderingContext.translate(this.position.x, this.position.y);
+      // canvasRenderingContext.rotate(this.direction.angleTo(new Vector(0.5, 0.5)))
+      // canvasRenderingContext.translate(-this.position.x, -this.position.y);
+
+      canvasRenderingContext.beginPath();
+      canvasRenderingContext.strokeStyle = '#141466';
+      canvasRenderingContext.lineWidth = 6;
+      canvasRenderingContext.moveTo(this.position.x - this.collisionMask.radius, this.position.y);
+      canvasRenderingContext.bezierCurveTo(
+        this.position.x - this.collisionMask.radius * 4,
+        this.position.y + this.collisionMask.radius / 2,
+        this.position.x + this.collisionMask.radius * 4,
+        this.position.y + this.collisionMask.radius / 2,
+        this.position.x + this.collisionMask.radius, this.position.y
+      )
+      canvasRenderingContext.stroke();
+      canvasRenderingContext.strokeStyle = '#8484FF';
+      canvasRenderingContext.lineWidth = 1;
+      canvasRenderingContext.stroke();
+    }
+
+  }
 }
 
 export default Planet;

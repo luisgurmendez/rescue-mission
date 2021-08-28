@@ -27,6 +27,57 @@ class RenderUtils {
   static renderText() {
 
   }
+
+
+  static generatePixelArt(colors: string, pixelArt: string, size: number = 16) {
+
+    const canvas = document.createElement('canvas');
+    canvas.width = size;
+    canvas.height = size;
+    const canvasRenderingContext = canvas.getContext('2d');
+
+
+    if (canvasRenderingContext !== null) {
+      canvasRenderingContext.translate(-1, -1);
+      const points: number[] = [];
+      pixelArt.replace(/./g, a => {
+        const charCode = a.charCodeAt(0)
+        points.push(charCode & 7);
+        points.push((charCode >> 3) & 7);
+        return '';
+      })
+      for (let j = 0; j < size; j++) {
+        for (let i = 0; i < size; i++) {
+          if (points[j * size + i]) {
+            canvasRenderingContext.fillStyle = "#" + colors.substr(3 * (points[j * size + i] - 1), 3);
+            canvasRenderingContext.fillRect(i, j, 1, 1);
+          }
+        }
+      }
+    }
+    return canvas;
+  }
+
+
+
+  static renderVector() {
+
+    // function canvas_arrow(context, fromx, fromy, tox, toy) {
+    //   var headlen = 10; // length of head in pixels
+    //   var dx = tox - fromx;
+    //   var dy = toy - fromy;
+    //   var angle = Math.atan2(dy, dx);
+    //   context.moveTo(fromx, fromy);
+    //   context.lineTo(tox, toy);
+    //   context.lineTo(tox - headlen * Math.cos(angle - Math.PI / 6), toy - headlen * Math.sin(angle - Math.PI / 6));
+    //   context.moveTo(tox, toy);
+    //   context.lineTo(tox - headlen * Math.cos(angle + Math.PI / 6), toy - headlen * Math.sin(angle + Math.PI / 6));
+    // }
+
+
+
+  }
+
 }
 
 export default RenderUtils;

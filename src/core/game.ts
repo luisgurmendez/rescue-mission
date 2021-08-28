@@ -38,7 +38,7 @@ class Game {
     // Inits canvas rendering context
     this.canvasRenderingContext = CanvasGenerator.generateCanvas();
     this.worldDimensions = new Rectangle(10000, 10000);
-    const rocket = new Rocket(new Vector(0, 700));
+    const rocket = new Rocket(new Vector(0, 400));
     const button = new Button('Button!', new Vector(80, 50), () => { });
     this.camera = new Camera();
     const background = new SpaceBackground();
@@ -50,8 +50,12 @@ class Game {
     document.body.appendChild(this.stats.dom);
 
     button.onPress = () => {
-      // this.camera.follow(rocket); 
-      this.camera.flyTo(new Vector(0, 0), 1);
+      // this.camera.flyTo(new Vector(0, 0), 1);
+      if (this.isPaused) {
+        this.unPause();
+      } else {
+        this.pause();
+      }
     }
 
     this.objects = [
@@ -62,14 +66,24 @@ class Game {
       button,
       this.camera
     ];
+    this.camera.follow(rocket);
   }
 
-  start() {
+  init() {
+    window.addEventListener('blur', () => {
+      this.pressedKeys.clearPressedKeys();
+      // TODO: SHOW PAUSED MODAL
+      this.pause();
+    });
+    window.addEventListener('focus', this.unPause);
+  }
+
+  unPause = () => {
     this.isPaused = false;
     this.clock.start();
   }
 
-  stop() {
+  pause = () => {
     this.isPaused = true;
     this.clock.stop();
   }
@@ -78,7 +92,9 @@ class Game {
     return () => {
       this.stats.begin()
       externalUpdate && externalUpdate();
-      this.update();
+      if (!this.isPaused) {
+        this.update();
+      }
       requestAnimationFrame(this.loop(externalUpdate));
       this.afterUpdate()
     }
@@ -111,7 +127,9 @@ class Game {
       this.objects,
       this.pressedKeys,
       this.canvasRenderingContext,
-      this.camera
+      this.camera,
+      this.pause,
+      this.unPause
     );
   }
 }

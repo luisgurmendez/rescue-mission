@@ -3,12 +3,13 @@ import Stepable from "../behaviors/stepable";
 import { NoRender } from "../render/renderElement";
 import GameContext from "../core/gameContext";
 import { ObjectType } from "./objectType";
+import RandomUtils from "../utils/random";
 class BaseObject implements Renderable, Stepable {
 
   public id: string;
   public type: ObjectType = ObjectType.BASE_OBJECT;
 
-  constructor(id: string = generateId()) {
+  constructor(id: string = RandomUtils.generateId()) {
     this.id = id;
   }
 
@@ -22,7 +23,3 @@ class BaseObject implements Renderable, Stepable {
 
 export default BaseObject;
 
-function generateId() {
-  const id = Math.round((Math.random() * 10000)).toString(16);
-  return id;
-}

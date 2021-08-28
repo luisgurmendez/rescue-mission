@@ -10,7 +10,7 @@ class CanvasGenerator {
       const onContainerResize = () => {
         canvas.width = document.body.scrollWidth;
         canvas.height = document.body.scrollHeight;
-        canvasRenderingContext.imageSmoothingEnabled = true;
+        canvasRenderingContext.imageSmoothingEnabled = false;
         canvasRenderingContext.translate(0.5, 0.5);
       }
 

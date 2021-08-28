@@ -4,7 +4,6 @@ import Vector from "../../physics/vector";
 import RandomUtils from "../../utils/random";
 import { callTimes } from "../../utils/fn";
 
-
 export function generateThrusterParticles(position: Vector, thrustDirection: Vector) {
   const particle = new Particle();
   particle.position = position;
@@ -15,14 +14,13 @@ export function generateThrusterParticles(position: Vector, thrustDirection: Vec
 
   particle.color = isBlueParticle ? new Color(20, RandomUtils.getIntegerInRange(0, 255), 255) : new Color(255, RandomUtils.getIntegerInRange(0, 255), 12);
   particle.fade = true;
-  const velocityAngleVariation = RandomUtils.getValueInRange(-45, 45); // (-45,45)'
+  const velocityAngleVariation = RandomUtils.getValueInRange(-45, 45);
   particle.velocity = thrustDirection.clone().scalar(-1).rotate(velocityAngleVariation).scalar(RandomUtils.getNumberWithVariance(10, 20))
   particle.direction = particle.velocity.clone().normalize();
   particle.size = RandomUtils.getValueInRange(1, 3);
 
   return particle;
 }
-
 
 export function generateRocketExplotionParticles(position: Vector) {
 

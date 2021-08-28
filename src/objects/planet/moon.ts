@@ -30,11 +30,11 @@ class Moon extends MoonMixins {
   constructor(position: Vector) {
     super();
     this.position = position;
-    this.gravitationalForce = 10000;
+    this.gravitationalForce = 700;
     this.type = ObjectType.PLANET;
     this.gravitationalThreshold = 150;
-    this.velocity = new Vector(100, 0)
-    this.collisionMask = new Circle(20);
+    this.velocity = new Vector(30, 0)
+    this.collisionMask = new Circle(4);
     this.mass = 100;
     this.direction = new Vector(0, -1);
   }

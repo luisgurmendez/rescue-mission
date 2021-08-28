@@ -40,6 +40,7 @@ module.exports = (env, argv) => {
       filename: 'main.js'
     },
     plugins: [
+
       /** Empty the output folder folder */
       new CleanWebpackPlugin({ dangerouslyAllowCleanPatternsOutsideProject: true }),
       /** General index.html with script tags automatically from template */
@@ -56,18 +57,22 @@ module.exports = (env, argv) => {
     optimization: {
       usedExports: true,
       minimize: true,
-      // minimizer: [
-      //   new TerserPlugin({
-      //     terserOptions: {
-      //       mangle: {
-      //         keep_fnames: false,
-      //         keep_classnames: false,
-      //         properties: true
-      //       },
-      //       keep_fnames: false,
-      //     },
-      //   }),
-      // ],
+      sideEffects: false,
+      minimizer:
+        !isDevelopment ? [new TerserPlugin({
+          terserOptions: {
+            mangle: {
+              keep_fnames: false,
+              keep_classnames: false,
+              properties: true,
+              module: true,
+
+            },
+            keep_fnames: false,
+          },
+        })]
+          : []
+      ,
     },
   }
 }

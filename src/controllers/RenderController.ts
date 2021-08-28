@@ -11,14 +11,14 @@ class RenderController {
     const { canvasRenderingContext, camera, objects } = gameContext;
     const { canvas } = canvasRenderingContext;
     const renderableObjects = objects.filter(isRenderable);
-
     const renderElements: RenderElement[] = [];
     renderableObjects.forEach(obj => {
       if (isRenderable(obj)) {
-        this.safetlyRender(canvasRenderingContext, () => {
-          const renderElement = obj.render();
-          renderElements.push(renderElement);
-        })
+        const renderElement = obj.render();
+        const renderElementRecursiveChildrens: RenderElement[] = [];
+        extractRenderElementChildren(renderElement, renderElementRecursiveChildrens);
+        renderElements.push(renderElement);
+        renderElements.push(...renderElementRecursiveChildrens);
       }
     });
 
@@ -62,3 +62,18 @@ class RenderController {
 }
 
 export default RenderController;
+
+function extractRenderElementChildren(renderElement: RenderElement, acc: RenderElement[]): RenderElement[] {
+
+  if (renderElement.children.length === 0) {
+    return acc;
+  }
+
+  renderElement.children.forEach(re => {
+    acc.push(re);
+    extractRenderElementChildren(re, acc);
+  })
+
+  return [];
+}
+
