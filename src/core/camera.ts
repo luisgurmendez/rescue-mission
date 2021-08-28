@@ -22,6 +22,11 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   positionType: PositionType = 'overlay';
   shouldInitialize = true;
   shouldDispose = false;
+  flyingToPosition: Vector | null = null;
+  flyingDuration: number | null = null;
+  flyingElapsedTime: number | null = null;
+  flyingInitialPosition: Vector | null = null;
+
 
   constructor() {
     super('camera');
@@ -148,8 +153,33 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   // TODO: following with zoom != 1 is buggy, dobule check
   step(context: GameContext) {
     const canvas = context.canvasRenderingContext.canvas;
+
     if (this.following !== null) {
       this.position = this.following.position.clone().scalar(-1 / this.zoom);
+    }
+
+    if (
+      this.flyingToPosition !== null &&
+      this.flyingDuration !== null &&
+      this.flyingElapsedTime !== null &&
+      this.flyingInitialPosition !== null
+    ) {
+      this.flyingElapsedTime -= context.dt;
+      console.log('flying!')
+      const toPositionVector = this.flyingToPosition.clone().sub(this.position);
+      const distanceToFlyingPosition = this.flyingInitialPosition.distanceTo(this.flyingToPosition);
+      console.log(distanceToFlyingPosition)
+      const flyingSpeed = distanceToFlyingPosition / this.flyingDuration;
+      const flyingDelta = toPositionVector.normalize().scalar(context.dt * flyingSpeed);
+      this.position = this.position.add(flyingDelta);
+      if (this.flyingElapsedTime < 0) {
+        this.position = this.flyingToPosition.clone();
+        this.flyingToPosition = null;
+        this.flyingElapsedTime = null;
+        this.flyingDuration = null;
+        this.flyingInitialPosition = null;
+      }
+
     }
     // TODO: Dont let the camera go beyond world's boundaries.
   }
@@ -164,6 +194,15 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     const renderElement = new RenderElement(renderFn);
     renderElement.positionType = 'overlay';
     return renderElement
+  }
+
+
+  flyTo(position: Vector, duration: number = 120) {
+    this.following = null;
+    this.flyingToPosition = position;
+    this.flyingInitialPosition = this.position.clone();
+    this.flyingDuration = duration;
+    this.flyingElapsedTime = duration;
   }
 
 }

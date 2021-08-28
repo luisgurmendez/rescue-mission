@@ -41,9 +41,19 @@ class Game {
     const rocket = new Rocket(new Vector(0, 700));
     const button = new Button('Button!', new Vector(80, 50), () => { });
     this.camera = new Camera();
-    (window as any).camera = this.camera;
     const background = new SpaceBackground();
-    console.log(this.camera);
+    this.clock = new Clock();
+    this.pressedKeys = new Keyboard();
+
+    this.stats = new Stats();
+    this.stats.showPanel(0);
+    document.body.appendChild(this.stats.dom);
+
+    button.onPress = () => {
+      // this.camera.follow(rocket); 
+      this.camera.flyTo(new Vector(0, 0), 1);
+    }
+
     this.objects = [
       background,
       new Planet(new Vector()),
@@ -52,14 +62,6 @@ class Game {
       button,
       this.camera
     ];
-    this.clock = new Clock();
-    this.pressedKeys = new Keyboard();
-
-    this.stats = new Stats();
-    this.stats.showPanel(0);
-    document.body.appendChild(this.stats.dom);
-
-    this.camera.follow(rocket);
   }
 
   start() {

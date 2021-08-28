@@ -2972,11 +2972,6 @@ js-yaml@^3.13.1:
     argparse "^1.0.7"
     esprima "^4.0.0"
 
-js13k-ecs@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/js13k-ecs/-/js13k-ecs-0.1.4.tgz#680b1f37c6f898f8e704232678507bbb08677717"
-  integrity sha512-F/OgEkkKMIyZ4b5znThA72oqQDusYFB9m3GZOhjXR2yHR3U6me7363Dc80gM+g3kz9gajhEe3adMstefNeGbqw==
-
 json-buffer@3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/json-buffer/-/json-buffer-3.0.0.tgz#5b1f397afc75d677bde8bcfc0e47e1f9a3d9a898"
@@ -3061,11 +3056,6 @@ kind-of@^6.0.0, kind-of@^6.0.2, kind-of@^6.0.3:
   version "6.0.3"
   resolved "https://registry.npmjs.org/kind-of/-/kind-of-6.0.3.tgz#07c05034a6c349fa06e24fa35aa76db4580ce4dd"
   integrity sha512-dcS1ul+9tmeD95T+x28/ehLgd9mENa3LsvDTtzm3vyBEO7RPptvAD+t44WVXaUjTBRcrpFeFlC8WCruUR456hw==
-
-kontra@^7.1.3:
-  version "7.2.0"
-  resolved "https://registry.npmjs.org/kontra/-/kontra-7.2.0.tgz#237f0da9ade9bf0e7a4d926e515e4a9ce2691b4e"
-  integrity sha512-9/boHvL0vL9Rfb6AtjEJynckafzgubw/EkzY/UWUEpjljl1lh7BPLByPKeJlbV/vyju/YUuEw8zlUW7nSUfkFw==
 
 latest-version@^5.1.0:
   version "5.1.0"
