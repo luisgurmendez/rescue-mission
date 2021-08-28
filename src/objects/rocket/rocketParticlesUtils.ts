@@ -26,7 +26,7 @@ export function generateThrusterParticles(position: Vector, thrustDirection: Vec
 
 export function generateRocketExplotionParticles(position: Vector) {
 
-  return callTimes(40, () => {
+  return callTimes(50, () => {
     const particle = new Particle();
     particle.position = position;
     particle.ttl = RandomUtils.getValueInRange(0.5, 1.3);
@@ -34,9 +34,7 @@ export function generateRocketExplotionParticles(position: Vector) {
     particle.color = new Color(255, RandomUtils.getIntegerInRange(0, 255), 12);
     particle.fade = true;
     const velocityAngleVariation = RandomUtils.getValueInRange(0, 360);
-    console.log(velocityAngleVariation)
-    particle.velocity = new Vector(1, 0).clone().scalar(-1).rotate(velocityAngleVariation).scalar(RandomUtils.getNumberWithVariance(10, 20)) //particle.velocity = new Vector(1, 0).rotate(velocityAngleVariation).scalar(rocketVelocity.length() - RandomUtils.getValueInRange(2, rocketVelocity.length() - 2))
-    console.log(particle.velocity);
+    particle.velocity = new Vector(1, 0).rotate(velocityAngleVariation).scalar(RandomUtils.getNumberWithVariance(10, 20)) //particle.velocity = new Vector(1, 0).rotate(velocityAngleVariation).scalar(rocketVelocity.length() - RandomUtils.getValueInRange(2, rocketVelocity.length() - 2))
     particle.direction = particle.velocity.clone().normalize();
     particle.size = RandomUtils.getValueInRange(1, 3);
 

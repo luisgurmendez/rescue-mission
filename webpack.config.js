@@ -2,7 +2,7 @@ const path = require('path');
 /** Webpack plugins */
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+// const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const TerserPlugin = require("terser-webpack-plugin");
 
@@ -50,7 +50,7 @@ module.exports = (env, argv) => {
           collapseWhitespace: true
         },
       }),
-      new BundleAnalyzerPlugin(),
+      // new BundleAnalyzerPlugin(),
     ],
     /** Tree shaking */
     optimization: {
