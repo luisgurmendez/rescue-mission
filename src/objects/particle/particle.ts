@@ -5,13 +5,12 @@
 import GameContext from '../../core/gameContext';
 import Vector from '../../physics/vector';
 import { ObjectType } from '../objectType';
-import RenderUtils from '../../render/utils';
 import { PhysicableMixin } from '../../mixins/physics';
 import { PositionableMixin } from '../../mixins/positional';
 import BaseObject from '../../objects/baseObject';
 import RenderElement from '../../render/renderElement';
 import Disposable from '../../behaviors/disposable';
-import { Circle } from '../shapes';
+import Color from '../../utils/color';
 
 const ParticleMixins = PhysicableMixin(
   PositionableMixin(BaseObject)
@@ -19,26 +18,25 @@ const ParticleMixins = PhysicableMixin(
 
 class Particle extends ParticleMixins implements Disposable {
 
-  private ttl: number;
-  private color: string;
+  ttl: number;
+  color: Color;
   shouldDispose: boolean = false;
   fade = false;
   maxTTL: number;
   size: number;
 
-  constructor(position: Vector, ttl: number, color: string = '#F00') {
+  constructor() {
     super();
-    this.position = position;
+    this.position = new Vector();
     this.type = ObjectType.PARTICLE;
     this.velocity = new Vector(0, 0)
     this.mass = 0;
     this.direction = new Vector(0, -1);
-    this.ttl = ttl;
-    this.maxTTL = ttl;
-    this.color = color;
+    this.ttl = 1;
+    this.maxTTL = this.ttl;
+    this.color = new Color(0, 0, 0);
     this.fade = true;
     this.size = 1;
-    this.color = `rgba(${255},${Math.random() * 255},${12},`;
   }
 
   step(context: GameContext) {
@@ -54,8 +52,11 @@ class Particle extends ParticleMixins implements Disposable {
   render() {
     const renderFn = (context: GameContext) => {
       const canvasRenderingContext = context.canvasRenderingContext;
-      let alpha = this.ttl / this.maxTTL;
-      canvasRenderingContext.fillStyle = this.color + `${alpha})`;
+      if (this.fade) {
+        let alpha = this.ttl / this.maxTTL;
+        this.color.a = alpha;
+      }
+      canvasRenderingContext.fillStyle = this.color.rgba();
       canvasRenderingContext.beginPath();
       canvasRenderingContext.arc(this.position.x, this.position.y, this.size, 0, 2 * Math.PI);
       canvasRenderingContext.fill();

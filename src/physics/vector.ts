@@ -65,9 +65,18 @@ class Vector {
     return Math.atan2(this.y, this.x) - Math.atan2(v.y, v.x);
   }
 
-  static angleTo(v1: Vector, v2: Vector) {
-    return Math.atan2(v1.y, v1.x) - Math.atan2(v2.y, v2.x);
+  rotate(angle: number) {
+    const _angleInRads = angle * (Math.PI / 180);
+    const cos = Math.round(1000 * Math.cos(_angleInRads)) / 1000;
+    const sin = Math.round(1000 * Math.sin(_angleInRads)) / 1000;
+    const old = this.clone();
+
+    this.x = old.x * cos - old.y * sin
+    this.y = old.x * sin + old.y * cos
+
+    return this;
   }
+
 }
 
 export default Vector;

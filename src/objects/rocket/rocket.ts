@@ -13,7 +13,8 @@ import { Gravitationable, isGravitationable } from '../../mixins/gravitational';
 import Renderable from '../../behaviors/renderable';
 import Stepable from '../../behaviors/stepable';
 import RenderElement from '../../render/renderElement';
-import ParticleGenerator from '../particle/particleGenerator';
+import Disposable from '../../behaviors/disposable';
+import { generateRocketExplotionParticles, generateThrusterParticles } from './rocketParticlesUtils';
 
 const RocketMixins = AffectedByGravitationableMixin(
   PhysicableMixin(
@@ -23,10 +24,11 @@ const RocketMixins = AffectedByGravitationableMixin(
   )
 );
 
-class Rocket extends RocketMixins implements Renderable, Stepable {
+class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   private thruster: RocketThruster;
   public hasLaunched: boolean = false;
+  shouldDispose: boolean = false;
 
   constructor(position: Vector) {
     super('rocket');
@@ -51,6 +53,11 @@ class Rocket extends RocketMixins implements Renderable, Stepable {
 
     if (context.pressedKeys.isKeyPressed('d') && !this.hasLaunched) {
       this.direction.add(new Vector(0.01, 0)).normalize()
+    }
+
+    if (this.isColliding) {
+      this.shouldDispose = true;
+      context.objects.push(...generateRocketExplotionParticles(this.position.clone()))
     }
 
   }
@@ -110,9 +117,8 @@ class Rocket extends RocketMixins implements Renderable, Stepable {
       // thrustAcceleration = this.rocket.direction.clone().scalar(this.thrust());
       thrustAcceleration = this.direction.clone().scalar(10); // TODO uncomment top
 
-      const particleGenerator = new ParticleGenerator();
-      // particles
-      context.objects.push(...particleGenerator.generate({ position: this.position.clone() }));
+      const particle = generateThrusterParticles(this.position.clone(), this.direction.clone());
+      context.objects.push(particle);
     }
 
     if (isKeyPressed('s')) {
