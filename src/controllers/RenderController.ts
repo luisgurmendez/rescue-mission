@@ -1,8 +1,5 @@
-import { Rectangle } from "../objects/shapes";
-import Vector from "../physics/vector";
-import RenderUtils from '../render/utils';
 import GameContext from "../core/gameContext";
-import Renderable, { isRenderable } from "../behaviors/renderable";
+import { isRenderable } from "../behaviors/renderable";
 import RenderElement from "../render/renderElement";
 
 class RenderController {
@@ -10,7 +7,10 @@ class RenderController {
   render(gameContext: GameContext) {
     const { canvasRenderingContext, camera, objects } = gameContext;
     const { canvas } = canvasRenderingContext;
-    const renderableObjects = objects.filter(isRenderable);
+    const renderableObjects = objects.filter(isRenderable).filter(obj => obj.id !== 'background');
+    const background = objects.find(obj => obj.id === 'background');
+
+
     const renderElements: RenderElement[] = [];
     renderableObjects.forEach(obj => {
       if (isRenderable(obj)) {
@@ -25,26 +25,36 @@ class RenderController {
     const overlayRenderElements = renderElements.filter(element => element.positionType === 'overlay');
     const normalRenderElements = renderElements.filter(element => element.positionType === 'normal');
 
+
+    // Rendering
     this.clearCanvas(canvasRenderingContext);
 
-    // render overlay elements.
-    overlayRenderElements.forEach(element => {
+    if (background) {
       this.safetlyRender(canvasRenderingContext, () => {
-        element.render(gameContext)
+        const backgroundRenderElement = background.render();
+        backgroundRenderElement.render(gameContext);
       })
-    })
+    }
 
     // render normal elements..
     this.safetlyRender(canvasRenderingContext, () => {
+      canvasRenderingContext.translate(canvas.width / 2, canvas.height / 2)
       canvasRenderingContext.scale(camera.zoom, camera.zoom);
+      canvasRenderingContext.translate(-camera.position.x, -camera.position.y)
       // Make the center of the screen aligned with the camera's position
-      canvasRenderingContext.translate(camera.position.x + (canvas.width / 2), camera.position.y + (canvas.height / 2))
       normalRenderElements.forEach(element => {
         if (isRenderable(element)) {
           this.safetlyRender(canvasRenderingContext, () => {
             element.render(gameContext);
           })
         }
+      })
+    })
+
+    // render overlay elements.
+    overlayRenderElements.forEach(element => {
+      this.safetlyRender(canvasRenderingContext, () => {
+        element.render(gameContext)
       })
     })
   }

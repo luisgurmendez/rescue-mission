@@ -10,6 +10,11 @@ const BackgroundMixin = PositionableMixin(BaseObject)
 
 class SpaceBackground extends BackgroundMixin {
 
+  constructor() {
+    super();
+    this.id = 'background';
+  }
+
   render() {
     const renderFn = (gameContext: GameContext) => {
       const { canvasRenderingContext } = gameContext;

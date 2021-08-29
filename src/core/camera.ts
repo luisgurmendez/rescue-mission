@@ -41,15 +41,16 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     const { canvasRenderingContext } = gameContext
     const canvas = canvasRenderingContext.canvas;
 
-    let startDragOffset = new Vector();
+    let initialDragginPosition = new Vector();
+    let initialDraggingClientPosition = new Vector();
     let mouseDown = false;
 
     const handleCanvasWheel = (event: WheelEvent) => {
 
       event.preventDefault();
-      const mousex = event.clientX - canvas.offsetLeft
-      const mousey = event.clientY - canvas.offsetTop
 
+      const mousex = (event.clientX - (canvas.offsetLeft + canvas.width / 2)) * -1
+      const mousey = (event.clientY - (canvas.offsetTop + canvas.height / 2)) * -1
       const wheel = event.deltaY < 0 ? 1 : -1;
 
       const deltaZoom = Math.exp(wheel * 0.02);
@@ -58,35 +59,30 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       this.zoom = this.zoom * deltaZoom;
 
       // Only change positions if there was some actual zooming
-      if (oldZoom !== this.zoom) {
+      if (oldZoom !== this.zoom && this.following === null) {
 
         this.position.x += mousex / (this.zoom * deltaZoom) - mousex / this.zoom;
         this.position.y += mousey / (this.zoom * deltaZoom) - mousey / this.zoom;
+
       }
 
     }
 
-    // TODO: Fix moving camera with zoom!!
     const handleMouseMove = (event: MouseEvent) => {
       if (mouseDown) {
         this.unfollow();
-        // const posDiff = this.position.clone()
-        this.position.x = (event.clientX - startDragOffset.x);
-        this.position.y = (event.clientY - startDragOffset.y);
-        // posDiff.sub(this.position);
-        // const pos = this.position.clone();
+        const posDiff = initialDraggingClientPosition.clone().sub(new Vector(event.clientX, event.clientY));
+        posDiff.scalar(1 / this.zoom);
 
-        // this.position.scalar(1 / this.zoom); 
+        this.position = initialDragginPosition.clone().add(posDiff);
 
-        // console.log('positionDiff', posDiff);
-        // console.log('scaled position diff', pos.sub(this.position));
       }
     }
 
     const handleMouseDown = (event: MouseEvent) => {
       mouseDown = true;
-      startDragOffset.x = (event.clientX - this.position.x);
-      startDragOffset.y = (event.clientY - this.position.y);
+      initialDragginPosition = this.position.clone();
+      initialDraggingClientPosition = new Vector(event.clientX, event.clientY);
     }
 
     const handleMouseUp = (event: MouseEvent) => {
@@ -152,10 +148,8 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
   // TODO: following with zoom != 1 is buggy, dobule check
   step(context: GameContext) {
-    const canvas = context.canvasRenderingContext.canvas;
-
     if (this.following !== null) {
-      this.position = this.following.position.clone().scalar(-1 / this.zoom);
+      this.position = this.following.position.clone()//.scalar(-1 / this.zoom);
     }
 
     if (
@@ -165,10 +159,8 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       this.flyingInitialPosition !== null
     ) {
       this.flyingElapsedTime -= context.dt;
-      console.log('flying!')
       const toPositionVector = this.flyingToPosition.clone().sub(this.position);
       const distanceToFlyingPosition = this.flyingInitialPosition.distanceTo(this.flyingToPosition);
-      console.log(distanceToFlyingPosition)
       const flyingSpeed = distanceToFlyingPosition / this.flyingDuration;
       const flyingDelta = toPositionVector.normalize().scalar(context.dt * flyingSpeed);
       this.position = this.position.add(flyingDelta);

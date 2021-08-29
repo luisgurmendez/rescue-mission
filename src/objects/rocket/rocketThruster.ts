@@ -16,6 +16,7 @@ class RocketThruster implements Renderable {
     this.thrustPower = thrustPower;
     this.maxFuel = fuel;
   }
+
   render(): RenderElement {
     const renderFn = (context: GameContext) => {
 

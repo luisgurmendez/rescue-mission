@@ -47,15 +47,10 @@ class Game {
 
     this.stats = new Stats();
     this.stats.showPanel(0);
-    document.body.appendChild(this.stats.dom);
+    // document.body.appendChild(this.stats.dom);
 
     button.onPress = () => {
-      // this.camera.flyTo(new Vector(0, 0), 1);
-      if (this.isPaused) {
-        this.unPause();
-      } else {
-        this.pause();
-      }
+      this.camera.follow(rocket); //flyTo(new Vector(0, 0), 1);
     }
 
     this.objects = [
@@ -66,7 +61,7 @@ class Game {
       button,
       this.camera
     ];
-    this.camera.follow(rocket);
+    // this.camera.follow(rocket);
   }
 
   init() {
