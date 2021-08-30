@@ -58,6 +58,13 @@ class Game {
         this.gameSpeed -= 1;
       }
     })
+
+    // Follow rocket on space
+    window.addEventListener('keydown', (e) => {
+      if (e.key === ' ') {
+        this.level.camera.follow(this.level.rocket);
+      }
+    })
   }
 
   unPause = () => {

@@ -30,6 +30,8 @@ const RocketMixins = AffectedByGravitationableMixin(
   )
 );
 
+
+// TODO: Should we make gravity affect the angular acceleration? 
 class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   private thruster: RocketThruster;
@@ -47,16 +49,20 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     this.collisionMask = new Rectangle(13, 16)
     this.direction = new Vector(0, -1);
     this.thruster = new RocketThruster(500, 7607 * 1000); // 981 kN fallcon 9
-    this.secondaryThruster = new RocketThruster(150, 7607 * 1000);
+    this.secondaryThruster = new RocketThruster(300, 7607 * 1000);
   }
 
   step(context: GameContext): void {
     this.checkCollisions(context);
 
+    this.angularAcceleration = this.calculateAngularAcceleration(context);
+    this.angularVelocity = this.calculateAngularVelocity(context.dt);
+    this.direction = this.calculateDirection(context.dt);
     this.acceleration = this.calculateAcceleration(context);
     this.position = this.calculatePosition(context.dt);
     this.velocity = this.calculateVelocity(context.dt);
-    this.direction = this.calculateDirection(context);
+
+    this.direction = this.preLaunchingCalculateDirection(context)
 
 
     if (this.isColliding) {
@@ -74,7 +80,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
     renderElement.children = [secondaryThrusterRenderElement, thrusterRenderElement, rocketPhysicsRenderElement]
     if (!this.hasLaunched) {
-      const rocketLauncherRenderElement = new RenderElement(this._renderLaunchDiretional);
+      const rocketLauncherRenderElement = new RenderElement(this._renderLaunchDirectional);
       const rocketLauncherAngleRenderElement = new RenderElement(this._renderLaunchAngle);
       rocketLauncherAngleRenderElement.positionType = 'overlay';
       renderElement.children.push(...[rocketLauncherRenderElement, rocketLauncherAngleRenderElement])
@@ -89,7 +95,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     canvasRenderingContext.fillText(`angle: ${(this.direction.angleTo(new Vector(0, -1)) * 180 / Math.PI).toFixed(2)}º`, canvas.width - 300, canvas.height - 20);
   }
 
-  _renderLaunchDiretional = (context: GameContext) => {
+  _renderLaunchDirectional = (context: GameContext) => {
     const { canvasRenderingContext } = context;
     canvasRenderingContext.strokeStyle = "#FFF";
     // Launch line
@@ -139,23 +145,42 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     // RenderUtils.renderRectangle(canvasRenderingContext, this.position, this.collisionMask);
   }
 
-  calculateDirection(context: GameContext) {
-
-    let direction = this.direction.clone()
-
-    if (this.speed > 0) {
-      direction = this.velocity.clone().normalize()
-    }
+  preLaunchingCalculateDirection(context: GameContext) {
+    const newDirection = this.direction.clone()
 
     if (context.pressedKeys.isKeyPressed('a') && !this.hasLaunched) {
-      direction.rotate(-0.5).normalize()
+      newDirection.rotate(-0.5).normalize()
     }
 
     if (context.pressedKeys.isKeyPressed('d') && !this.hasLaunched) {
-      direction.rotate(0.5).normalize()
+      newDirection.rotate(0.5).normalize()
     }
 
-    return direction;
+    return newDirection;
+  }
+
+  calculateAngularAcceleration(context: GameContext) {
+    const isKeyPressed = context.pressedKeys.isKeyPressed;
+    let angularAcceleration = 0;
+
+    if (isKeyPressed('d') && this.hasLaunched) {
+      const thrustAcceleration = this.direction.clone().rotate(90).scalar(this.secondaryThrust()) // TODO uncomment top
+      const particle = this.generateParticle(thrustAcceleration, 'top-left');
+      if (particle) {
+        context.objects.push(particle);
+      } angularAcceleration = thrustAcceleration.length();
+    }
+
+    if (isKeyPressed('a') && this.hasLaunched) {
+      const thrustAcceleration = this.direction.clone().rotate(-90).scalar(this.secondaryThrust()) // TODO uncomment top
+      const particle = this.generateParticle(thrustAcceleration, 'top-right');
+      if (particle) {
+        context.objects.push(particle);
+      }
+      angularAcceleration = thrustAcceleration.length() * -1;
+    }
+
+    return angularAcceleration
   }
 
   calculateAcceleration(context: GameContext) {
@@ -166,46 +191,38 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     return acceleration;
   }
 
+
+  private generateParticle = (thrustAcc: Vector, toPosition: ParticlePerimetralPositioning, isPrimaryThruster = false): Particle | null => {
+    const particleGenerator = isPrimaryThruster ? generateThrusterParticle : generateSecondaryThrusterParticle;
+    if (thrustAcc.length() > 0) {
+      const particle = particleGenerator(this.position.clone(), thrustAcc.clone().normalize());
+      this.adjustParticlePositionToMatchRocketPerimeter(particle, toPosition)
+      return particle
+    }
+    return null;
+  }
+
   private getThrustAcceleration(context: GameContext) {
     let thrustAcceleration = new Vector();
     const isKeyPressed = context.pressedKeys.isKeyPressed;
 
-
-    const generateParticles = (thrustAcc: Vector, toPosition: ParticlePerimetralPositioning, isPrimaryThruster = false) => {
-      const particleGenerator = isPrimaryThruster ? generateThrusterParticle : generateSecondaryThrusterParticle;
-      if (thrustAcc.length() > 0) {
-        const particle = particleGenerator(this.position.clone(), thrustAcc.clone().normalize());
-        this.adjustParticlePositionToMatchRocketPerimeter(particle, toPosition)
+    if (isKeyPressed('w')) {
+      this.hasLaunched = true;
+      thrustAcceleration = this.direction.clone().scalar(this.thrust());
+      const particle = this.generateParticle(thrustAcceleration, 'bottom', true)
+      if (particle) {
         context.objects.push(particle);
       }
     }
 
-    if (isKeyPressed('w')) {
-      this.hasLaunched = true;
-      thrustAcceleration = this.direction.clone().scalar(this.thrust());
-      generateParticles(thrustAcceleration, 'bottom', true);
-    }
-
     if (isKeyPressed('s')) {
-      // thrustAcceleration = this.rocket.direction.clone().scalar(this.thrust());
-
-      // TODO: dont allow if not launched yet
-      //TODO: prevent direction change on using secondaryThruster;
       thrustAcceleration = this.direction.clone().scalar(-1).scalar(this.secondaryThrust()); // TODO uncomment top
-      generateParticles(thrustAcceleration, 'top');
+      const particle = this.generateParticle(thrustAcceleration, 'top');
+      if (particle) {
+        context.objects.push(particle);
+      }
 
     }
-
-    if (isKeyPressed('d') && this.hasLaunched) {
-      thrustAcceleration = this.direction.clone().rotate(90).scalar(this.secondaryThrust()) // TODO uncomment top
-      generateParticles(thrustAcceleration, 'top-left');
-    }
-
-    if (isKeyPressed('a') && this.hasLaunched) {
-      thrustAcceleration = this.direction.clone().rotate(-90).scalar(this.secondaryThrust()) // TODO uncomment top
-      generateParticles(thrustAcceleration, 'top-right');
-    }
-
     return thrustAcceleration;
   }
 
@@ -249,7 +266,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     if (thustForce > 0) {
       // f = m*a
       // return this.mass / thustForce;
-      return 25;
+      return 30;
     }
     return 0;
   };
@@ -266,37 +283,3 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 }
 
 export default Rocket;
-
-
-
-
-    // if (context.pressedKeys.isKeyPressed('a')) {
-    //   let canRotate = false;
-    //   if (!this.hasLaunched) {
-    //     canRotate = true;
-    //   } else {
-    //     const useSecondaryThruster = this.secondaryThruster.thrust();
-    //     canRotate = useSecondaryThruster !== 0;
-    //   }
-
-    //   if (canRotate) {
-    //     console.log('rotating a');
-    //     direction.rotate(-0.5).normalize()
-    //     return direction;
-    //   }
-    // }
-
-    // if (context.pressedKeys.isKeyPressed('d')) {
-    //   let canRotate = false;
-    //   if (!this.hasLaunched) {
-    //     canRotate = true;
-    //   } else {
-    //     const useSecondaryThruster = this.secondaryThruster.thrust();
-    //     canRotate = useSecondaryThruster !== 0;
-    //   }
-
-    //   if (canRotate) {
-    //     direction.rotate(0.5).normalize()
-    //     return direction;
-    //   }
-    // }

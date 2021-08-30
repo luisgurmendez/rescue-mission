@@ -29,7 +29,7 @@ class Planet extends PlanetMixins {
   constructor(position: Vector) {
     super();
     this.position = position;
-    this.gravitationalForce = 1300;
+    this.gravitationalForce = 9000;
     this.type = ObjectType.PLANET;
     this.collisionMask = new Circle(80);
     this.gravitationalThreshold = 350;

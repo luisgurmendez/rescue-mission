@@ -22,18 +22,18 @@ class Particle extends ParticleMixins implements Disposable {
   color: Color;
   shouldDispose: boolean = false;
   fade = false;
-  maxTTL: number;
+  private maxTTL: number;
   size: number;
 
-  constructor() {
+  constructor(ttl: number = 1) {
     super();
     this.position = new Vector();
     this.type = ObjectType.PARTICLE;
     this.velocity = new Vector(0, 0)
     this.mass = 0;
     this.direction = new Vector(0, -1);
-    this.ttl = 1;
-    this.maxTTL = this.ttl;
+    this.ttl = ttl;
+    this.maxTTL = ttl;
     this.color = new Color(0, 0, 0);
     this.fade = true;
     this.size = 1;

@@ -9,10 +9,14 @@ export interface Physicable extends Positionable {
   acceleration: Vector;
   mass: number;
   speed: number;
+  angularAcceleration: number;
+  angularVelocity: number;
   isMoving: () => boolean;
 
   calculateVelocity: (dt: number) => Vector;
   calculatePosition: (dt: number) => Vector;
+  calculateAngularVelocity: (dt: number) => number;
+  calculateDirection: (dt: number) => Vector;
 }
 
 export type PhysicableConstructor = GConstructor<Physicable>;
@@ -20,8 +24,10 @@ export type PhysicableConstructor = GConstructor<Physicable>;
 export function PhysicableMixin<TBase extends PositionableConstructor>(Base: TBase): PhysicableConstructor & TBase {
   return class M extends Base implements Physicable {
     velocity: Vector = new Vector();
-    direction: Vector = new Vector();
     acceleration: Vector = new Vector();
+    angularAcceleration: number = 0;
+    angularVelocity: number = 0;
+    direction: Vector = new Vector();
     mass = 0;
 
     get speed(): number {
@@ -48,6 +54,19 @@ export function PhysicableMixin<TBase extends PositionableConstructor>(Base: TBa
       const deltaPosition = this.velocity.clone().scalar(dt).add(deltaPositionByAcceleration);
       newPosition.add(deltaPosition);
       return newPosition;
+    }
+
+    calculateAngularVelocity(dt: number) {
+      const newVelocity = this.angularVelocity;
+      const deltaVelocity = this.angularAcceleration * dt;
+      return newVelocity + deltaVelocity;
+    }
+
+    calculateDirection(dt: number) {
+      const newDirection = this.direction.clone();
+      const deltaRotationAngle = this.angularVelocity * dt;
+      newDirection.rotate(deltaRotationAngle);
+      return newDirection;
     }
   };
 }
