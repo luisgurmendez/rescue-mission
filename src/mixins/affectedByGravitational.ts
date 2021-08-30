@@ -25,7 +25,7 @@ export function AffectedByGravitationableMixin<TBase extends PhysicableConstruct
 
     private calculateAccelerationByPlanet(obj: Gravitationable) {
       const distanceToPlanet = this.position.distanceTo(obj.position)
-      if (distanceToPlanet < obj.gravitationalThreshold) { // TODO: remove the + 300 in favor of planet.gravityThreshold or smh
+      if (distanceToPlanet < obj.gravitationalThreshold) {
         const directionalVectorToPlanet = new Vector(obj.position.x - this.position.x, obj.position.y - this.position.y).normalize();
         // TODO: review this formula below
         directionalVectorToPlanet.scalar(obj.gravitationalForce / distanceToPlanet);

@@ -6,7 +6,17 @@ import RenderUtils from "../../render/utils";
 import Renderable from "../../behaviors/renderable";
 import Color from "../../utils/color";
 
-class RocketThruster implements Renderable {
+export interface RocketThrusterRenderOptions {
+  offset?: Vector;
+  color?: Color;
+}
+
+const defaultOptions: Required<RocketThrusterRenderOptions> = {
+  color: new Color(255, 10, 20),
+  offset: new Vector()
+}
+
+class RocketThruster implements Renderable<RocketThrusterRenderOptions> {
   maxFuel: number;
   fuel: number;
   thrustPower: number;
@@ -17,13 +27,15 @@ class RocketThruster implements Renderable {
     this.maxFuel = fuel;
   }
 
-  render(): RenderElement {
+  render(options?: RocketThrusterRenderOptions): RenderElement {
     const renderFn = (context: GameContext) => {
+      const _options = { ...defaultOptions, ...options }
 
-      const fuelBoxColor = new Color(255, 10, 20).rgba();
+      const fuelBoxColor = _options.color.rgba();
       const { canvasRenderingContext } = context;
       const fuleConsumptionPercent = (this.fuel / this.maxFuel);
 
+      canvasRenderingContext.translate(_options.offset.x, _options.offset.y);
       const fuelBoxHeight = canvasRenderingContext.canvas.height * 0.5;
       const fuelBoxPosition = new Vector(25, canvasRenderingContext.canvas.height * 0.25)
       const fuelBoxRect = new Rectangle(20, fuelBoxHeight);

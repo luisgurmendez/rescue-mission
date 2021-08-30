@@ -7,7 +7,6 @@ const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 
 const outputFolderName = "public";
-// TODO: Add Terser property optimizations
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === 'development';
 

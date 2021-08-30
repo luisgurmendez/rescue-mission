@@ -7,6 +7,7 @@ import { Positionable, PositionType } from "../mixins/positional";
 import Vector from "../physics/vector";
 import GameContext from "./gameContext";
 import Initializable from "../behaviors/initializable";
+import { Rectangle } from "../objects/shapes";
 
 const MAX_ZOOM = 14;
 const MIN_ZOOM = 0.5;
@@ -14,7 +15,7 @@ const MIN_ZOOM = 0.5;
 class Camera extends BaseObject implements Positionable, Stepable, Disposable, Renderable, Initializable {
 
   position: Vector;
-  // viewport: Rectangle;
+  viewport: Rectangle;
   private _zoom: number;
   following: Positionable | null;
   dispose?: () => void = undefined;
@@ -32,7 +33,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     super('camera');
     // this.position = new Vector(document.body.scrollWidth / 2, document.body.scrollHeight / 2);
     this.position = new Vector(0, 0);
-    // this.viewport = new Rectangle(document.body.scrollWidth, document.body.scrollHeight);
+    this.viewport = new Rectangle(document.body.scrollWidth, document.body.scrollHeight);
     this._zoom = 1;
     this.following = null;
   }
@@ -40,6 +41,9 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   init(gameContext: GameContext) {
     const { canvasRenderingContext } = gameContext
     const canvas = canvasRenderingContext.canvas;
+
+    this.viewport.w = canvas.width;
+    this.viewport.h = canvas.height;
 
     let initialDragginPosition = new Vector();
     let initialDraggingClientPosition = new Vector();
@@ -146,10 +150,9 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     return this._zoom;
   }
 
-  // TODO: following with zoom != 1 is buggy, dobule check
   step(context: GameContext) {
     if (this.following !== null) {
-      this.position = this.following.position.clone()//.scalar(-1 / this.zoom);
+      this.position = this.following.position.clone()
     }
 
     if (
@@ -173,15 +176,40 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       }
 
     }
-    // TODO: Dont let the camera go beyond world's boundaries.
+
+    this.adjutsPositionIfOutOfWorldsBounds(context.worldDimensions);
+  }
+
+  adjutsPositionIfOutOfWorldsBounds(world: Rectangle) {
+    const adjutsLeft = this.position.clone().x - this.viewport.w / 2 < -world.w / 2;
+    const adjustRight = this.position.clone().x + this.viewport.w / 2 > world.w / 2;
+    const adjustTop = this.position.clone().y - this.viewport.h / 2 > world.h / 2;
+    const adjustBottom = this.position.clone().y + this.viewport.h / 2 < -world.h / 2;
+
+    if (adjutsLeft) {
+      this.position.x = -world.w / 2 + this.viewport.w / 2;
+    }
+
+    if (adjustRight) {
+      this.position.x = world.w / 2 - this.viewport.w / 2;
+    }
+
+    if (adjustTop) {
+      this.position.y = world.w / 2 + this.viewport.h / 2;
+    }
+
+    if (adjustBottom) {
+      this.position.y = -world.w / 2 - this.viewport.h / 2;
+    }
+
   }
 
   render() {
     const renderFn = (gameContext: GameContext) => {
-      const { canvasRenderingContext } = gameContext;
-      canvasRenderingContext.font = "30px Arial";
+      const { canvasRenderingContext, canvasRenderingContext: { canvas } } = gameContext;
+      canvasRenderingContext.font = "15px Arial";
       canvasRenderingContext.fillStyle = "#FFF";
-      canvasRenderingContext.fillText(`(${this.position.x.toFixed(0)},${this.position.y.toFixed(0)})`, 80, 30);
+      canvasRenderingContext.fillText(`(${this.position.x.toFixed(0)},${this.position.y.toFixed(0)})`, canvas.width - 80, 20);
     }
     const renderElement = new RenderElement(renderFn);
     renderElement.positionType = 'overlay';
@@ -189,12 +217,21 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   }
 
 
-  flyTo(position: Vector, duration: number = 120) {
+  // there is a known bug where the promise resolves before the flying duration when the game is on pause
+  flyTo(position: Vector, duration: number = 1): Promise<void> {
+
     this.following = null;
     this.flyingToPosition = position;
     this.flyingInitialPosition = this.position.clone();
     this.flyingDuration = duration;
     this.flyingElapsedTime = duration;
+
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve()
+      }, duration * 1000);
+    });
+
   }
 
 }

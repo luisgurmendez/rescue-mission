@@ -27,6 +27,7 @@ export function generateSecondaryThrusterParticle(position: Vector, thrustDirect
   const particle = generateThrusterParticle(position, thrustDirection);
   particle.color = new Color(255, RandomUtils.getIntegerInRange(200, 255), 255)
   particle.size = RandomUtils.getValueInRange(1, 2);
+  particle.velocity.scalar(2);
   return particle;
 }
 
