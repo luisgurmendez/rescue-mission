@@ -2,17 +2,15 @@
 
 
 
-import { Collisions } from "controllers/CollisionsController";
 import BaseObject from "objects/baseObject";
-import GameContext from "../core/gameContext";
 import { NullShape, Shape } from "../objects/shapes";
 import { GConstructor } from "./shared";
 
-export interface Collisionable<S extends Shape = Shape> {
+export interface Collisionable<S extends Shape = Shape> extends BaseObject {
   collisionMask: S;
   isColliding: boolean;
   collisions: Collisionable[];
-  checkCollisions: (context: GameContext) => void;
+  setCollisions: (collisions: Collisionable[]) => void;
 }
 
 export type CollisionableConstructor<S extends Shape> = GConstructor<Collisionable<S>>;
@@ -29,8 +27,7 @@ export function CollisionableMixin<S extends Shape>() {
         return this.collisions !== undefined && this.collisions.length > 0
       }
 
-      checkCollisions(context: GameContext) {
-        const collisions = context.collisions[this.id]
+      setCollisions(collisions: Collisionable[] | undefined) {
         this.collisions = collisions || [];
       }
     }

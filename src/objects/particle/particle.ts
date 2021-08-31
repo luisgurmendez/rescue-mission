@@ -58,6 +58,7 @@ class Particle extends ParticleMixins implements Disposable {
       }
       canvasRenderingContext.fillStyle = this.color.rgba();
       canvasRenderingContext.beginPath();
+      // canvasRenderingContext.rect(this.position.x, this.position.y, this.size * 2, this.size * 2); // square particles?
       canvasRenderingContext.arc(this.position.x, this.position.y, this.size, 0, 2 * Math.PI);
       canvasRenderingContext.fill();
     }

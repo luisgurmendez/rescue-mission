@@ -14,6 +14,7 @@ import Level from "./level";
 //TODO: implement r to restart
 //TODO: implement p to pause/unpause
 //TODO: implement gmae over when out of world bounds
+// TODO: Should the win case be landing on a planet or just touching it?
 
 class Game {
 
@@ -39,6 +40,7 @@ class Game {
 
     this.stats = new Stats();
     this.stats.showPanel(0);
+    document.body.appendChild(this.stats.dom);
   }
 
   init() {

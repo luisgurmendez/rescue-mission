@@ -6,15 +6,17 @@ import Vector from "../physics/vector";
 
 export function generateTutorialLevel() {
 
-  const planet1 = new Planet(new Vector());
-  const moon = new Moon(new Vector(0, 200));
+  const mars = new Planet(new Vector(), 1500, 100)
+  const earth = new Planet(new Vector(0, -400), 2000, 150)
+  const moon = new Moon(new Vector(0, 300));
 
   const objects: BaseObject[] = [
-    planet1,
+    mars,
+    earth,
     moon,
   ];
 
-  const level = new Level(objects);
-  level.rocket.position = new Vector(0, 400);
+  const level = new Level(objects, earth);
+  level.rocket.position = new Vector(0, 800);
   return level;
 }

@@ -34,6 +34,7 @@ class CollisionsController {
           }
         }
       }
+      primaryObj.setCollisions(collisions[primaryObj.id]); // injects the collisions into the obj.
     }
     return collisions;
   }

@@ -20,7 +20,7 @@ class RandomUtils {
   }
 
   static getRandomBoolean(prob: number = 0.5) {
-    return Math.random() > prob;
+    return Math.random() < prob;
   }
 
   static generateId() {

@@ -9,6 +9,8 @@ import { PositionableMixin } from '../../mixins/positional';
 import BaseObject from '../../objects/baseObject';
 import { GravitationalMixin } from '../../mixins/gravitational';
 import RenderElement from '../../render/renderElement';
+import Color from '../../utils/color';
+import RandomUtils from '../../utils/random';
 
 const PlanetMixins = GravitationalMixin(
   PhysicableMixin(
@@ -25,14 +27,24 @@ const PlanetMixins = GravitationalMixin(
 class Planet extends PlanetMixins {
 
   hasRing: boolean = true;
+  isMoon: boolean;
+  color: Color;
+  ringColor: Color;
+  rotation: number;
 
-  constructor(position: Vector) {
+  constructor(position: Vector, gravitationalForce: number, radius: number, hasRing: boolean = true, isMoon: boolean = false) {
     super();
+
     this.position = position;
-    this.gravitationalForce = 9000;
+    this.gravitationalForce = gravitationalForce
     this.type = ObjectType.PLANET;
-    this.collisionMask = new Circle(80);
-    this.gravitationalThreshold = 350;
+    this.collisionMask = new Circle(radius);
+    this.gravitationalThreshold = radius * 5;
+    this.isMoon = isMoon;
+    this.hasRing = RandomUtils.getRandomBoolean(0.3);
+    this.color = Color.random();
+    this.rotation = RandomUtils.getValueInRange(-Math.PI / 4, Math.PI / 4);
+    this.ringColor = Color.random();
   }
 
   step() { }
@@ -44,8 +56,8 @@ class Planet extends PlanetMixins {
 
   _render = (context: GameContext) => {
     const canvasRenderingContext = context.canvasRenderingContext;
-    canvasRenderingContext.fillStyle = '#33F';
-    canvasRenderingContext.strokeStyle = '#33F';
+    canvasRenderingContext.fillStyle = this.color.rgba();
+    canvasRenderingContext.strokeStyle = this.color.rgba();
     canvasRenderingContext.save();
     canvasRenderingContext.beginPath();
     canvasRenderingContext.setLineDash([5, 15]);
@@ -60,12 +72,12 @@ class Planet extends PlanetMixins {
     if (this.hasRing) {
 
       // To rotate the ring :
-      // canvasRenderingContext.translate(this.position.x, this.position.y);
-      // canvasRenderingContext.rotate(this.direction.angleTo(new Vector(0.5, 0.5)))
-      // canvasRenderingContext.translate(-this.position.x, -this.position.y);
+      canvasRenderingContext.translate(this.position.x, this.position.y);
+      canvasRenderingContext.rotate(this.rotation)
+      canvasRenderingContext.translate(-this.position.x, -this.position.y);
 
       canvasRenderingContext.beginPath();
-      canvasRenderingContext.strokeStyle = '#141466';
+      canvasRenderingContext.strokeStyle = this.ringColor.rgba();
       canvasRenderingContext.lineWidth = 6;
       canvasRenderingContext.moveTo(this.position.x - this.collisionMask.radius, this.position.y);
       canvasRenderingContext.bezierCurveTo(
@@ -80,8 +92,8 @@ class Planet extends PlanetMixins {
       canvasRenderingContext.lineWidth = 1;
       canvasRenderingContext.stroke();
     }
-
   }
+
 }
 
 export default Planet;

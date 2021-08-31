@@ -1,3 +1,4 @@
+import RandomUtils from "./random";
 
 
 
@@ -28,13 +29,13 @@ class Color {
   }
 
   // Randomizes a rgba color between a range of number, or with a fixed value for certain values.
-  static randomInRange(r: ColorUnitInRange, g: ColorUnitInRange, b: ColorUnitInRange, a: ColorUnitInRange) {
+  static random(r: ColorUnitInRange = 255, g: ColorUnitInRange = 255, b: ColorUnitInRange = 255, a: ColorUnitInRange = 255) {
 
     function randomizeColorUnit(u: ColorUnitInRange): number {
       if (Array.isArray(u)) {
-        return u[0] + Math.random() * (u[1] - u[0])
+        return RandomUtils.getIntegerInRange(u[0], u[1]);
       }
-      return u;
+      return RandomUtils.getIntegerInRange(0, u);
     }
 
     return new Color(
