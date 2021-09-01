@@ -3,12 +3,14 @@ import Moon from "../objects/planet/moon";
 import Planet from "../objects/planet/planet";
 import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
+import Asteroid from "../objects/asteroid/asteroid";
 
 export function generateTutorialLevel() {
 
   const mars = new Planet(new Vector(), 1500, 100)
   const earth = new Planet(new Vector(0, -400), 2000, 150)
   const moon = new Moon(new Vector(0, 300));
+
 
   const objects: BaseObject[] = [
     mars,

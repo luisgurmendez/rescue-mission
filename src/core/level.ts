@@ -13,7 +13,7 @@ class Level {
   worldDimensions: Rectangle;
   rocket: Rocket;
 
-  constructor(objects: BaseObject[], target: Planet, worldDimensions: Rectangle = new Rectangle(2000, 2000)) {
+  constructor(objects: BaseObject[], target: Planet, worldDimensions: Rectangle = new Rectangle(4000, 4000)) {
     const background = new SpaceBackground();
     this.rocket = new Rocket(new Vector(), target);
     this.objects = objects;
@@ -21,7 +21,7 @@ class Level {
     this.worldDimensions = worldDimensions;
 
     this.objects.push(...[background, this.rocket, this.camera]);
-    this.camera.follow(this.rocket);
+    // this.camera.follow(this.rocket);
   }
 
   init() { };

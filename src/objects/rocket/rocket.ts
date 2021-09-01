@@ -40,9 +40,11 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   public hasLaunched: boolean = false;
   shouldDispose: boolean = false;
 
-  // Landing animation.
-  private makingLandingManeuver = false;
+  // Winning case
   private targetPlanet: Planet;
+  private hasLanded = false;
+
+
 
   //TODO: add angular acc and angular velocity, this way we can implement the rotation of the rocket properly. Should we add this in the Physicsmixin?
   // Rotations should not affect the velocity of the rocket..
@@ -60,24 +62,34 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   step(context: GameContext): void {
 
-    this.angularAcceleration = this.calculateAngularAcceleration(context);
-    this.angularVelocity = this.calculateAngularVelocity(context.dt);
-    this.direction = this.calculateDirection(context.dt);
-    this.acceleration = this.calculateAcceleration(context);
-    this.position = this.calculatePosition(context.dt);
-    this.velocity = this.calculateVelocity(context.dt);
+    if (!this.hasLanded) {
+      this.angularAcceleration = this.calculateAngularAcceleration(context);
+      this.angularVelocity = this.calculateAngularVelocity(context.dt);
+      this.direction = this.calculateDirection(context.dt);
+      this.acceleration = this.calculateAcceleration(context);
+      this.position = this.calculatePosition(context.dt);
+      this.velocity = this.calculateVelocity(context.dt);
 
-    this.direction = this.preLaunchingCalculateDirection(context);
+      this.direction = this.preLaunchingCalculateDirection(context);
+    }
 
     // Loosing case.
     if (this.isColliding && !this.isCollidingWithTargetPlanet()) {
-      this.shouldDispose = true;
-      context.objects.push(...generateRocketExplotionParticles(this.position.clone()))
+      this.explode(context);
     }
 
     // Winning case.
     if (this.isCollidingWithTargetPlanet()) {
-      alert('win!');
+      if (this.isLandingInACorrectAngle() && this.speed < 40) {
+        this.hasLanded = true;
+        this.stopRocketPhysics()
+        alert('👏')
+      }
+
+      if (this.speed >= 40) {
+        this.explode(context);
+      }
+
     }
   }
 
@@ -202,9 +214,18 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     return acceleration;
   }
 
+  explode(context: GameContext) {
+    this.shouldDispose = true;
+    context.objects.push(...generateRocketExplotionParticles(this.position.clone()))
+  }
+
   private isCollidingWithTargetPlanet() {
     const targetPlanet = this.collisions.find(c => c === this.targetPlanet);
     return targetPlanet !== undefined;
+  }
+
+  private isLandingInACorrectAngle() {
+    return true
   }
 
   private generateParticle = (thrustAcc: Vector, toPosition: ParticlePerimetralPositioning, isPrimaryThruster = false): Particle | null => {
@@ -274,6 +295,13 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
     particle.position.sub(particleOffsetVector)
 
+  }
+
+  private stopRocketPhysics() {
+    this.acceleration = new Vector();
+    this.velocity = new Vector();
+    this.angularVelocity = 0;
+    this.angularAcceleration = 0;
   }
 
   private secondaryThrust() {
