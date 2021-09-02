@@ -3,6 +3,10 @@ import Particle from "../../objects/particle/particle";
 import Vector from "../../physics/vector";
 import RandomUtils from "../../utils/random";
 import { callTimes } from "../../utils/fn";
+import Rocket from "./rocket";
+import { Rectangle } from "objects/shapes";
+
+export type ParticlePerimetralPositioning = 'top' | 'bottom' | 'top-left' | 'top-right'
 
 export function generateThrusterParticle(position: Vector, thrustDirection: Vector) {
   const isBlueParticle = RandomUtils.getRandomBoolean(0.3);
@@ -48,3 +52,43 @@ export function generateRocketExplotionParticles(position: Vector) {
   })
 
 }
+/**
+ * Moves the position of a particle starting from the center of the rocket to match the permiteres of the rocket.
+ */
+
+export function adjustParticlePositionToMatchRocketPerimeter(
+  particle: Particle,
+  toPosition: ParticlePerimetralPositioning,
+  rocketDirection: Vector,
+  rocketShape: Rectangle
+) {
+
+  let particleOffsetVector = new Vector();
+
+  if (toPosition === 'bottom') {
+    const particleOffsetAngle = rocketDirection.angleTo(new Vector(1, 0));
+    particleOffsetVector = new Vector(Math.cos(particleOffsetAngle), Math.sin(particleOffsetAngle)).scalar(rocketShape.h / 2);
+  }
+
+  // This matches top / top-left / top-right
+  if (toPosition.includes('top')) {
+    const particleOffsetAngle = rocketDirection.angleTo(new Vector(1, 0));
+    particleOffsetVector = new Vector(Math.cos(particleOffsetAngle), Math.sin(particleOffsetAngle)).scalar((rocketShape.h / 2) - 3).scalar(-1);
+  }
+
+  if (toPosition === 'top-right') {
+    const particleOffsetAngleH = rocketDirection.angleTo(new Vector(0, 1));
+    const particleOffsetVectorH = new Vector(Math.cos(particleOffsetAngleH), Math.sin(particleOffsetAngleH)).scalar((rocketShape.w / 2) - 2)
+    particleOffsetVector.add(particleOffsetVectorH)
+  }
+
+  if (toPosition === 'top-left') {
+    const particleOffsetAngleH = rocketDirection.angleTo(new Vector(0, 1));
+    const particleOffsetVectorH = new Vector(Math.cos(particleOffsetAngleH), Math.sin(particleOffsetAngleH)).scalar((rocketShape.w / 2) - 2).scalar(-1);
+    particleOffsetVector.add(particleOffsetVectorH)
+  }
+
+  particle.position.sub(particleOffsetVector)
+
+}
+

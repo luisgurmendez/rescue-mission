@@ -10,6 +10,7 @@ import { isCollisionableObject } from "../mixins/collisionable";
 import ObjectLifecycleController from "../controllers/ObjectLifecycleController";
 import { generateTutorialLevel } from "../levels/levels";
 import Level from "./level";
+import GameConditionsController from "../controllers/GameConditionsController";
 
 //TODO: implement r to restart
 //TODO: implement p to pause/unpause
@@ -28,6 +29,7 @@ class Game {
   private collisionController: CollisionsController = new CollisionsController();
   private renderController: RenderController = new RenderController();
   private objectLifecycleController: ObjectLifecycleController = new ObjectLifecycleController();
+  private gameConditionsController: GameConditionsController = new GameConditionsController();
   private level: Level;
   private gameSpeed: number = 1;
 
@@ -99,6 +101,7 @@ class Game {
     const gameContext = this.generateGameContext();
     this.objectLifecycleController.initialize(gameContext);
     this.objectLifecycleController.step(gameContext);
+    this.gameConditionsController.step(gameContext);
     this.renderController.render(gameContext);
     this.objectLifecycleController.dispose(gameContext);
   }
@@ -121,6 +124,8 @@ class Game {
       this.canvasRenderingContext,
       this.level.camera,
       this.level.worldDimensions,
+      this.level.rocket,
+      this.level.targetPlanet,
       this.pause,
       this.unPause
     );
