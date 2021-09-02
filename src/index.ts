@@ -8,4 +8,5 @@ import Game from './core/game';
   function update() { }
   const init = game.loop(update);
   init();
+
 })();

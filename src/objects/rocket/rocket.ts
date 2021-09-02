@@ -44,8 +44,6 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   private targetPlanet: Planet;
   private hasLanded = false;
 
-
-
   //TODO: add angular acc and angular velocity, this way we can implement the rotation of the rocket properly. Should we add this in the Physicsmixin?
   // Rotations should not affect the velocity of the rocket..
   constructor(position: Vector, target: Planet) {
@@ -61,7 +59,6 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   }
 
   step(context: GameContext): void {
-
     if (!this.hasLanded) {
       this.angularAcceleration = this.calculateAngularAcceleration(context);
       this.angularVelocity = this.calculateAngularVelocity(context.dt);
@@ -83,25 +80,30 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
       if (this.isLandingInACorrectAngle() && this.speed < 40) {
         this.hasLanded = true;
         this.stopRocketPhysics()
-        alert('👏')
-      }
-
-      if (this.speed >= 40) {
+        // alert('👏')
+      } else {
         this.explode(context);
       }
-
     }
   }
-
 
   render() {
     const renderElement = new RenderElement(this._renderRocket);
     const thrusterRenderElement = this.thruster.render();
     const secondaryThrusterRenderElement = this.secondaryThruster.render({ color: new Color(255, 255, 255), offset: new Vector(45, 0) });
+
     const rocketPhysicsRenderElement = new RenderElement(this._renderRocketPhysics);
     rocketPhysicsRenderElement.positionType = 'overlay';
 
+    const cautionTooFastRenderElement = new RenderElement(this._renderCautionTooFast)
+    cautionTooFastRenderElement.positionType = 'overlay';
+
     renderElement.children = [secondaryThrusterRenderElement, thrusterRenderElement, rocketPhysicsRenderElement]
+
+    if (this.speed > 40) {
+      renderElement.children.push(cautionTooFastRenderElement);
+    }
+
     if (!this.hasLaunched) {
       const rocketLauncherRenderElement = new RenderElement(this._renderLaunchDirectional);
       const rocketLauncherAngleRenderElement = new RenderElement(this._renderLaunchAngle);
@@ -116,6 +118,13 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     canvasRenderingContext.font = "15px Arial";
     canvasRenderingContext.fillStyle = "#FFF";
     canvasRenderingContext.fillText(`angle: ${(this.direction.angleTo(new Vector(0, -1)) * 180 / Math.PI).toFixed(2)}º`, canvas.width - 300, canvas.height - 20);
+  }
+
+  _renderCautionTooFast = (context: GameContext) => {
+    const { canvasRenderingContext, canvasRenderingContext: { canvas } } = context;
+    canvasRenderingContext.font = "15px Arial";
+    canvasRenderingContext.fillStyle = "#F44";
+    canvasRenderingContext.fillText(`CAUTION`, canvas.width - 155, 21);
   }
 
   _renderLaunchDirectional = (context: GameContext) => {
@@ -225,7 +234,8 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   }
 
   private isLandingInACorrectAngle() {
-    return true
+    const v = this.position.clone().sub(this.targetPlanet.position);
+    return Math.abs(this.direction.angleTo(v)) < 0.2
   }
 
   private generateParticle = (thrustAcc: Vector, toPosition: ParticlePerimetralPositioning, isPrimaryThruster = false): Particle | null => {

@@ -7,17 +7,19 @@ import { PhysicableMixin } from '../../mixins/physics';
 import { CollisionableMixin } from '../../mixins/collisionable';
 import { PositionableMixin } from '../../mixins/positional';
 import BaseObject from '../../objects/baseObject';
-import { GravitationalMixin } from '../../mixins/gravitational';
+import { Gravitationable, GravitationalMixin, isGravitationable } from '../../mixins/gravitational';
 import RenderElement from '../../render/renderElement';
 import Color from '../../utils/color';
 import RandomUtils from '../../utils/random';
+import { AffectedByGravitationableMixin } from '../../mixins/affectedByGravitational';
 
-const PlanetMixins = GravitationalMixin(
+const PlanetMixins = AffectedByGravitationableMixin(GravitationalMixin(
   PhysicableMixin(
     CollisionableMixin<Circle>()(
       PositionableMixin(BaseObject)
     )
   )
+)
 );
 
 
@@ -47,8 +49,13 @@ class Planet extends PlanetMixins {
     this.ringColor = Color.random();
   }
 
-  step() { }
-
+  step(context: GameContext) {
+    if (this.isMoon) {
+      this.acceleration = this.calculateAcceleration(context);
+      this.position = this.calculatePosition(context.dt);
+      this.velocity = this.calculateVelocity(context.dt);
+    }
+  }
 
   render() {
     return new RenderElement(this._render);
@@ -58,12 +65,14 @@ class Planet extends PlanetMixins {
     const canvasRenderingContext = context.canvasRenderingContext;
     canvasRenderingContext.fillStyle = this.color.rgba();
     canvasRenderingContext.strokeStyle = this.color.rgba();
+
     canvasRenderingContext.save();
     canvasRenderingContext.beginPath();
     canvasRenderingContext.setLineDash([5, 15]);
     canvasRenderingContext.arc(this.position.x, this.position.y, this.gravitationalThreshold, 0, 2 * Math.PI);
     canvasRenderingContext.stroke();
     canvasRenderingContext.restore();
+
     RenderUtils.renderCircle(canvasRenderingContext, this.position, this.collisionMask);
     canvasRenderingContext.fill();
 
@@ -92,6 +101,11 @@ class Planet extends PlanetMixins {
       canvasRenderingContext.lineWidth = 1;
       canvasRenderingContext.stroke();
     }
+  }
+
+  private calculateAcceleration(context: GameContext) {
+    const planets = context.objects.filter(obj => isGravitationable(obj) && obj.id !== this.id) as (BaseObject & Gravitationable)[];
+    return this.calculateGravitationalAcceleration(planets);
   }
 
 }

@@ -1,8 +1,8 @@
 import { isStepable } from "../behaviors/stepable";
-import BaseObject from "../objects/baseObject";
 import GameContext from "../core/gameContext";
 import { isInitializable } from "../behaviors/initializable";
 import { isDisposable } from "../behaviors/disposable";
+import { filterInPlaceAndGetRest } from "../utils/fn";
 
 class ObjectLifecycleController {
 
@@ -26,16 +26,16 @@ class ObjectLifecycleController {
     })
   }
 
-  dispose(objects: BaseObject[]): BaseObject[] {
-    const notDisposedObjects = objects.filter(obj => {
-      if (isDisposable(obj) && obj.shouldDispose) {
-        obj.dispose && obj.dispose()
-        return false;
-      }
-      return true;
+  dispose(gameContext: GameContext) {
+    const { objects } = gameContext;
+
+    const objsToDispose = filterInPlaceAndGetRest(objects, obj => {
+      return !(isDisposable(obj) && obj.shouldDispose);
     })
 
-    return notDisposedObjects;
+    objsToDispose.forEach(obj => {
+      (isDisposable(obj) && obj.dispose) && obj.dispose();
+    });
   }
 }
 

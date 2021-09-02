@@ -7,9 +7,12 @@ import Asteroid from "../objects/asteroid/asteroid";
 
 export function generateTutorialLevel() {
 
-  const mars = new Planet(new Vector(), 1500, 100)
-  const earth = new Planet(new Vector(0, -400), 2000, 150)
-  const moon = new Moon(new Vector(0, 300));
+  const mars = new Planet(new Vector(), 3000, 100)
+  const earth = new Planet(new Vector(200, -400), 2000, 150)
+  const moon = new Planet(new Vector(0, 300), 150, 4);
+  moon.gravitationalThreshold = 0;
+  moon.isMoon = true;
+  moon.velocity = new Vector(30, 0);
 
 
   const objects: BaseObject[] = [
@@ -19,6 +22,7 @@ export function generateTutorialLevel() {
   ];
 
   const level = new Level(objects, earth);
-  level.rocket.position = new Vector(0, 800);
+  level.rocket.position = new Vector(350, 400);
+
   return level;
 }

@@ -100,7 +100,7 @@ class Game {
     this.objectLifecycleController.initialize(gameContext);
     this.objectLifecycleController.step(gameContext);
     this.renderController.render(gameContext);
-    this.level.objects = this.objectLifecycleController.dispose(gameContext.objects);
+    this.objectLifecycleController.dispose(gameContext);
   }
 
   private afterUpdate() {

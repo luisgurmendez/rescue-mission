@@ -5,12 +5,11 @@ import RandomUtils from "../utils/random";
 export type RenderFn = (gameContext: GameContext) => void;
 
 class RenderElement {
-  private _render: RenderFn;
+  _render: RenderFn;
   positionType: PositionType = 'normal';
   children: RenderElement[] = [];
   id = RandomUtils.generateId()
 
-  // with higer zIndex, render elemets will render last, this means rendering on top of other elements
   zIndex: number = 1;
 
   constructor(render: RenderFn) {
@@ -19,9 +18,6 @@ class RenderElement {
 
   render(gameContext: GameContext) {
     this._render(gameContext);
-    // this.children.forEach(child => {
-    //   child.render(gameContext)
-    // })
   }
 }
 
