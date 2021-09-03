@@ -1,12 +1,70 @@
 import Level from "../core/level";
-import Moon from "../objects/planet/moon";
 import Planet from "../objects/planet/planet";
 import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
-import Asteroid from "../objects/asteroid/asteroid";
+import { WinningCondition } from '../controllers/GameConditionsController';
+import GameContext from "core/gameContext";
+
+// Launch and land in the same planet
+// Experimental SUPER BIG
+// export function generateTutorialLevel() {
+//   const earth = new Planet(new Vector(0, 0), 53000, 1500)
+//   const moon = new Planet(new Vector(0, -10000), 13000, 600)
+//   const objects: BaseObject[] = [
+//     earth,
+//     moon
+//   ];
+
+//   const level = new Level(objects, moon);
+//   level.rocket.position = new Vector(0, -1510);
+//   level.camera.follow(level.rocket);
+
+//   return level;
+// }
+
+class TutorialExtraWinningCondition implements WinningCondition {
+
+  private hasPassedAltitudeMark = false;
+  private mark: number;
+
+  constructor(mark: number) {
+    this.mark = mark;
+  }
+
+  step(context: GameContext): void {
+
+    if (!this.hasPassedAltitudeMark) {
+      if (context.rocket.position.y < this.mark) {
+        console.log(context.rocket.position.y, this.mark)
+        console.log('passed altitude check!')
+        this.hasPassedAltitudeMark = true;
+      }
+    }
+  }
+
+  satisfiesCondition = () => {
+    return this.hasPassedAltitudeMark
+  };
+
+}
 
 export function generateTutorialLevel() {
+  const altitudeMark = -200;
+  const earth = new Planet(new Vector(0, 0), 2000, 100)
+  const objects: BaseObject[] = [
+    earth,
+  ];
 
+  const level = new Level(objects, earth);
+  level.extraWinningCondition = new TutorialExtraWinningCondition(altitudeMark);
+  level.rocket.position = new Vector(0, -110);
+  level.camera.follow(level.rocket);
+
+  return level;
+
+}
+
+export function generateLevel1() {
   const mars = new Planet(new Vector(), 3000, 100)
   const earth = new Planet(new Vector(200, -400), 2000, 150)
   const moon = new Planet(new Vector(0, 300), 150, 4);
@@ -22,7 +80,7 @@ export function generateTutorialLevel() {
   ];
 
   const level = new Level(objects, earth);
-  level.rocket.position = new Vector(350, 400);
+  level.rocket.position = new Vector(350, 300);
 
   return level;
 }

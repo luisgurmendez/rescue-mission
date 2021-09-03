@@ -1,35 +1,22 @@
-import CollisionsController, { CollisionableObject } from "../controllers/CollisionsController";
-import RenderController from "../controllers/RenderController";
-
-import Keyboard from "../utils/keyboard";
+import Keyboard from "./keyboard";
 import Clock from "./clock";
-import GameContext from "./gameContext";
 import Stats from 'stats.js'
 import CanvasGenerator from "./canvas";
-import { isCollisionableObject } from "../mixins/collisionable";
-import ObjectLifecycleController from "../controllers/ObjectLifecycleController";
 import { generateTutorialLevel } from "../levels/levels";
 import Level from "./level";
-import GameConditionsController from "../controllers/GameConditionsController";
 
-//TODO: implement r to restart
-//TODO: implement p to pause/unpause
-//TODO: implement gmae over when out of world bounds
-// TODO: Should the win case be landing on a planet or just touching it?
+// TODO: implement r to restart
+// TODO: implement p to pause/unpause
+
+const pressedKeys = Keyboard.getInstance();
 
 class Game {
 
   private clock: Clock;
-
-  private pressedKeys: Keyboard = new Keyboard();
   private isPaused: boolean = false;
   private stats: Stats;
   private canvasRenderingContext: CanvasRenderingContext2D;
 
-  private collisionController: CollisionsController = new CollisionsController();
-  private renderController: RenderController = new RenderController();
-  private objectLifecycleController: ObjectLifecycleController = new ObjectLifecycleController();
-  private gameConditionsController: GameConditionsController = new GameConditionsController();
   private level: Level;
   private gameSpeed: number = 1;
 
@@ -38,7 +25,6 @@ class Game {
     this.canvasRenderingContext = CanvasGenerator.generateCanvas();
     this.level = generateTutorialLevel();
     this.clock = new Clock();
-    this.pressedKeys = new Keyboard();
 
     this.stats = new Stats();
     this.stats.showPanel(0);
@@ -47,7 +33,7 @@ class Game {
 
   init() {
     window.addEventListener('blur', () => {
-      this.pressedKeys.clearPressedKeys();
+      pressedKeys.clearPressedKeys();
       this.pause();
     });
     window.addEventListener('focus', this.unPause);
@@ -67,6 +53,16 @@ class Game {
     window.addEventListener('keydown', (e) => {
       if (e.key === ' ') {
         this.level.camera.follow(this.level.rocket);
+      }
+    })
+
+    window.addEventListener('keydown', (e) => {
+      if (e.key === 'p') {
+        if (this.isPaused) {
+          this.unPause()
+        } else {
+          this.pause()
+        }
       }
     })
   }
@@ -94,42 +90,46 @@ class Game {
   }
 
   /**
-   * Here we should make a game step. This means all objects should update their state (position, values, etc)
-   * Also we should re render the screen
+   * TODO: Remove GameApi completely!
    */
   private update() {
-    const gameContext = this.generateGameContext();
-    this.objectLifecycleController.initialize(gameContext);
-    this.objectLifecycleController.step(gameContext);
-    this.gameConditionsController.step(gameContext);
-    this.renderController.render(gameContext);
-    this.objectLifecycleController.dispose(gameContext);
+    const gameApi = this.generateGameApi();
+    this.level.update(gameApi);
   }
 
   private afterUpdate() {
     this.stats.end()
   }
 
-  private generateGameContext(): GameContext {
-    const collisionableObjects: CollisionableObject[] = this.level.objects.filter(isCollisionableObject) as CollisionableObject[];
-    const collisions = this.collisionController.getCollisions(collisionableObjects);
-
+  private generateGameApi(): GameApi {
     const dt = this.clock.getDelta() * this.gameSpeed;
-    return new GameContext(
-      collisions,
-      dt,
-      this.isPaused,
-      this.level.objects,
-      this.pressedKeys,
-      this.canvasRenderingContext,
-      this.level.camera,
-      this.level.worldDimensions,
-      this.level.rocket,
-      this.level.targetPlanet,
-      this.pause,
-      this.unPause
-    );
+    return new GameApi(dt, this.canvasRenderingContext, this.isPaused, this.pause, this.unPause);
   }
 }
 
 export default Game;
+
+
+export class GameApi {
+
+  readonly canvasRenderingContext: CanvasRenderingContext2D;
+  readonly dt: number;
+
+  readonly isPaused: boolean;
+  pause: () => void;
+  unPause: () => void;
+
+  constructor(
+    dt: number,
+    canvasRenderingContext: CanvasRenderingContext2D,
+    isPaused: boolean,
+    pause: () => void,
+    unPause: () => void
+  ) {
+    this.dt = dt;
+    this.canvasRenderingContext = canvasRenderingContext;
+    this.isPaused = isPaused;
+    this.pause = pause;
+    this.unPause = unPause;
+  }
+}

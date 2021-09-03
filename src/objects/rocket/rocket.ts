@@ -35,9 +35,11 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   private thruster: RocketThruster;
   private secondaryThruster: RocketThruster;
-  public hasLaunched: boolean = false;
+
+  hasLaunched: boolean = false;
+  hasLanded = false;
+
   shouldDispose: boolean = false;
-  private hasLanded = false;
 
   constructor(position: Vector) {
     super('rocket');
@@ -46,7 +48,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     this.type = ObjectType.ROCKET;
     this.collisionMask = new Rectangle(13, 16)
     this.direction = new Vector(0, -1);
-    this.thruster = new RocketThruster(500, 7607 * 1000); // 981 kN fallcon 9
+    this.thruster = new RocketThruster(Infinity, 7607 * 1000); // 981 kN fallcon 9
     this.secondaryThruster = new RocketThruster(300, 7607 * 1000);
   }
 
@@ -132,7 +134,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   calculateAcceleration(context: GameContext) {
     const thrustAcceleration = this.getThrustAcceleration(context);
     const planets = context.objects.filter(isGravitationable) as (BaseObject & Gravitationable)[];
-    const appliedAcceleration = this.calculateGravitationalAcceleration(planets);
+    const appliedAcceleration = this.hasLaunched ? this.calculateGravitationalAcceleration(planets) : new Vector();
     const acceleration = thrustAcceleration.clone().add(appliedAcceleration)
     return acceleration;
   }

@@ -10,7 +10,7 @@ import Initializable from "../behaviors/initializable";
 import { Rectangle } from "../objects/shapes";
 
 const MAX_ZOOM = 14;
-const MIN_ZOOM = 0.5;
+const MIN_ZOOM = 0.01;
 
 class Camera extends BaseObject implements Positionable, Stepable, Disposable, Renderable, Initializable {
 
