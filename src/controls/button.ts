@@ -2,7 +2,7 @@ import { Rectangle } from "../objects/shapes";
 import GameContext from "../core/gameContext";
 import Pressable from "../behaviors/pressable";
 import Renderable from "../behaviors/renderable";
-import { Positionable, PositionType } from "../mixins/positional";
+import { Positionable } from "../mixins/positional";
 import Vector from "../physics/vector";
 import BaseObject from "../objects/baseObject";
 import { ObjectType } from "../objects/objectType";
@@ -34,7 +34,6 @@ class Button extends BaseObject implements Renderable, Pressable, Positionable, 
   styles: Required<ButtonStyles>;
   text: string;
   dispose = () => { };
-  positionType: PositionType = 'overlay';
   shouldInitialize = true;
   shouldDispose = false;
 

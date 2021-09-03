@@ -3,7 +3,7 @@ import BaseObject from "../objects/baseObject";
 import RenderElement from "../render/renderElement";
 import Renderable from "../behaviors/renderable";
 import Stepable from "../behaviors/stepable";
-import { Positionable, PositionType } from "../mixins/positional";
+import { Positionable } from "../mixins/positional";
 import Vector from "../physics/vector";
 import GameContext from "./gameContext";
 import Initializable from "../behaviors/initializable";
@@ -21,7 +21,6 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   following: Positionable | null;
   dispose?: () => void = undefined;
   locked: boolean = false;
-  positionType: PositionType = 'overlay';
   shouldInitialize = true;
   shouldDispose = false;
   flyingToPosition: Vector | null = null;

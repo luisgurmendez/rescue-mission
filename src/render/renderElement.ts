@@ -1,9 +1,9 @@
-import { PositionType } from "../mixins/positional";
 import GameContext from "../core/gameContext";
 import RandomUtils from "../utils/random";
 
 export type RenderFn = (gameContext: GameContext) => void;
 
+export type PositionType = 'overlay' | 'normal';
 class RenderElement {
   _render: RenderFn;
   positionType: PositionType = 'normal';
