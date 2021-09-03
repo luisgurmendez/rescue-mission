@@ -1,10 +1,11 @@
-import GameContext from "../../core/gameContext";
-import { WinningCondition } from "./WinningCondition";
+// import GameContext from "../../core/gameContext";
+// import { WinningCondition } from "./WinningCondition";
 
 // class LandingWinningCondition implements WinningCondition {
 
 //   MAX_LANDING_SPEED = 40;
 //   MAX_LANDING_ANGLE = 0.4;
+//   hasWonOrLose: boolean = false;
 
 //   satisfiesCondition = () => {
 //     return this.hasPassedAltitudeMark

@@ -15,7 +15,7 @@ const MIN_ZOOM = 0.01;
 
 class Camera extends BaseObject implements Positionable, Stepable, Disposable, Renderable, Initializable {
 
-  position: Vector;
+  _position: Vector;
   viewport: Rectangle;
   private _zoom: number;
   following: Positionable | null;
@@ -29,11 +29,10 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   flyingElapsedTime: number | null = null;
   flyingInitialPosition: Vector | null = null;
 
-
   constructor() {
     super('camera');
     // this.position = new Vector(document.body.scrollWidth / 2, document.body.scrollHeight / 2);
-    this.position = new Vector(0, 0);
+    this._position = new Vector(0, 0);
     this.viewport = new Rectangle(document.body.scrollWidth, document.body.scrollHeight);
     this._zoom = 1;
     this.following = null;
@@ -70,7 +69,6 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
         this.position.y += mousey / (this.zoom * deltaZoom) - mousey / this.zoom;
 
       }
-
     }
 
     const handleMouseMove = (event: MouseEvent) => {
@@ -80,7 +78,6 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
         posDiff.scalar(1 / this.zoom);
 
         this.position = initialDragginPosition.clone().add(posDiff);
-
       }
     }
 
@@ -137,13 +134,15 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   }
 
   set zoom(_z: number) {
-    this._zoom = _z;
-    if (_z > MAX_ZOOM) {
-      this._zoom = MAX_ZOOM;
-    }
+    if (!this.locked) {
+      this._zoom = _z;
+      if (_z > MAX_ZOOM) {
+        this._zoom = MAX_ZOOM;
+      }
 
-    if (_z < MIN_ZOOM) {
-      this._zoom = MIN_ZOOM;
+      if (_z < MIN_ZOOM) {
+        this._zoom = MIN_ZOOM;
+      }
     }
   }
 
@@ -151,9 +150,20 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     return this._zoom;
   }
 
+  set position(_p: Vector) {
+    if (!this.locked) {
+      this._position = _p;
+    }
+  }
+
+  get position() {
+    return this._position;
+  }
+
+
   step(context: GameContext) {
     if (this.following !== null) {
-      this.position = this.following.position.clone()
+      this._position = this.following.position.clone()
     }
 
     if (
@@ -167,9 +177,9 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       const distanceToFlyingPosition = this.flyingInitialPosition.distanceTo(this.flyingToPosition);
       const flyingSpeed = distanceToFlyingPosition / this.flyingDuration;
       const flyingDelta = toPositionVector.normalize().scalar(context.dt * flyingSpeed);
-      this.position = this.position.add(flyingDelta);
+      this._position = this.position.add(flyingDelta);
       if (this.flyingElapsedTime < 0) {
-        this.position = this.flyingToPosition.clone();
+        this._position = this.flyingToPosition.clone();
         this.flyingToPosition = null;
         this.flyingElapsedTime = null;
         this.flyingDuration = null;
