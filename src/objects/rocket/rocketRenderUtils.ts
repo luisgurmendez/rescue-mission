@@ -63,7 +63,7 @@ class RocketRenderUtils {
       "@@@JI@@@@@PJIA@@@@R|OI@@@@b|I@@@@b|I@@@@b|I@@@@b|I@@@@RJII@@@@RJiI@@@@RJII@@@@RJIy@@@XRJIyF@@[RJIyw@@[RJIyw@@[RJIyw@@[`ddxw@",
       16);
 
-
+    canvasRenderingContext.translate(-1, -1);
     canvasRenderingContext.drawImage(canvas, rocket.position.x - rocket.collisionMask.w / 2, rocket.position.y - rocket.collisionMask.h / 2);
     // RenderUtils.renderCircle(canvasRenderingContext, rocket.position, new Circle(1));
     // RenderUtils.renderRectangle(canvasRenderingContext, rocket.position, rocket.collisionMask);

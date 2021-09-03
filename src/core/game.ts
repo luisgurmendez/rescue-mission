@@ -32,6 +32,7 @@ class Game {
   }
 
   init() {
+    this.level.init();
     window.addEventListener('blur', () => {
       pressedKeys.clearPressedKeys();
       this.pause();

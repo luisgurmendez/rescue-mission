@@ -8,6 +8,7 @@ import Vector from "../physics/vector";
 import GameContext from "./gameContext";
 import Initializable from "../behaviors/initializable";
 import { Rectangle } from "../objects/shapes";
+import { wait } from "../utils/async";
 
 const MAX_ZOOM = 14;
 const MIN_ZOOM = 0.01;
@@ -218,7 +219,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
 
   // there is a known bug where the promise resolves before the flying duration when the game is on pause
-  flyTo(position: Vector, duration: number = 1): Promise<void> {
+  flyTo(position: Vector, duration: number = 2): Promise<void> {
 
     this.following = null;
     this.flyingToPosition = position;
@@ -226,12 +227,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     this.flyingDuration = duration;
     this.flyingElapsedTime = duration;
 
-    return new Promise(resolve => {
-      setTimeout(() => {
-        resolve()
-      }, duration * 1000);
-    });
-
+    return wait(2)
   }
 
 }

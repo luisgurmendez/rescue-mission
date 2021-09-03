@@ -38,7 +38,6 @@ class RenderUtils {
 
 
     if (canvasRenderingContext !== null) {
-      canvasRenderingContext.translate(-1, -1);
       const points: number[] = [];
       pixelArt.replace(/./g, a => {
         const charCode = a.charCodeAt(0)
@@ -57,6 +56,20 @@ class RenderUtils {
     }
     return canvas;
   }
+
+  // static generatePixelArt2() {
+  //   const c = a.getContext`2d` // ctx
+  //   const C = "eee000222444888355ccc" // color palette (you can remove the colors you didn't use to save bytes)
+  //   const P = []; "@@@@@@@@@@@@@@@@@@@@@pRRRR@@@@@@@@@@@^kmmeF@@@@@@@@@@bMIIi\@@@@@@@@@^LIIII]C@@@@@@@@^iddddeB@@@@@@@@^aRRRRmB@@@@@@@@^aRRRRmB@@@@@@@@^aRRRRmB@@@@@@@@^aRRRRmB@@@@@@@@^MIIIIeC@@@@@@@@pkIIIi\@@@@@@@@@@cMIIas@@@@@@@@@@pjmmU@@@@@@@@@@@`}_F@@@@@@@@@@jIyOis@@@@@@@@@PMIyOIeB@@@@@@@plOIIyot@@@@@@@P}yMIIIuC@@@@@@POMIIIIaC@@@@@@PMLIIIIdgC@@@@@@PljIIIideC@@@@@@PlbMUzideC@@@@@@P[bMUziTSC@@@@@@pvbMTziT@@@@@@@@@@bMTzit@@@@@@@@@@bMTzit@@@@@@@@@@cmTbmt@@@@@@@@@XmmTbmmB@@@@@@@@PRRRRRRB@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@".replace(/./g, a => { z = a.charCodeAt(), P.push(z & 7), P.push((z >> 3) & 7) }) // pixel decoding
+  //   const S = 32; for (j = 0; j < S; j++)for (i = 0; i < S; i++)if (P[j * S + i]) c.fillStyle = "#" + C.substr(3 * (P[j * S + i] - 1), 3), c.fillRect(i, j, 1, 1)
+
+
+  // }
+
+
+
+
+
 
 
 

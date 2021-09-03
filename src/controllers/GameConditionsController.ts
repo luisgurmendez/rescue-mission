@@ -1,5 +1,5 @@
-import Stepable from "behaviors/stepable";
-import GameContext from "core/gameContext";
+import Stepable from "../behaviors/stepable";
+import GameContext from "../core/gameContext";
 
 type LoseReason = 'tooFast' | 'improperAngle' | 'extra';
 
