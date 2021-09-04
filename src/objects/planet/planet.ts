@@ -76,7 +76,6 @@ class Planet extends PlanetMixins {
     RenderUtils.renderCircle(canvasRenderingContext, this.position, this.collisionMask);
     canvasRenderingContext.fill();
 
-
     // Renders planet ring
     if (this.hasRing) {
 

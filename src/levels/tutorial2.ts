@@ -1,47 +1,55 @@
 
-import Level from "../core/level";
+import Level, { LevelObjective } from "../core/level";
 import Planet from "../objects/planet/planet";
 import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
-import { WinningCondition } from '../controllers/GameConditionsController';
 import GameContext from "../core/gameContext";
-import Astronaut from "../objects/astronaut/astronaut";
-import { wait } from "../utils/async";
 import RenderElement from "../render/renderElement";
 import { PositionableMixin } from "../mixins/positional";
+import Color from "../utils/color";
+import LandingObjective from "./shared/LandingOnTargetPlanetObjective";
 
 
 /**
- * Tutorial 2 - The dark side of the moon.
+ * Tutorial 2 - Try landing in the dark side of the moon.
  */
 
-// TODO implement 
-class TutorialExtraWinningCondition implements WinningCondition {
+class TutorialObjective implements LevelObjective {
 
+  private landingObjective = new LandingObjective();
   radius: number
+  isInTheBottomSectionOfThePlanet = false;
 
   constructor(radius: number) {
     this.radius = radius;
   }
 
   step(context: GameContext): void {
+    const { rocket, targetPlanet } = context;
+    this.landingObjective.step(context);
+    // Rocket is in the bottom of the center of the planet
+    this.isInTheBottomSectionOfThePlanet = rocket.position.y > targetPlanet.position.y
   }
 
-  satisfiesCondition = () => {
-    return true
-  };
+  completed() {
+    return this.landingObjective.completed() && this.isInTheBottomSectionOfThePlanet;
+  }
 }
 
+
+
+
 function generate() {
-  const earth = new Planet(new Vector(0, 0), 2000, 200)
+  const earth = new Planet(new Vector(0, 0), 2000, 200);
+  earth.hasRing = false;
+  earth.color = new Color(255, 10, 20);
   const mark = new LandingMark(new Vector(earth.position.x, earth.position.y - earth.collisionMask.radius), earth.collisionMask.radius);
   const objects: BaseObject[] = [
     earth,
     mark,
   ];
 
-  const level = new Level(objects, earth);
-  //  level.extraWinningCondition = new TutorialExtraWinningCondition(altitudeMark);
+  const level = new Level(objects, earth, new TutorialObjective(earth.collisionMask.radius));
   level.rocket.position = new Vector(0, -earth.collisionMask.radius - 10);
   level.camera.follow(level.rocket);
 
@@ -81,10 +89,7 @@ class LandingMark extends LandingMarkMarkMixin {
       canvasRenderingContext.stroke();
 
       canvasRenderingContext.beginPath();
-
-      // Since planet is in position 0,0 we can rotate without translate.
-      canvasRenderingContext.rotate(Math.PI / 2 - Math.PI / 4)
-      canvasRenderingContext.arc(this.position.x, this.position.y + this.radius, this.radius, 0, Math.PI / 2);
+      canvasRenderingContext.arc(this.position.x, this.position.y + this.radius, this.radius, 0, Math.PI);
       canvasRenderingContext.stroke();
 
     }

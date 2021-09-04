@@ -2,7 +2,7 @@ import Keyboard from "./keyboard";
 import Clock from "./clock";
 import Stats from 'stats.js'
 import CanvasGenerator from "./canvas";
-import generateTutorialLevel from "../levels/tutorial2";
+import generateTutorialLevel from "../levels/tutorial";
 import Level from "./level";
 
 // TODO: implement r to restart

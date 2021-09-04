@@ -7,7 +7,6 @@ import Vector from "../physics/vector";
 import Planet from "../objects/planet/planet";
 import Initializable from "../behaviors/initializable";
 import Disposable from "../behaviors/disposable";
-import GameConditionsController, { WinningCondition } from "../controllers/GameConditionsController";
 import GameContext from "./gameContext";
 import ObjectLifecycleController from "../controllers/ObjectLifecycleController";
 import CollisionsController, { CollisionableObject } from "../controllers/CollisionsController";
@@ -15,6 +14,8 @@ import { GameApi } from "./game";
 import RenderController from "../controllers/RenderController";
 import { isCollisionableObject } from "../mixins/collisionable";
 import Keyboard from "./keyboard";
+import Stepable from "../behaviors/stepable";
+import RocketStatusController from "../controllers/RocketStatusController";
 
 const pressedKeys = Keyboard.getInstance();
 class Level implements Initializable, Disposable {
@@ -24,32 +25,44 @@ class Level implements Initializable, Disposable {
   worldDimensions: Rectangle;
   rocket: Rocket;
   targetPlanet: Planet;
-  extraWinningCondition: WinningCondition | null;
+  objective: LevelObjective;
+  rocketStatusController: RocketStatusController;
   private objectLifecycleController: ObjectLifecycleController = new ObjectLifecycleController();
-  private gameConditionsController: GameConditionsController = new GameConditionsController();
   private collisionController: CollisionsController = new CollisionsController();
   private renderController: RenderController = new RenderController();
+  private statusController: LevelStatusController;
 
   shouldInitialize = true;
   shouldDispose = false;
 
-  constructor(objects: BaseObject[], target: Planet, worldDimensions: Rectangle = new Rectangle(100000, 100000),) {
+  constructor(objects: BaseObject[], target: Planet, objective: LevelObjective, worldDimensions: Rectangle = new Rectangle(100000, 100000),) {
     const background = new SpaceBackground();
     this.rocket = new Rocket(new Vector());
     this.objects = objects;
     this.camera = new Camera();
     this.worldDimensions = worldDimensions;
     this.targetPlanet = target;
-    this.extraWinningCondition = null;
+    this.objective = objective;
     this.objects.push(...[background, this.rocket, this.camera]);
-    // this.camera.follow(this.rocket);
+    this.rocketStatusController = new RocketStatusController();
+    this.statusController = new LevelStatusController(objective);
   }
+
+
   update(gameApi: GameApi): void {
     const gameContext = this.generateGameContext(gameApi);
-    this.extraWinningCondition?.step(gameContext);
+
     this.objectLifecycleController.initialize(gameContext);
     this.objectLifecycleController.step(gameContext);
-    this.gameConditionsController.step(gameContext);
+
+    // Move this to private fn..
+    if (!this.statusController.hasWonOrLost) {
+      this.objective.step(gameContext);
+      this.rocketStatusController.step(gameContext);
+      const status = this.statusController.getStatus(gameContext);
+      this.handleLevelEnding(status)
+    }
+
     this.objectLifecycleController.dispose(gameContext);
     this.renderController.render(gameContext);
   }
@@ -58,6 +71,13 @@ class Level implements Initializable, Disposable {
 
   dispose() { };
 
+
+  private handleLevelEnding(status: LevelStatus) {
+    // TODO: We should show won/lost dialogs etc....
+    if (status !== LevelStatus.PLAYING) {
+      alert(status);
+    }
+  }
 
   private generateGameContext(api: GameApi): GameContext {
     const collisionableObjects: CollisionableObject[] = this.objects.filter(isCollisionableObject) as CollisionableObject[];
@@ -74,7 +94,6 @@ class Level implements Initializable, Disposable {
       this.worldDimensions,
       this.rocket,
       this.targetPlanet,
-      this.extraWinningCondition,
       api.pause,
       api.unPause
     );
@@ -84,3 +103,37 @@ class Level implements Initializable, Disposable {
 
 
 export default Level;
+
+export interface LevelObjective extends Stepable {
+  completed(): boolean
+}
+
+
+
+enum LevelStatus {
+  WON, LOST, PLAYING
+}
+class LevelStatusController {
+
+  hasWonOrLost = false;
+  objective: LevelObjective;
+
+  constructor(objective: LevelObjective) {
+    this.objective = objective
+  }
+
+  getStatus(context: GameContext) {
+    const { rocket } = context;
+    if (this.objective.completed()) {
+      this.hasWonOrLost = true
+      return LevelStatus.WON;
+    }
+    // Check if rocket has landed on another planet or if rocket is outOfBounds.
+    if (rocket.hasExploded || rocket.hasLanded) {
+      this.hasWonOrLost = true
+      return LevelStatus.LOST;
+    }
+
+    return LevelStatus.PLAYING;
+  }
+}

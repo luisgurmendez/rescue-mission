@@ -1,18 +1,19 @@
-import Level from "../core/level";
+import Level, { LevelObjective } from "../core/level";
 import Planet from "../objects/planet/planet";
 import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
-import { WinningCondition } from '../controllers/GameConditionsController';
 import GameContext from "../core/gameContext";
 import RenderElement from "../render/renderElement";
 import { PositionableMixin } from "../mixins/positional";
+import LandingObjective from "./shared/LandingOnTargetPlanetObjective";
 
 /**
  * Tutorial 1 - Pass the altitude mark
  */
 
-class TutorialExtraWinningCondition implements WinningCondition {
+class TutorialObjective implements LevelObjective {
 
+  private landingObjective = new LandingObjective();
   private hasPassedAltitudeMark = false;
   private mark: number;
 
@@ -21,7 +22,7 @@ class TutorialExtraWinningCondition implements WinningCondition {
   }
 
   step(context: GameContext): void {
-
+    this.landingObjective.step(context);
     if (!this.hasPassedAltitudeMark) {
       if (context.rocket.position.y < -this.mark) {
         this.hasPassedAltitudeMark = true;
@@ -29,10 +30,9 @@ class TutorialExtraWinningCondition implements WinningCondition {
     }
   }
 
-  satisfiesCondition = () => {
-    return this.hasPassedAltitudeMark
-  };
-
+  completed() {
+    return this.landingObjective.completed() && this.hasPassedAltitudeMark;
+  }
 }
 
 function generate() {
@@ -43,8 +43,7 @@ function generate() {
     earth,
     altitudeMarkObj,
   ];
-  const level = new Level(objects, earth);
-  level.extraWinningCondition = new TutorialExtraWinningCondition(altitudeMark);
+  const level = new Level(objects, earth, new TutorialObjective(altitudeMark));
   level.rocket.position = new Vector(0, -110);
   level.camera.follow(level.rocket);
   return level;

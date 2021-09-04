@@ -1,10 +1,10 @@
-// TODO: does this make sense?
+
 export enum ObjectType {
   BASE_OBJECT,
-  GAME_OBJECT,
-  COLLISIONABLE_OBJECT,
   PLANET,
+  ASTEROID,
   ROCKET,
+  ASTRONAUT,
   BUTTON,
   PARTICLE
 }

@@ -38,6 +38,8 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   hasLaunched: boolean = false;
   hasLanded = false;
+  hasExploded = false;
+  landedOnPlanet: Planet | null = null;
 
   shouldDispose: boolean = false;
 
@@ -50,6 +52,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     this.direction = new Vector(0, -1);
     this.thruster = new RocketThruster(Infinity, 7607 * 1000); // 981 kN fallcon 9
     this.secondaryThruster = new RocketThruster(300, 7607 * 1000);
+
   }
 
   step(context: GameContext): void {
@@ -141,12 +144,14 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   explode(context: GameContext) {
     this.shouldDispose = true;
-    context.objects.push(...generateRocketExplotionParticles(this.position.clone()))
+    context.objects.push(...generateRocketExplotionParticles(this.position.clone()));
+    this.hasExploded = true;
   }
 
-  land() {
+  land(planet: Planet) {
     this.hasLanded = true;
     this.stopRocketPhysics();
+    this.landedOnPlanet = planet;
   }
 
   private stopRocketPhysics() {

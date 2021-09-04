@@ -2,6 +2,7 @@ import Level from "../core/level";
 import Planet from "../objects/planet/planet";
 import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
+import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObjective";
 
 function generate() {
   const earth = new Planet(new Vector(0, 0), 53000, 1500)
@@ -11,7 +12,7 @@ function generate() {
     moon
   ];
 
-  const level = new Level(objects, moon);
+  const level = new Level(objects, moon, new LandingOnTargetPlanetObjective());
   level.rocket.position = new Vector(0, -1510);
   level.camera.follow(level.rocket);
 

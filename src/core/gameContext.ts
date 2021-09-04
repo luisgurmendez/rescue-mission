@@ -5,7 +5,6 @@ import Keyboard from "./keyboard";
 import Camera from "./camera";
 import Rocket from "objects/rocket/rocket";
 import Planet from "objects/planet/planet";
-import { WinningCondition } from "controllers/GameConditionsController";
 
 class GameContext {
   readonly collisions: Collisions;
@@ -22,7 +21,6 @@ class GameContext {
   readonly canvasRenderingContext: CanvasRenderingContext2D;
   readonly camera: Camera;
   readonly worldDimensions: Rectangle
-  readonly extraWinningCondition: WinningCondition | null
 
   pause: () => void;
   unPause: () => void;
@@ -38,7 +36,6 @@ class GameContext {
     worldDimensions: Rectangle,
     rocket: Rocket,
     planet: Planet,
-    extraWinningCondition: WinningCondition | null,
     pause: () => void,
     unPause: () => void
   ) {
@@ -52,7 +49,6 @@ class GameContext {
     this.worldDimensions = worldDimensions;
     this.rocket = rocket;
     this.targetPlanet = planet;
-    this.extraWinningCondition = extraWinningCondition;
     this.pause = pause;
     this.unPause = unPause;
   }

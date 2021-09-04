@@ -2,6 +2,7 @@ import Level from "../core/level";
 import Planet from "../objects/planet/planet";
 import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
+import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObjective";
 
 export function generateLevel1() {
   const mars = new Planet(new Vector(), 3000, 100)
@@ -18,7 +19,7 @@ export function generateLevel1() {
     moon,
   ];
 
-  const level = new Level(objects, earth);
+  const level = new Level(objects, earth, new LandingOnTargetPlanetObjective());
   level.rocket.position = new Vector(350, 300);
 
   return level;
