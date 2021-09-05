@@ -10,7 +10,6 @@ class AstronautRenderUtils {
     canvasRenderingContext.strokeStyle = '#FFF'
 
     // rotate
-    canvasRenderingContext.scale(0.7, 0.7);
     canvasRenderingContext.translate(astronaut.position.x, astronaut.position.y);
     canvasRenderingContext.rotate(astronaut.direction.angleTo(new Vector(1, 0)))
     canvasRenderingContext.translate(-astronaut.position.x, -astronaut.position.y);
@@ -25,7 +24,14 @@ class AstronautRenderUtils {
       "@@X[[C@@@@{II_@@@XKRRYC@@XQRJJC@@XWRRzC@@XORRyC@@[KIIY[@XMimmMiCkIIyOII]{YLIIaK_[[LIIa[[@@LiMa@@@XOYKyC@@[O[[y[@XMiCXMiCX[[CX[[C",
       16);
 
-    canvasRenderingContext.drawImage(canvas, astronaut.position.x - astronaut.collisionMask.w / 2, astronaut.position.y - astronaut.collisionMask.h / 2);
+
+    canvasRenderingContext.drawImage(
+      canvas,
+      astronaut.position.x - astronaut.collisionMask.w / 2,
+      astronaut.position.y - astronaut.collisionMask.h / 2,
+      astronaut.collisionMask.w,
+      astronaut.collisionMask.h
+    );
   }
 }
 

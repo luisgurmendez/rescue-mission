@@ -3,8 +3,7 @@ import { Collisions } from "../controllers/CollisionsController";
 import BaseObject from "../objects/baseObject";
 import Keyboard from "./keyboard";
 import Camera from "./camera";
-import Rocket from "objects/rocket/rocket";
-import Planet from "objects/planet/planet";
+import Rocket from "../objects/rocket/rocket";
 
 class GameContext {
   readonly collisions: Collisions;
@@ -16,7 +15,6 @@ class GameContext {
   // With method all(): BaseObject[]
   readonly objects: BaseObject[];
   readonly rocket: Rocket;
-  readonly targetPlanet: Planet;
   readonly pressedKeys: Keyboard;
   readonly canvasRenderingContext: CanvasRenderingContext2D;
   readonly camera: Camera;
@@ -35,7 +33,6 @@ class GameContext {
     camera: Camera,
     worldDimensions: Rectangle,
     rocket: Rocket,
-    planet: Planet,
     pause: () => void,
     unPause: () => void
   ) {
@@ -48,7 +45,6 @@ class GameContext {
     this.camera = camera;
     this.worldDimensions = worldDimensions;
     this.rocket = rocket;
-    this.targetPlanet = planet;
     this.pause = pause;
     this.unPause = unPause;
   }

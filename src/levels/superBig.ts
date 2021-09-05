@@ -12,7 +12,7 @@ function generate() {
     moon
   ];
 
-  const level = new Level(objects, moon, new LandingOnTargetPlanetObjective());
+  const level = new Level(objects, new LandingOnTargetPlanetObjective(earth));
   level.rocket.position = new Vector(0, -1510);
   level.camera.follow(level.rocket);
 

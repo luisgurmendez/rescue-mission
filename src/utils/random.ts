@@ -28,6 +28,10 @@ class RandomUtils {
     return id;
   }
 
+  static getNegativeRandomly(n: number, p = 0.5) {
+    return (Math.random() > p ? -1 : 1) * n
+  }
+
 
 }
 

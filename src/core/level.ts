@@ -24,7 +24,6 @@ class Level implements Initializable, Disposable {
   camera: Camera;
   worldDimensions: Rectangle;
   rocket: Rocket;
-  targetPlanet: Planet;
   objective: LevelObjective;
   rocketStatusController: RocketStatusController;
   private objectLifecycleController: ObjectLifecycleController = new ObjectLifecycleController();
@@ -35,13 +34,12 @@ class Level implements Initializable, Disposable {
   shouldInitialize = true;
   shouldDispose = false;
 
-  constructor(objects: BaseObject[], target: Planet, objective: LevelObjective, worldDimensions: Rectangle = new Rectangle(100000, 100000),) {
+  constructor(objects: BaseObject[], objective: LevelObjective, worldDimensions: Rectangle = new Rectangle(100000, 100000),) {
     const background = new SpaceBackground();
     this.rocket = new Rocket(new Vector());
     this.objects = objects;
     this.camera = new Camera();
     this.worldDimensions = worldDimensions;
-    this.targetPlanet = target;
     this.objective = objective;
     this.objects.push(...[background, this.rocket, this.camera]);
     this.rocketStatusController = new RocketStatusController();
@@ -57,8 +55,8 @@ class Level implements Initializable, Disposable {
 
     // Move this to private fn..
     if (!this.statusController.hasWonOrLost) {
-      this.objective.step(gameContext);
       this.rocketStatusController.step(gameContext);
+      this.objective.step(gameContext);
       const status = this.statusController.getStatus(gameContext);
       this.handleLevelEnding(status)
     }
@@ -75,7 +73,7 @@ class Level implements Initializable, Disposable {
   private handleLevelEnding(status: LevelStatus) {
     // TODO: We should show won/lost dialogs etc....
     if (status !== LevelStatus.PLAYING) {
-      alert(status);
+      // alert(status === LevelStatus.WON);
     }
   }
 
@@ -93,7 +91,6 @@ class Level implements Initializable, Disposable {
       this.camera,
       this.worldDimensions,
       this.rocket,
-      this.targetPlanet,
       api.pause,
       api.unPause
     );

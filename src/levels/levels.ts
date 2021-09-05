@@ -19,7 +19,7 @@ export function generateLevel1() {
     moon,
   ];
 
-  const level = new Level(objects, earth, new LandingOnTargetPlanetObjective());
+  const level = new Level(objects, new LandingOnTargetPlanetObjective(earth));
   level.rocket.position = new Vector(350, 300);
 
   return level;

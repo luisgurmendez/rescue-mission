@@ -5,8 +5,12 @@ import BaseObject from '../../objects/baseObject';
 import { Rectangle } from '../../objects/shapes';
 import RenderElement from '../../render/renderElement';
 import AstronautRenderUtils from './astronautRenderUtils';
-import GameContext from 'core/gameContext';
+import GameContext from '../../core/gameContext';
 import Vector from '../../physics/vector';
+import Disposable from '../../behaviors/disposable';
+import { ObjectType } from '../../objects/objectType';
+import RandomUtils from '../../utils/random';
+import { AffectedByGravitationableMixin } from '../../mixins/affectedByGravitational';
 
 const AstronautMixins =
   PhysicableMixin(
@@ -15,19 +19,29 @@ const AstronautMixins =
     )
   );
 
-class Astronaut extends AstronautMixins {
+class Astronaut extends AstronautMixins implements Disposable {
+  shouldDispose: boolean = false;
 
-  constructor() {
+  constructor(position: Vector) {
     super();
     this.direction = new Vector(1, 0);
-    this.collisionMask = new Rectangle(16, 16);
-    this.angularVelocity = 100;
-    this.position = new Vector(100, 100);
+    this.collisionMask = new Rectangle(12, 12);
+    this.angularVelocity = RandomUtils.getNegativeRandomly(RandomUtils.getIntegerInRange(45, 220));
+    this.position = position;
+    this.type = ObjectType.ASTRONAUT;
   }
 
   step(context: GameContext) {
     this.angularVelocity = this.calculateAngularVelocity(context.dt);
     this.direction = this.calculateDirection(context.dt);
+    this.checkRescued();
+  }
+
+  checkRescued() {
+    const collideWithRocket = this.collisions.find(obj => obj.type === ObjectType.ROCKET);
+    if (collideWithRocket !== undefined) {
+      this.rescued();
+    }
   }
 
   render() {
@@ -38,7 +52,9 @@ class Astronaut extends AstronautMixins {
     return renderElement;
   }
 
-
+  rescued() {
+    this.shouldDispose = true;
+  }
 
 }
 

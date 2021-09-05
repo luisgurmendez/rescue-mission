@@ -5,20 +5,21 @@ import Vector from "../physics/vector";
 import GameContext from "../core/gameContext";
 import RenderElement from "../render/renderElement";
 import { PositionableMixin } from "../mixins/positional";
-import LandingObjective from "./shared/LandingOnTargetPlanetObjective";
+import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObjective";
 
 /**
  * Tutorial 1 - Pass the altitude mark
  */
 
-class TutorialObjective implements LevelObjective {
+class LandingAndAltitudeObjective implements LevelObjective {
 
-  private landingObjective = new LandingObjective();
+  private landingObjective: LandingOnTargetPlanetObjective;
   private hasPassedAltitudeMark = false;
   private mark: number;
 
-  constructor(mark: number) {
+  constructor(target: Planet, mark: number) {
     this.mark = mark;
+    this.landingObjective = new LandingOnTargetPlanetObjective(target)
   }
 
   step(context: GameContext): void {
@@ -43,7 +44,7 @@ function generate() {
     earth,
     altitudeMarkObj,
   ];
-  const level = new Level(objects, earth, new TutorialObjective(altitudeMark));
+  const level = new Level(objects, new LandingAndAltitudeObjective(earth, altitudeMark));
   level.rocket.position = new Vector(0, -110);
   level.camera.follow(level.rocket);
   return level;

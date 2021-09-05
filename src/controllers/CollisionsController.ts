@@ -148,6 +148,9 @@ class Intersections {
       return false;
     }
 
+
+    // return a1.x < b2.x && a2.x > b1.x && a1.y < b2.y && a2.y > b1.y;
+
     return true;
   }
 

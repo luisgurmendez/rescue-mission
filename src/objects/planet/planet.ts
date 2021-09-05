@@ -103,8 +103,7 @@ class Planet extends PlanetMixins {
   }
 
   private calculateAcceleration(context: GameContext) {
-    const planets = context.objects.filter(obj => isGravitationable(obj) && obj.id !== this.id) as (BaseObject & Gravitationable)[];
-    return this.calculateGravitationalAcceleration(planets);
+    return this.calculateGravitationalAcceleration(context);
   }
 
 }

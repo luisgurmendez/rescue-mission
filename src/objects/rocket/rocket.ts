@@ -136,8 +136,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   calculateAcceleration(context: GameContext) {
     const thrustAcceleration = this.getThrustAcceleration(context);
-    const planets = context.objects.filter(isGravitationable) as (BaseObject & Gravitationable)[];
-    const appliedAcceleration = this.hasLaunched ? this.calculateGravitationalAcceleration(planets) : new Vector();
+    const appliedAcceleration = this.hasLaunched ? this.calculateGravitationalAcceleration(context) : new Vector();
     const acceleration = thrustAcceleration.clone().add(appliedAcceleration)
     return acceleration;
   }

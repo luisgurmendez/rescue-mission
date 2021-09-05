@@ -14,29 +14,28 @@ import LandingObjective from "./shared/LandingOnTargetPlanetObjective";
  * Tutorial 2 - Try landing in the dark side of the moon.
  */
 
-class TutorialObjective implements LevelObjective {
+class LandingOnOppositeSideObjective implements LevelObjective {
 
-  private landingObjective = new LandingObjective();
+  private landingObjective: LandingObjective;
   radius: number
   isInTheBottomSectionOfThePlanet = false;
 
-  constructor(radius: number) {
+  constructor(target: Planet, radius: number) {
     this.radius = radius;
+    this.landingObjective = new LandingObjective(target);
   }
 
   step(context: GameContext): void {
-    const { rocket, targetPlanet } = context;
+    const { rocket } = context;
     this.landingObjective.step(context);
     // Rocket is in the bottom of the center of the planet
-    this.isInTheBottomSectionOfThePlanet = rocket.position.y > targetPlanet.position.y
+    this.isInTheBottomSectionOfThePlanet = rocket.position.y > this.landingObjective.target.position.y
   }
 
   completed() {
     return this.landingObjective.completed() && this.isInTheBottomSectionOfThePlanet;
   }
 }
-
-
 
 
 function generate() {
@@ -49,7 +48,7 @@ function generate() {
     mark,
   ];
 
-  const level = new Level(objects, earth, new TutorialObjective(earth.collisionMask.radius));
+  const level = new Level(objects, new LandingOnOppositeSideObjective(earth, earth.collisionMask.radius));
   level.rocket.position = new Vector(0, -earth.collisionMask.radius - 10);
   level.camera.follow(level.rocket);
 

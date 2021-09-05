@@ -1,3 +1,4 @@
+import RandomUtils from "../utils/random";
 
 class Vector {
   x: number;
@@ -78,6 +79,12 @@ class Vector {
     this.y = old.x * sin + old.y * cos
 
     return this;
+  }
+
+  static random(): Vector {
+    const v = new Vector(1, 0);
+    v.rotate(RandomUtils.getValueInRange(0, Math.PI * 2));
+    return v;
   }
 
 }

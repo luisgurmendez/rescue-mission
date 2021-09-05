@@ -1,6 +1,9 @@
 import GameContext from "../core/gameContext";
 import { isRenderable } from "../behaviors/renderable";
 import RenderElement from "../render/renderElement";
+import Vector from "../physics/vector";
+import { Rectangle } from "../objects/shapes";
+import RenderUtils from "../render/utils";
 
 class RenderController {
 
@@ -41,6 +44,7 @@ class RenderController {
       canvasRenderingContext.translate(canvas.width / 2, canvas.height / 2)
       canvasRenderingContext.scale(camera.zoom, camera.zoom);
       canvasRenderingContext.translate(-camera.position.x, -camera.position.y)
+
       // Make the center of the screen aligned with the camera's position
       normalRenderElements.forEach(element => {
         if (isRenderable(element)) {
@@ -57,6 +61,8 @@ class RenderController {
         element.render(gameContext)
       })
     })
+
+
   }
 
   private clearCanvas(canvasRenderingContext: CanvasRenderingContext2D) {

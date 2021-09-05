@@ -1,21 +1,24 @@
+import GameContext from "../core/gameContext";
+import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
-import { Gravitationable } from "./gravitational";
+import { Gravitationable, isGravitationable } from "./gravitational";
 import { PhysicableConstructor, Physicable } from "./physics";
 import { GConstructor } from "./shared";
 
 interface AffectedByGravitationable extends Physicable {
-  calculateGravitationalAcceleration: (objects: Gravitationable[]) => Vector;
+  calculateGravitationalAcceleration: (context: GameContext) => Vector;
 }
 
 export type AffectedByGravitationalConstructor = GConstructor<AffectedByGravitationable>
 
-export function AffectedByGravitationableMixin<TBase extends PhysicableConstructor>(Base: TBase): AffectedByGravitationalConstructor & TBase {
+export function AffectedByGravitationableMixin<TBase extends PhysicableConstructor & GConstructor<BaseObject>>(Base: TBase): AffectedByGravitationalConstructor & TBase {
   return class M extends Base implements AffectedByGravitationable {
 
-    calculateGravitationalAcceleration(objects: Gravitationable[]) {
+    calculateGravitationalAcceleration(context: GameContext) {
+      const gravitationals = context.objects.filter(obj => isGravitationable(obj) && obj.id !== this.id) as (BaseObject & Gravitationable)[];
       const acceleration = new Vector();
 
-      objects.forEach(obj => {
+      gravitationals.forEach(obj => {
         const accByPlanet = this.calculateAccelerationByPlanet(obj);
         acceleration.add(accByPlanet)
       });
