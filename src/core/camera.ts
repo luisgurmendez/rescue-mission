@@ -190,6 +190,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     this.adjutsPositionIfOutOfWorldsBounds(context.worldDimensions);
   }
 
+  //TODO: Double check bounding box of world with zooming, should we adjust viewport on zoom?
   adjutsPositionIfOutOfWorldsBounds(world: Rectangle) {
     const adjutsLeft = this.position.clone().x - this.viewport.w / 2 < -world.w / 2;
     const adjustRight = this.position.clone().x + this.viewport.w / 2 > world.w / 2;
@@ -219,7 +220,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       const { canvasRenderingContext, canvasRenderingContext: { canvas } } = gameContext;
       canvasRenderingContext.font = "15px Arial";
       canvasRenderingContext.fillStyle = "#FFF";
-      canvasRenderingContext.fillText(`(${this.position.x.toFixed(0)},${this.position.y.toFixed(0)})`, canvas.width - 80, 20);
+      canvasRenderingContext.fillText(`(${this.position.x.toFixed(0)},${this.position.y.toFixed(0)})`, canvas.width - 120, 20);
     }
     const renderElement = new RenderElement(renderFn);
     renderElement.positionType = 'overlay';

@@ -86,8 +86,6 @@ class Button extends BaseObject implements Renderable, Pressable, Positionable, 
     const x = event.pageX;
     const y = event.pageY;
 
-    // TODO: Pass the camera obj so that we can click normal positiontype buttons.
-
     // Collision detection between clicked offset and element.
     if (y > this.position.y && y < this.position.y + this.pressArea.h
       && x > this.position.y && x < this.position.x + this.pressArea.w) {

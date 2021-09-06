@@ -61,8 +61,6 @@ class RenderController {
         element.render(gameContext)
       })
     })
-
-
   }
 
   private clearCanvas(canvasRenderingContext: CanvasRenderingContext2D) {
