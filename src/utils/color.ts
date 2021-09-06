@@ -1,7 +1,6 @@
 import RandomUtils from "./random";
 
 
-
 type ColorUnitInRange = [number, number] | number;
 
 class Color {
@@ -15,13 +14,6 @@ class Color {
     this.g = g;
     this.b = b;
     this.a = a;
-  }
-
-  // TODO: implement 
-  fromHex(hex: string) {
-    if (hex[0] === '#') {
-
-    }
   }
 
   clone() {

@@ -31,6 +31,6 @@ archive.on('error', function (err) {
 })
 
 archive.pipe(output)
-archive.file('./public/index.hmtl', {name: 'index.html'})
-archive.file('./public/main.js', {name: 'main.js'})
+archive.file('./public/index.html', { name: 'index.html' })
+archive.file('./public/main.js', { name: 'main.js' })
 archive.finalize()

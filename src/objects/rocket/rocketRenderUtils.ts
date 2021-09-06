@@ -1,21 +1,18 @@
 import Vector from "../../physics/vector";
 import GameContext from "../../core/gameContext";
 import RenderUtils from "../../render/utils";
+import { Dimensions } from "../../core/canvas";
 
 class RocketRenderUtils {
 
-  static renderLaunchAngle = (context: GameContext) => {
+
+  static renderInfo(context: GameContext) {
     const { rocket, canvasRenderingContext, canvasRenderingContext: { canvas } } = context;
     canvasRenderingContext.font = "15px Arial";
     canvasRenderingContext.fillStyle = "#FFF";
-    canvasRenderingContext.fillText(`angle: ${(rocket.direction.angleTo(new Vector(0, -1)) * 180 / Math.PI).toFixed(2)}º`, canvas.width - 300, canvas.height - 20);
-  }
-
-  static renderCautionTooFast = (context: GameContext) => {
-    const { canvasRenderingContext, canvasRenderingContext: { canvas } } = context;
-    canvasRenderingContext.font = "15px Arial";
-    canvasRenderingContext.fillStyle = "#F44";
-    canvasRenderingContext.fillText(`CAUTION`, canvas.width - 155, 21);
+    const text = `speed: ${rocket.speed.toFixed(0)}  ,  position: (${rocket.position.x.toFixed(0)},${rocket.position.y.toFixed(0)})`
+    const textWidth = canvasRenderingContext.measureText(text).width;
+    canvasRenderingContext.fillText(text, Dimensions.w - (textWidth + 20), Dimensions.h - 20);
   }
 
   static renderLaunchDirectional = (context: GameContext) => {
@@ -25,21 +22,14 @@ class RocketRenderUtils {
     canvasRenderingContext.save();
     canvasRenderingContext.beginPath();
     canvasRenderingContext.setLineDash([5, 15]);
-    // canvasRenderingContext.translate(rocket.position.x, rocket.position.y);
     canvasRenderingContext.moveTo(rocket.position.x, rocket.position.y);
-    const line = rocket.direction.clone().scalar(1000) //.add(rocket.position);
-    line.add(rocket.position);
+    const line = rocket.direction.clone().scalar(1000).add(rocket.position);
     canvasRenderingContext.lineTo(line.x, line.y);
     canvasRenderingContext.stroke();
     canvasRenderingContext.restore();
-  }
-
-  static renderRocketPhysics = (context: GameContext) => {
-    const { rocket, canvasRenderingContext, canvasRenderingContext: { canvas } } = context;
-    canvasRenderingContext.font = "15px Arial";
+    canvasRenderingContext.font = "7px Arial";
     canvasRenderingContext.fillStyle = "#FFF";
-    canvasRenderingContext.fillText(`position: (${rocket.position.x.toFixed(0)},${rocket.position.y.toFixed(0)})`, canvas.width - 140, canvas.height - 20);
-    canvasRenderingContext.fillText(`speed: ${rocket.speed.toFixed(0)}`, canvas.width - 210, canvas.height - 20);
+    canvasRenderingContext.fillText(`${(rocket.direction.angleTo(new Vector(0, -1)) * 180 / Math.PI).toFixed(2)}º`, rocket.position.x + 10, rocket.position.y);
   }
 
   static renderRocket = (context: GameContext) => {

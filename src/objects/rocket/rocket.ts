@@ -50,7 +50,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     this.type = ObjectType.ROCKET;
     this.collisionMask = new Rectangle(13, 16)
     this.direction = new Vector(0, -1);
-    this.thruster = new RocketThruster(Infinity, 7607 * 1000); // 981 kN fallcon 9
+    this.thruster = new RocketThruster(1000, 7607 * 1000); // 981 kN fallcon 9
     this.secondaryThruster = new RocketThruster(300, 7607 * 1000);
 
   }
@@ -73,23 +73,14 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     const thrusterRenderElement = this.thruster.render();
     const secondaryThrusterRenderElement = this.secondaryThruster.render({ color: new Color(255, 255, 255), offset: new Vector(45, 0) });
 
-    const rocketPhysicsRenderElement = new RenderElement(RocketRenderUtils.renderRocketPhysics);
+    const rocketPhysicsRenderElement = new RenderElement(RocketRenderUtils.renderInfo);
     rocketPhysicsRenderElement.positionType = 'overlay';
-
-    const cautionTooFastRenderElement = new RenderElement(RocketRenderUtils.renderCautionTooFast)
-    cautionTooFastRenderElement.positionType = 'overlay';
 
     renderElement.children = [secondaryThrusterRenderElement, thrusterRenderElement, rocketPhysicsRenderElement]
 
-    if (this.speed > 40) {
-      renderElement.children.push(cautionTooFastRenderElement);
-    }
-
     if (!this.hasLaunched) {
       const rocketLauncherRenderElement = new RenderElement(RocketRenderUtils.renderLaunchDirectional);
-      const rocketLauncherAngleRenderElement = new RenderElement(RocketRenderUtils.renderLaunchAngle);
-      rocketLauncherAngleRenderElement.positionType = 'overlay';
-      renderElement.children.push(...[rocketLauncherRenderElement, rocketLauncherAngleRenderElement])
+      renderElement.children.push(...[rocketLauncherRenderElement])
     }
     return renderElement;
   }
@@ -171,27 +162,29 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   }
 
   private getThrustAcceleration(context: GameContext) {
-    let thrustAcceleration = new Vector();
+    let primaryThrustAcc = new Vector();;
+    let secondaryThrustAcc = new Vector();
     const isKeyPressed = context.pressedKeys.isKeyPressed;
 
     if (isKeyPressed('w')) {
       this.hasLaunched = true;
-      thrustAcceleration = this.direction.clone().scalar(this.thrust());
-      const particle = this.generateParticle(thrustAcceleration, 'bottom', true)
+      primaryThrustAcc = this.direction.clone().scalar(this.thrust());
+      const particle = this.generateParticle(primaryThrustAcc, 'bottom', true)
       if (particle) {
         context.objects.push(particle);
       }
     }
 
     if (isKeyPressed('s')) {
-      thrustAcceleration = this.direction.clone().scalar(-1).scalar(this.secondaryThrust()); // TODO uncomment top
-      const particle = this.generateParticle(thrustAcceleration, 'top');
+      secondaryThrustAcc = this.direction.clone().scalar(-this.secondaryThrust() / 2); // TODO uncomment top
+      const particle = this.generateParticle(secondaryThrustAcc, 'top');
       if (particle) {
         context.objects.push(particle);
       }
 
     }
-    return thrustAcceleration;
+
+    return primaryThrustAcc.add(secondaryThrustAcc)
   }
 
   private secondaryThrust() {

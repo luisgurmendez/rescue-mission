@@ -18,7 +18,7 @@ class LandingAndAltitudeObjective implements LevelObjective {
   private mark: number;
 
   constructor(target: Planet, mark: number) {
-    this.mark = mark;
+    this.mark = target.collisionMask.radius + mark;
     this.landingObjective = new LandingOnTargetPlanetObjective(target)
   }
 
@@ -37,8 +37,8 @@ class LandingAndAltitudeObjective implements LevelObjective {
 }
 
 function generate() {
-  const altitudeMark = 200;
-  const earth = new Planet(new Vector(0, 0), 2000, 100)
+  const altitudeMark = 100;
+  const earth = new Planet(new Vector(0, 0), 4000, 100)
   const altitudeMarkObj = new AltitudeMark(new Vector(earth.position.x - 30, earth.position.y - earth.collisionMask.radius), altitudeMark);
   const objects: BaseObject[] = [
     earth,
@@ -46,7 +46,16 @@ function generate() {
   ];
   const level = new Level(objects, new LandingAndAltitudeObjective(earth, altitudeMark));
   level.rocket.position = new Vector(0, -110);
-  level.camera.follow(level.rocket);
+  level.init = async () => {
+    level.camera.follow(level.rocket);
+    level.camera.zoom = 2.5;
+    // await level.camera.flyTo(new Vector(0, -210), 2);
+    // await wait(1)
+    // await level.camera.flyTo(new Vector(0, -110), 1);
+    // await wait(1)
+    // level.camera.zoom = 3
+
+  };
   return level;
 
 }
@@ -68,7 +77,7 @@ class AltitudeMark extends AltitudeMarkMixin {
       const { canvasRenderingContext } = context;
       canvasRenderingContext.beginPath();
       canvasRenderingContext.setLineDash([5, 15]);
-      canvasRenderingContext.strokeStyle = '#333';
+      canvasRenderingContext.strokeStyle = '#BBB';
       canvasRenderingContext.moveTo(this.position.x, this.position.y);
       canvasRenderingContext.lineTo(this.position.x, this.position.y - this.altitude);
       canvasRenderingContext.lineTo(this.position.x + 50, this.position.y - this.altitude);

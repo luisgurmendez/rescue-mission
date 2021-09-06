@@ -23,10 +23,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   locked: boolean = false;
   shouldInitialize = true;
   shouldDispose = false;
-  flyingToPosition: Vector | null = null;
-  flyingDuration: number | null = null;
-  flyingElapsedTime: number | null = null;
-  flyingInitialPosition: Vector | null = null;
+  flying: Flying = new Flying();
 
   constructor() {
     super('camera');
@@ -63,10 +60,8 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
       // Only change positions if there was some actual zooming
       if (oldZoom !== this.zoom && this.following === null) {
-
         this.position.x += mousex / (this.zoom * deltaZoom) - mousex / this.zoom;
         this.position.y += mousey / (this.zoom * deltaZoom) - mousey / this.zoom;
-
       }
     }
 
@@ -86,30 +81,23 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       initialDraggingClientPosition = new Vector(event.clientX, event.clientY);
     }
 
-    const handleMouseUp = (event: MouseEvent) => {
+    const handleCancelMouseDown = (event: MouseEvent) => {
       mouseDown = false;
     }
 
-    const handleMouseOver = (event: MouseEvent) => {
-      mouseDown = false;
-    }
-
-    const handleMouseOut = (event: MouseEvent) => {
-      mouseDown = false;
-    }
     // add event listeners to handle screen drag
     canvas.addEventListener("mousedown", handleMouseDown);
-    canvas.addEventListener("mouseup", handleMouseUp);
-    canvas.addEventListener("mouseover", handleMouseOver);
-    canvas.addEventListener("mouseout", handleMouseOut);
+    canvas.addEventListener("mouseup", handleCancelMouseDown);
+    canvas.addEventListener("mouseover", handleCancelMouseDown);
+    canvas.addEventListener("mouseout", handleCancelMouseDown);
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener('wheel', handleCanvasWheel)
 
     this.dispose = () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
-      canvas.removeEventListener("mouseup", handleMouseUp);
-      canvas.removeEventListener("mouseover", handleMouseOver);
-      canvas.removeEventListener("mouseout", handleMouseOut);
+      canvas.removeEventListener("mouseup", handleCancelMouseDown);
+      canvas.removeEventListener("mouseover", handleCancelMouseDown);
+      canvas.removeEventListener("mouseout", handleCancelMouseDown);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener('wheel', handleCanvasWheel);
     }
@@ -118,6 +106,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
   follow(obj: Positionable) {
     this.following = obj;
+    this.flying.clear();
   }
 
   unfollow() {
@@ -164,29 +153,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     if (this.following !== null) {
       this._position = this.following.position.clone()
     }
-
-    if (
-      this.flyingToPosition !== null &&
-      this.flyingDuration !== null &&
-      this.flyingElapsedTime !== null &&
-      this.flyingInitialPosition !== null
-    ) {
-      this.flyingElapsedTime -= context.dt;
-      const toPositionVector = this.flyingToPosition.clone().sub(this.position);
-      const distanceToFlyingPosition = this.flyingInitialPosition.distanceTo(this.flyingToPosition);
-      const flyingSpeed = distanceToFlyingPosition / this.flyingDuration;
-      const flyingDelta = toPositionVector.normalize().scalar(context.dt * flyingSpeed);
-      this._position = this.position.add(flyingDelta);
-      if (this.flyingElapsedTime < 0) {
-        this._position = this.flyingToPosition.clone();
-        this.flyingToPosition = null;
-        this.flyingElapsedTime = null;
-        this.flyingDuration = null;
-        this.flyingInitialPosition = null;
-      }
-
-    }
-
+    this._position.add(this.flying.fly(context.dt, this.position.clone()))
     this.adjutsPositionIfOutOfWorldsBounds(context.worldDimensions);
   }
 
@@ -230,16 +197,56 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
   // there is a known bug where the promise resolves before the flying duration when the game is on pause
   flyTo(position: Vector, duration: number = 2): Promise<void> {
-
     this.following = null;
-    this.flyingToPosition = position;
-    this.flyingInitialPosition = this.position.clone();
-    this.flyingDuration = duration;
-    this.flyingElapsedTime = duration;
-
-    return wait(2)
+    this.flying.flyTo(this.position.clone(), position.clone(), duration);
+    return wait(duration)
   }
 
 }
 
 export default Camera;
+
+class Flying {
+  private toPosition: Vector | null = null;
+  private duration: number | null = null;
+  private elapsedTime: number = 0;
+  private initialPosition: Vector | null = null;
+
+
+  flyTo(from: Vector, to: Vector, duration: number) {
+    this.toPosition = to.clone();
+    this.initialPosition = from.clone();
+    this.duration = duration;
+    this.elapsedTime = duration;
+  }
+
+  fly(dt: number, actualPosition: Vector) {
+    let flyingDelta = new Vector();
+    if (
+      this.toPosition !== null &&
+      this.duration !== null &&
+      this.elapsedTime !== null &&
+      this.initialPosition !== null
+    ) {
+      this.elapsedTime -= dt;
+      const toPositionVector = this.toPosition.clone().sub(actualPosition);
+      const distanceToFlyingPosition = this.initialPosition.distanceTo(this.toPosition);
+      const flyingSpeed = distanceToFlyingPosition / this.duration;
+      flyingDelta = toPositionVector.normalize().scalar(dt * flyingSpeed);
+      if (this.elapsedTime < 0) {
+        flyingDelta = this.toPosition.clone().sub(actualPosition);
+        this.clear();
+      }
+    }
+
+
+    return flyingDelta;
+  }
+
+  clear() {
+    this.toPosition = null;
+    this.duration = null;
+    this.initialPosition = null;
+  }
+
+}

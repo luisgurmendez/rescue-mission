@@ -4,7 +4,6 @@ import Camera from "./camera";
 import SpaceBackground, { StarPool } from "../objects/spaceBackground";
 import Rocket from "../objects/rocket/rocket";
 import Vector from "../physics/vector";
-import Planet from "../objects/planet/planet";
 import Initializable from "../behaviors/initializable";
 import Disposable from "../behaviors/disposable";
 import GameContext from "./gameContext";
@@ -16,6 +15,10 @@ import { isCollisionableObject } from "../mixins/collisionable";
 import Keyboard from "./keyboard";
 import Stepable from "../behaviors/stepable";
 import RocketStatusController from "../controllers/RocketStatusController";
+import Renderable from "../behaviors/renderable";
+import RenderUtils from "../render/utils";
+import { Dimensions } from "./canvas";
+import RenderElement from "../render/renderElement";
 
 const pressedKeys = Keyboard.getInstance();
 class Level implements Initializable, Disposable {
@@ -47,22 +50,23 @@ class Level implements Initializable, Disposable {
     this.statusController = new LevelStatusController(objective);
   }
 
-
   update(gameApi: GameApi): void {
     const gameContext = this.generateGameContext(gameApi);
+    if (!gameApi.isPaused) {
 
-    this.objectLifecycleController.initialize(gameContext);
-    this.objectLifecycleController.step(gameContext);
+      this.objectLifecycleController.initialize(gameContext);
+      this.objectLifecycleController.step(gameContext);
 
-    // Move this to private fn..
-    if (!this.statusController.hasWonOrLost) {
-      this.rocketStatusController.step(gameContext);
-      this.objective.step(gameContext);
-      const status = this.statusController.getStatus(gameContext);
-      this.handleLevelEnding(status)
+      // Move this to private fn..
+      if (!this.statusController.hasWonOrLost) {
+        this.rocketStatusController.step(gameContext);
+        this.objective.step(gameContext);
+        const status = this.statusController.getStatus(gameContext);
+        this.handleLevelEnding(gameApi, status)
+      }
+      this.objectLifecycleController.dispose(gameContext);
     }
 
-    this.objectLifecycleController.dispose(gameContext);
     this.renderController.render(gameContext);
   }
 
@@ -70,12 +74,27 @@ class Level implements Initializable, Disposable {
 
   dispose() { };
 
-
-  private handleLevelEnding(status: LevelStatus) {
+  private handleLevelEnding(gameApi: GameApi, status: LevelStatus) {
     // TODO: We should show won/lost dialogs etc....
     if (status !== LevelStatus.PLAYING) {
-      // alert(status === LevelStatus.WON);
+      if (status === LevelStatus.WON) {
+        setTimeout(() => {
+          console.log('WONNN')
+          gameApi.nextLevel();
+        }, 2000);
+      }
+      if (status === LevelStatus.LOST) {
+        console.log('LOST!')
+        this.objects.push(new RestartLevelLabelObject())
+        console.log(this.objects)
+      }
+
     }
+  }
+
+  restart() {
+    this.dispose();
+    this.init();
   }
 
   private generateGameContext(api: GameApi): GameContext {
@@ -133,5 +152,19 @@ class LevelStatusController {
     }
 
     return LevelStatus.PLAYING;
+  }
+}
+
+class RestartLevelLabelObject extends BaseObject implements Renderable {
+
+  render() {
+    const renderFn = (ctx: GameContext) => {
+      ctx.canvasRenderingContext.font = '45px Arial';
+      ctx.canvasRenderingContext.fillStyle = '#FFF';
+      RenderUtils.renderText(ctx.canvasRenderingContext, "Press [r] to restart level", new Vector(Dimensions.w / 2, Dimensions.h - 85));
+    }
+    const renderEl = new RenderElement(renderFn);
+    renderEl.positionType = 'overlay'
+    return renderEl;
   }
 }

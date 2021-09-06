@@ -3,7 +3,6 @@ import Particle from "../../objects/particle/particle";
 import Vector from "../../physics/vector";
 import RandomUtils from "../../utils/random";
 import { callTimes } from "../../utils/fn";
-import Rocket from "./rocket";
 import { Rectangle } from "objects/shapes";
 
 export type ParticlePerimetralPositioning = 'top' | 'bottom' | 'top-left' | 'top-right'

@@ -2,8 +2,9 @@ import GameContext from "../core/gameContext";
 import { isRenderable } from "../behaviors/renderable";
 import RenderElement from "../render/renderElement";
 import Vector from "../physics/vector";
-import { Rectangle } from "../objects/shapes";
 import RenderUtils from "../render/utils";
+import Color from "../utils/color";
+import { Dimensions } from "../core/canvas";
 
 class RenderController {
 
@@ -41,7 +42,7 @@ class RenderController {
 
     // render normal elements..
     this.safetlyRender(canvasRenderingContext, () => {
-      canvasRenderingContext.translate(canvas.width / 2, canvas.height / 2)
+      canvasRenderingContext.translate(Dimensions.w / 2, Dimensions.h / 2)
       canvasRenderingContext.scale(camera.zoom, camera.zoom);
       canvasRenderingContext.translate(-camera.position.x, -camera.position.y)
 
@@ -61,6 +62,10 @@ class RenderController {
         element.render(gameContext)
       })
     })
+
+    if (gameContext.isPaused) {
+      this.renderPause(canvasRenderingContext)
+    }
   }
 
   private clearCanvas(canvasRenderingContext: CanvasRenderingContext2D) {
@@ -72,6 +77,16 @@ class RenderController {
     canvasRenderingContext.save();
     render();
     canvasRenderingContext.restore();
+  }
+
+  private renderPause(canvasRenderingContext: CanvasRenderingContext2D) {
+    const canvasDimensions = { w: canvasRenderingContext.canvas.width, h: canvasRenderingContext.canvas.height }
+    canvasRenderingContext.rect(0, 0, canvasDimensions.w, canvasDimensions.h);
+    canvasRenderingContext.fillStyle = new Color(0, 0, 0, 0.5).rgba();
+    canvasRenderingContext.fill();
+    canvasRenderingContext.font = "45px Arial"
+    canvasRenderingContext.fillStyle = "#FFF";
+    RenderUtils.renderText(canvasRenderingContext, 'Press [p] to unpause', new Vector(canvasDimensions.w / 2, 0));
   }
 }
 

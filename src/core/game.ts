@@ -1,43 +1,36 @@
 import Keyboard from "./keyboard";
 import Clock from "./clock";
-import Stats from 'stats.js'
 import CanvasGenerator from "./canvas";
-import generateTutorialLevel from "../levels/level2";
-import Level from "./level";
+import { createMenu, disposeMenu } from "../menu/menu";
+import LevelsController from "../levels/levels";
 
 // TODO: implement r to restart
-// TODO: implement p to pause/unpause
-
 const pressedKeys = Keyboard.getInstance();
 
 class Game {
 
   private clock: Clock;
   private isPaused: boolean = false;
-  private stats: Stats;
   private canvasRenderingContext: CanvasRenderingContext2D;
 
-  private level: Level;
+  private levelsController: LevelsController;
   private gameSpeed: number = 1;
+  private showingMenu = false;
 
   constructor() {
     // Inits canvas rendering context
     this.canvasRenderingContext = CanvasGenerator.generateCanvas();
-    this.level = generateTutorialLevel();
     this.clock = new Clock();
-
-    this.stats = new Stats();
-    this.stats.showPanel(0);
-    document.body.appendChild(this.stats.dom);
+    this.levelsController = new LevelsController();
   }
 
   init() {
-    this.level.init();
+    this.levelsController.init();
     window.addEventListener('blur', () => {
       pressedKeys.clearPressedKeys();
       this.pause();
     });
-    window.addEventListener('focus', this.unPause);
+    // window.addEventListener('focus', this.unPause);
 
     // TODO: experimental game speed change
     window.addEventListener('keydown', (e) => {
@@ -48,17 +41,30 @@ class Game {
       if (e.key === 'n') {
         this.gameSpeed -= 1;
       }
+
+      if (e.key === 'h') {
+        if (this.showingMenu) {
+          this.hideMenu()
+        } else {
+          this.showMenu()
+        }
+      }
+
+      if (e.key === 'r') {
+        this.levelsController.restart();
+      }
     })
 
     // Follow rocket on space
     window.addEventListener('keydown', (e) => {
       if (e.key === ' ') {
-        this.level.camera.follow(this.level.rocket);
+        const level = this.levelsController.getLevel();
+        level.camera.follow(level.rocket);
       }
-    })
+    });
 
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'p') {
+      if (e.key === 'p' && !this.showingMenu) {
         if (this.isPaused) {
           this.unPause()
         } else {
@@ -80,11 +86,9 @@ class Game {
 
   loop = (externalUpdate?: () => void) => {
     return () => {
-      this.stats.begin()
+      // this.stats.begin()
       externalUpdate && externalUpdate();
-      if (!this.isPaused) {
-        this.update();
-      }
+      this.update();
       requestAnimationFrame(this.loop(externalUpdate));
       this.afterUpdate()
     }
@@ -94,17 +98,30 @@ class Game {
    * TODO: Remove GameApi completely!
    */
   private update() {
+    const level = this.levelsController.getLevel();
     const gameApi = this.generateGameApi();
-    this.level.update(gameApi);
+    level.update(gameApi);
   }
 
   private afterUpdate() {
-    this.stats.end()
+    // this.stats.end()
   }
 
   private generateGameApi(): GameApi {
     const dt = this.clock.getDelta() * this.gameSpeed;
-    return new GameApi(dt, this.canvasRenderingContext, this.isPaused, this.pause, this.unPause);
+    return new GameApi(dt, this.canvasRenderingContext, this.isPaused, () => this.levelsController.next(), this.pause, this.unPause);
+  }
+
+  private showMenu() {
+    this.pause();
+    createMenu(() => this.hideMenu());
+    this.showingMenu = true;
+  }
+
+  private hideMenu() {
+    disposeMenu();
+    this.showingMenu = false;
+    this.unPause();
   }
 }
 
@@ -116,6 +133,8 @@ export class GameApi {
   readonly canvasRenderingContext: CanvasRenderingContext2D;
   readonly dt: number;
 
+  nextLevel: () => void;
+
   readonly isPaused: boolean;
   pause: () => void;
   unPause: () => void;
@@ -124,12 +143,14 @@ export class GameApi {
     dt: number,
     canvasRenderingContext: CanvasRenderingContext2D,
     isPaused: boolean,
+    nextLevel: () => void,
     pause: () => void,
     unPause: () => void
   ) {
     this.dt = dt;
     this.canvasRenderingContext = canvasRenderingContext;
     this.isPaused = isPaused;
+    this.nextLevel = nextLevel;
     this.pause = pause;
     this.unPause = unPause;
   }

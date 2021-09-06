@@ -2,7 +2,6 @@ import GameContext from "../../core/gameContext";
 import { Rectangle } from "../../objects/shapes";
 import Vector from "../../physics/vector";
 import RenderElement from "../../render/renderElement";
-import RenderUtils from "../../render/utils";
 import Renderable from "../../behaviors/renderable";
 import Color from "../../utils/color";
 
