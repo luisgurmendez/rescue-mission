@@ -13,3 +13,6 @@ export function PositionableMixin<TBase extends GConstructor>(Base: TBase): Posi
   };
 }
 
+export function isPositionable(a: any): a is Positionable {
+  return typeof a === 'object' && a.position instanceof Vector;
+}

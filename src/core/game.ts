@@ -34,15 +34,18 @@ class Game {
 
     // TODO: experimental game speed change
     window.addEventListener('keydown', (e) => {
-      if (e.key === 'm') {
+      if (e.key === 'x') {
         this.gameSpeed += 1;
       }
 
-      if (e.key === 'n') {
+      if (e.key === 'z') {
         this.gameSpeed -= 1;
+        if (this.gameSpeed < 1) {
+          this.gameSpeed = 1;
+        }
       }
 
-      if (e.key === 'h') {
+      if (e.key === 'm') {
         if (this.showingMenu) {
           this.hideMenu()
         } else {
@@ -52,6 +55,10 @@ class Game {
 
       if (e.key === 'r') {
         this.levelsController.restart();
+      }
+
+      if (e.key === '0' || e.key === '1' || e.key === '2' || e.key === '3') {
+        this.levelsController.goToLevel(parseInt(e.key));
       }
     })
 
@@ -98,9 +105,14 @@ class Game {
    * TODO: Remove GameApi completely!
    */
   private update() {
-    const level = this.levelsController.getLevel();
-    const gameApi = this.generateGameApi();
-    level.update(gameApi);
+    try {
+      const level = this.levelsController.getLevel();
+      const gameApi = this.generateGameApi();
+      level.update(gameApi);
+    } catch (e) {
+      console.log(e);
+    }
+
   }
 
   private afterUpdate() {
@@ -114,7 +126,7 @@ class Game {
 
   private showMenu() {
     this.pause();
-    createMenu(() => this.hideMenu());
+    createMenu(() => this.hideMenu(), this.levelsController.getNumOfLevels(), this.levelsController.getReachedLevel(), (i: number) => this.levelsController.goToLevel(i));
     this.showingMenu = true;
   }
 

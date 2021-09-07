@@ -1,8 +1,8 @@
 
 export function noop(): void { }
 
-export function callTimes<T>(n: number, func: (() => T)): T[] {
-  return [...Array(n)].map(() => func());
+export function callTimes<T>(n: number, func: ((i: number) => T)): T[] {
+  return [...Array(n)].map((_, i) => func(i));
 }
 
 export function filterInPlaceAndGetRest<T>(objs: T[], filterFn: (val: T) => boolean) {

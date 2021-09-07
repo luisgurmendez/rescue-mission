@@ -19,8 +19,12 @@ import Renderable from "../behaviors/renderable";
 import RenderUtils from "../render/utils";
 import { Dimensions } from "./canvas";
 import RenderElement from "../render/renderElement";
+import TimedTextSequence from "../objects/timedTextSequence";
+import RandomUtils from "../utils/random";
 
 const pressedKeys = Keyboard.getInstance();
+
+// TODO: how to restart levels without having to call init again?
 class Level implements Initializable, Disposable {
 
   objects: BaseObject[] = [];
@@ -28,7 +32,7 @@ class Level implements Initializable, Disposable {
   worldDimensions: Rectangle;
   rocket: Rocket;
   objective: LevelObjective;
-  rocketStatusController: RocketStatusController;
+  private rocketStatusController: RocketStatusController;
   private objectLifecycleController: ObjectLifecycleController = new ObjectLifecycleController();
   private collisionController: CollisionsController = new CollisionsController();
   private renderController: RenderController = new RenderController();
@@ -62,7 +66,7 @@ class Level implements Initializable, Disposable {
         this.rocketStatusController.step(gameContext);
         this.objective.step(gameContext);
         const status = this.statusController.getStatus(gameContext);
-        this.handleLevelEnding(gameApi, status)
+        this.handleLevelEnding(gameContext, gameApi, status)
       }
       this.objectLifecycleController.dispose(gameContext);
     }
@@ -74,19 +78,18 @@ class Level implements Initializable, Disposable {
 
   dispose() { };
 
-  private handleLevelEnding(gameApi: GameApi, status: LevelStatus) {
+  private handleLevelEnding(gameContext: GameContext, gameApi: GameApi, status: LevelStatus) {
     // TODO: We should show won/lost dialogs etc....
+    const levelCompletedCompliments = ['Great job!', 'Awesome!', 'Nice!', 'Landed!', 'Nailed it!']
     if (status !== LevelStatus.PLAYING) {
       if (status === LevelStatus.WON) {
+        gameContext.objects.push(new TimedTextSequence([levelCompletedCompliments[RandomUtils.getIntegerInRange(0, levelCompletedCompliments.length - 1)]]))
         setTimeout(() => {
-          console.log('WONNN')
           gameApi.nextLevel();
         }, 2000);
       }
       if (status === LevelStatus.LOST) {
-        console.log('LOST!')
         this.objects.push(new RestartLevelLabelObject())
-        console.log(this.objects)
       }
 
     }
@@ -161,7 +164,7 @@ class RestartLevelLabelObject extends BaseObject implements Renderable {
     const renderFn = (ctx: GameContext) => {
       ctx.canvasRenderingContext.font = '45px Arial';
       ctx.canvasRenderingContext.fillStyle = '#FFF';
-      RenderUtils.renderText(ctx.canvasRenderingContext, "Press [r] to restart level", new Vector(Dimensions.w / 2, Dimensions.h - 85));
+      RenderUtils.renderText(ctx.canvasRenderingContext, "Press [r] to restart level", new Vector(Dimensions.w / 2, 20));
     }
     const renderEl = new RenderElement(renderFn);
     renderEl.positionType = 'overlay'

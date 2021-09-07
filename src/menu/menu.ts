@@ -1,3 +1,4 @@
+import { callTimes } from "../utils/fn";
 
 interface MenuItem {
   label: string;
@@ -7,8 +8,9 @@ interface MenuItem {
 function noop() { }
 
 type Fn = () => void;
+type GoToLevelFn = (i: number) => void
 
-export function createMenu(onResume: Fn) {
+export function createMenu(onResume: Fn, allLevels: number, reachedLevel: number, goToLevel: GoToLevelFn) {
   const menuContainerEl = document.getElementById('menu-container');
   let activeMenuPageIndex = 0;
   let activeMenuElement: HTMLElement | null = null;
@@ -26,9 +28,14 @@ export function createMenu(onResume: Fn) {
     changeMenuPage(0);
   }
 
+  const handleGoToLevelAndResume = (i: number) => {
+    goToLevel(i);
+    onResume()
+  }
+
   const menu = createMenuContent(onResume, changeMenuPage);
   const controls = createControlsContent(onBack)
-  const levels = createLevelsContent(onBack);
+  const levels = createLevelsContent(onBack, allLevels, reachedLevel, handleGoToLevelAndResume);
   const menuPagesElements = [menu, controls, levels]; // Menu
 
   changeMenuPage(0);
@@ -53,7 +60,6 @@ function createMenuContent(onResume: Fn, onChangePage: (i: number) => void) {
     { label: 'Resume game', onClick: onResume },
     { label: 'Controls', onClick: () => onChangePage(1), },
     { label: 'Levels', onClick: () => onChangePage(2) },
-    { label: 'Landing rocket', onClick: () => onChangePage(3) },
   ]
   const title = createMenuTitle('Menu');
   const itemElements = items.map(i => createMenuButton(i.label, i.onClick));
@@ -86,18 +92,66 @@ function createControlsContent(onBack: Fn) {
   const menu = document.createElement('div');
   menu.id = 'menu';
   const title = createMenuTitle('Controls')
+  const controls = [
+    'w,a,s,d - movement',
+    `'space' - follow rocket`,
+    `'.' or ',' or mouse wheel - zoom in/out`,
+    'click & drag to move camera',
+    'm - toggle menu',
+    'p - toggle pause',
+    'r - restart level',
+    'x - increase game speed',
+    'z - decrease game speed',
+  ]
   const back = createMenuButton('< Back', onBack);
-  const itemElements = [title, back]
+  const controlEls = controls.map(createControlItem)
+  const itemElements = [title, ...controlEls, back]
   menu.append(...itemElements);
   return menu;
 }
 
-function createLevelsContent(onBack: Fn) {
+function createControlItem(control: string) {
+  const itemEl = document.createElement('div');
+  itemEl.innerText = control
+  itemEl.className = "control-item";
+  return itemEl;
+
+}
+
+interface LevelOption {
+  name: string;
+  disabled: boolean;
+  onClick: Fn
+}
+
+function createLevelsContent(onBack: Fn, numOfLevels: number, reachedLevel: number, goToLevel: GoToLevelFn) {
   const menu = document.createElement('div');
   menu.id = 'menu';
   const title = createMenuTitle('Levels')
   const back = createMenuButton('< Back', onBack);
-  const itemElements = [title, back]
+  const levels: LevelOption[] = [];
+  callTimes(numOfLevels, (i: number) => {
+    // TODO: Have names for the levels?
+    levels.push({
+      name: `Level ${i}`,
+      disabled: reachedLevel < i,
+      onClick: () => goToLevel(i)
+    });
+  })
+  const levelEls = levels.map(level => createLevelElement(level))
+
+  const itemElements = [title, ...levelEls, back]
+
   menu.append(...itemElements);
   return menu;
+}
+
+
+function createLevelElement(level: LevelOption) {
+  const itemEl = document.createElement('button');
+  itemEl.innerText = level.name;
+  itemEl.disabled = level.disabled;
+  itemEl.className = "menu-item level-item";
+  itemEl.addEventListener('click', level.onClick);
+  return itemEl;
 }

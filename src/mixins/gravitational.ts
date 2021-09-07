@@ -26,6 +26,6 @@ export function GravitationalMixin<TBase extends PhysicableConstructor>(Base: TB
 }
 
 export function isGravitationable(obj: any): obj is Gravitationable {
-  return typeof obj === 'object' && obj.gravitationalThreshold !== null;
+  return typeof obj === 'object' && obj.gravitationalThreshold !== undefined;
 }
 

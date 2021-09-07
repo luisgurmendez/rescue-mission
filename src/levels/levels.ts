@@ -1,8 +1,9 @@
 import Level from "../core/level";
 import generateTutorialLevel from "../levels/tutorial";
 import generateTutorial2Level from "../levels/tutorial2";
+import generateLevel1 from "../levels/level1";
 import generateLevel2 from "../levels/level2";
-
+import generateBig from '../levels/superBig';
 class LevelsController {
 
   private level: Level;
@@ -10,8 +11,8 @@ class LevelsController {
   private levelGenerators: (() => Level)[];
 
   constructor() {
-    this.levelIndex = parseInt(localStorage.getItem('activeLevelIndex') || '0');
-    this.levelGenerators = [generateTutorialLevel, generateTutorial2Level, generateLevel2];
+    this.levelIndex = this.getReachedLevel();
+    this.levelGenerators = [generateTutorialLevel, generateTutorial2Level, generateLevel1, generateBig];
     this.level = this.levelGenerators[this.levelIndex]();
     this.saveLevel();
   }
@@ -25,7 +26,7 @@ class LevelsController {
 
   next() {
     this.levelIndex++;
-    localStorage.setItem('activeLevelIndex', this.levelIndex.toString());
+    this.saveLevel();
     this.init();
   }
 
@@ -37,30 +38,22 @@ class LevelsController {
     return this.level;
   }
 
+  getNumOfLevels() {
+    return this.levelGenerators.length;
+  }
+
+  getReachedLevel() {
+    return parseInt(localStorage.getItem('reachedLevel') || '0');
+  }
+
   saveLevel() {
-    localStorage.setItem('activeLevelIndex', this.levelIndex.toString());
+    localStorage.setItem('reachedLevel', this.levelIndex.toString());
+  }
+
+  goToLevel(i: number) {
+    this.levelIndex = i;
+    this.init();
   }
 }
 
 export default LevelsController;
-
-
-// export function generateLevel1() {
-//   const mars = new Planet(new Vector(), 3000, 100)
-//   const earth = new Planet(new Vector(200, -400), 2000, 150)
-//   const moon = new Planet(new Vector(0, 300), 150, 4);
-//   moon.gravitationalThreshold = 0;
-//   moon.isMoon = true;
-//   moon.velocity = new Vector(30, 0);
-
-//   const objects: BaseObject[] = [
-//     mars,
-//     earth,
-//     moon,
-//   ];
-
-//   const level = new Level(objects, new LandingOnTargetPlanetObjective(earth));
-//   level.rocket.position = new Vector(350, 300);
-
-//   return level;
-// }

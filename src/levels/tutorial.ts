@@ -6,6 +6,7 @@ import GameContext from "../core/gameContext";
 import RenderElement from "../render/renderElement";
 import { PositionableMixin } from "../mixins/positional";
 import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObjective";
+import TimedTextSequence from "../objects/timedTextSequence";
 
 /**
  * Tutorial 1 - Pass the altitude mark
@@ -40,9 +41,11 @@ function generate() {
   const altitudeMark = 100;
   const earth = new Planet(new Vector(0, 0), 4000, 100)
   const altitudeMarkObj = new AltitudeMark(new Vector(earth.position.x - 30, earth.position.y - earth.collisionMask.radius), altitudeMark);
+  const objectiveInstructions = new TimedTextSequence(["Use your main thruster [w] to pass the line mark,", "then let gravity do the rest.", "but try to land slowly.."]);
   const objects: BaseObject[] = [
     earth,
     altitudeMarkObj,
+    objectiveInstructions
   ];
   const level = new Level(objects, new LandingAndAltitudeObjective(earth, altitudeMark));
   level.rocket.position = new Vector(0, -110);

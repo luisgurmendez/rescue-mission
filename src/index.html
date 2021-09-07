@@ -12,6 +12,7 @@
 
     body {
       overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     #canvas-container {
@@ -44,9 +45,14 @@
       border-radius: 8px;
       z-index: 10;
       pointer-events: all;
+      max-height: 50vh;
+      overflow-y: auto;
     }
 
-    .menu-title {}
+    .menu-title {
+      font-size: 36px;
+    }
+
 
     .menu-item {
       margin-top: 16px;
@@ -73,6 +79,15 @@
       z-index: 0;
       background: rgba(0, 0, 0, 0.4);
       pointer-events: all;
+    }
+
+    .level-item:disabled {
+      background: rgb(160, 160, 160);
+    }
+
+    .control-item {
+      margin-top: 8px;
+      font-size: 24px;
     }
   </style>
 </head>

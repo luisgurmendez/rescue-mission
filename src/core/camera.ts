@@ -3,7 +3,7 @@ import BaseObject from "../objects/baseObject";
 import RenderElement from "../render/renderElement";
 import Renderable from "../behaviors/renderable";
 import Stepable from "../behaviors/stepable";
-import { Positionable } from "../mixins/positional";
+import { isPositionable, Positionable } from "../mixins/positional";
 import Vector from "../physics/vector";
 import GameContext from "./gameContext";
 import Initializable from "../behaviors/initializable";
@@ -85,6 +85,16 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       mouseDown = false;
     }
 
+    const handleZoom = (e: KeyboardEvent) => {
+      if (e.key === '.') {
+        this.zoomIn();
+      }
+
+      if (e.key === ',') {
+        this.zoomOut();
+      }
+    }
+
     // add event listeners to handle screen drag
     canvas.addEventListener("mousedown", handleMouseDown);
     canvas.addEventListener("mouseup", handleCancelMouseDown);
@@ -92,6 +102,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     canvas.addEventListener("mouseout", handleCancelMouseDown);
     canvas.addEventListener("mousemove", handleMouseMove);
     canvas.addEventListener('wheel', handleCanvasWheel)
+    window.addEventListener('keydown', handleZoom)
 
     this.dispose = () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
@@ -100,6 +111,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
       canvas.removeEventListener("mouseout", handleCancelMouseDown);
       canvas.removeEventListener("mousemove", handleMouseMove);
       canvas.removeEventListener('wheel', handleCanvasWheel);
+      window.removeEventListener('keydown', handleZoom)
     }
 
   }
@@ -196,9 +208,15 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
 
   // there is a known bug where the promise resolves before the flying duration when the game is on pause
-  flyTo(position: Vector, duration: number = 2): Promise<void> {
+  flyTo(position: Vector | Positionable, duration: number = 2): Promise<void> {
+    let _position: Vector;
+    if (isPositionable(position)) {
+      _position = position.position.clone();
+    } else {
+      _position = position;
+    }
     this.following = null;
-    this.flying.flyTo(this.position.clone(), position.clone(), duration);
+    this.flying.flyTo(this.position.clone(), _position.clone(), duration);
     return wait(duration)
   }
 

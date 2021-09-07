@@ -17,7 +17,6 @@ export function AffectedByGravitationableMixin<TBase extends PhysicableConstruct
     calculateGravitationalAcceleration(context: GameContext) {
       const gravitationals = context.objects.filter(obj => isGravitationable(obj) && obj.id !== this.id) as (BaseObject & Gravitationable)[];
       const acceleration = new Vector();
-
       gravitationals.forEach(obj => {
         const accByPlanet = this.calculateAccelerationByPlanet(obj);
         acceleration.add(accByPlanet)

@@ -8,6 +8,7 @@ import RenderElement from "../render/renderElement";
 import { PositionableMixin } from "../mixins/positional";
 import Color from "../utils/color";
 import LandingObjective from "./shared/LandingOnTargetPlanetObjective";
+import TimedTextSequence from "../objects/timedTextSequence";
 
 
 /**
@@ -39,13 +40,15 @@ class LandingOnOppositeSideObjective implements LevelObjective {
 
 
 function generate() {
-  const earth = new Planet(new Vector(0, 0), 2000, 200);
+  const earth = new Planet(new Vector(0, 0), 5000, 140);
   earth.hasRing = false;
   earth.color = new Color(255, 10, 20);
   const mark = new LandingMark(new Vector(earth.position.x, earth.position.y - earth.collisionMask.radius), earth.collisionMask.radius);
+  const objectiveInstructions = new TimedTextSequence(["Now try using you other thrusters [a,s,d]", "Can you land in the other side?"]);
   const objects: BaseObject[] = [
     earth,
     mark,
+    objectiveInstructions
   ];
 
   const level = new Level(objects, new LandingOnOppositeSideObjective(earth, earth.collisionMask.radius));
@@ -56,9 +59,9 @@ function generate() {
 
 }
 
-const LandingMarkMarkMixin = PositionableMixin(BaseObject);
+const LandingMarkMixin = PositionableMixin(BaseObject);
 
-class LandingMark extends LandingMarkMarkMixin {
+class LandingMark extends LandingMarkMixin {
 
   position: Vector
   radius: number;
