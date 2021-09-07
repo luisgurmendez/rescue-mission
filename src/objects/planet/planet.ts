@@ -34,7 +34,7 @@ class Planet extends PlanetMixins {
   ringColor: Color;
   rotation: number;
 
-  constructor(position: Vector, gravitationalForce: number, radius: number, hasRing: boolean = true, isMoon: boolean = false) {
+  constructor(position: Vector, gravitationalForce: number, radius: number, hasRing: boolean = RandomUtils.getRandomBoolean(0.3), isMoon: boolean = false) {
     super();
 
     this.position = position;
@@ -43,7 +43,7 @@ class Planet extends PlanetMixins {
     this.collisionMask = new Circle(radius);
     this.gravitationalThreshold = radius * 5;
     this.isMoon = isMoon;
-    this.hasRing = RandomUtils.getRandomBoolean(0.3);
+    this.hasRing = hasRing;
     this.color = Color.random();
     this.rotation = RandomUtils.getValueInRange(-Math.PI / 4, Math.PI / 4);
     this.ringColor = Color.random();
