@@ -5,9 +5,80 @@
 
     body {
       overflow: hidden;
+      font-family: Arial, Helvetica, sans-serif;
     }
 
     #canvas-container {
+      /* position: absolute; */
       width: 100vw;
       height: 100vh;
-    }</style></head><body><div id="canvas-container"></div><script src="main.js"></script></body></html>
+    }
+
+    #menu-container {
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    #menu {
+      font-size: 32px;
+      padding: 32px;
+      background-color: rgba(255, 255, 255, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 8px;
+      z-index: 10;
+      pointer-events: all;
+      max-height: 50vh;
+      overflow-y: auto;
+    }
+
+    .menu-title {
+      font-size: 36px;
+    }
+
+
+    .menu-item {
+      margin-top: 16px;
+      padding: 8px;
+      padding-left: 16px;
+      padding-right: 16px;
+      border: 1px solid black;
+      border-radius: 4px;
+      background: transparent;
+      width: 100%;
+      cursor: pointer;
+    }
+
+    .menu-item:hover {
+      background: #ddd;
+    }
+
+    #menu-backdrop {
+      position: absolute;
+      top: 0px;
+      bottom: 0px;
+      left: 0px;
+      right: 0px;
+      z-index: 0;
+      background: rgba(0, 0, 0, 0.4);
+      pointer-events: all;
+    }
+
+    .level-item:disabled {
+      background: rgb(160, 160, 160);
+    }
+
+    .control-item {
+      margin-top: 8px;
+      font-size: 24px;
+    }</style></head><body><div id="canvas-container"><div id="menu-container"></div></div><script src="main.js"></script></body></html>
