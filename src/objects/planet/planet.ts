@@ -44,7 +44,7 @@ class Planet extends PlanetMixins {
     this.gravitationalThreshold = radius * 5;
     this.isMoon = isMoon;
     this.hasRing = hasRing;
-    this.color = Color.random();
+    this.color = Color.random(255, 255, 30);
     this.rotation = RandomUtils.getValueInRange(-Math.PI / 4, Math.PI / 4);
     this.ringColor = Color.random();
   }
@@ -66,18 +66,20 @@ class Planet extends PlanetMixins {
     canvasRenderingContext.fillStyle = this.color.rgba();
     canvasRenderingContext.strokeStyle = this.color.rgba();
 
-    canvasRenderingContext.save();
-    canvasRenderingContext.beginPath();
-    canvasRenderingContext.setLineDash([5, 15]);
-    canvasRenderingContext.arc(this.position.x, this.position.y, this.gravitationalThreshold, 0, 2 * Math.PI);
-    canvasRenderingContext.stroke();
-    canvasRenderingContext.restore();
+    if (!this.isMoon) {
+      canvasRenderingContext.save();
+      canvasRenderingContext.beginPath();
+      canvasRenderingContext.setLineDash([5, 15]);
+      canvasRenderingContext.arc(this.position.x, this.position.y, this.gravitationalThreshold, 0, 2 * Math.PI);
+      canvasRenderingContext.stroke();
+      canvasRenderingContext.restore();
+    }
 
     RenderUtils.renderCircle(canvasRenderingContext, this.position, this.collisionMask);
     canvasRenderingContext.fill();
 
     // Renders planet ring
-    if (this.hasRing) {
+    if (this.hasRing && !this.isMoon) {
 
       // To rotate the ring :
       canvasRenderingContext.translate(this.position.x, this.position.y);

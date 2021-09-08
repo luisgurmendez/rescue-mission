@@ -23,7 +23,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
   locked: boolean = false;
   shouldInitialize = true;
   shouldDispose = false;
-  flying: Flying = new Flying();
+  // flying: Flying = new Flying();
 
   constructor() {
     super('camera');
@@ -118,7 +118,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
   follow(obj: Positionable) {
     this.following = obj;
-    this.flying.clear();
+    // this.flying.clear();
   }
 
   unfollow() {
@@ -165,7 +165,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
     if (this.following !== null) {
       this._position = this.following.position.clone()
     }
-    this._position.add(this.flying.fly(context.dt, this.position.clone()))
+    // this._position.add(this.flying.fly(context.dt, this.position.clone()))
     this.adjutsPositionIfOutOfWorldsBounds(context.worldDimensions);
   }
 
@@ -208,63 +208,63 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
 
   // there is a known bug where the promise resolves before the flying duration when the game is on pause
-  flyTo(position: Vector | Positionable, duration: number = 2): Promise<void> {
-    let _position: Vector;
-    if (isPositionable(position)) {
-      _position = position.position.clone();
-    } else {
-      _position = position;
-    }
-    this.following = null;
-    this.flying.flyTo(this.position.clone(), _position.clone(), duration);
-    return wait(duration)
-  }
+  // flyTo(position: Vector | Positionable, duration: number = 2): Promise<void> {
+  //   let _position: Vector;
+  //   if (isPositionable(position)) {
+  //     _position = position.position.clone();
+  //   } else {
+  //     _position = position;
+  //   }
+  //   this.following = null;
+  //   this.flying.flyTo(this.position.clone(), _position.clone(), duration);
+  //   return wait(duration)
+  // }
 
 }
 
 export default Camera;
 
-class Flying {
-  private toPosition: Vector | null = null;
-  private duration: number | null = null;
-  private elapsedTime: number = 0;
-  private initialPosition: Vector | null = null;
+// class Flying {
+//   private toPosition: Vector | null = null;
+//   private duration: number | null = null;
+//   private elapsedTime: number = 0;
+//   private initialPosition: Vector | null = null;
 
 
-  flyTo(from: Vector, to: Vector, duration: number) {
-    this.toPosition = to.clone();
-    this.initialPosition = from.clone();
-    this.duration = duration;
-    this.elapsedTime = duration;
-  }
+//   flyTo(from: Vector, to: Vector, duration: number) {
+//     this.toPosition = to.clone();
+//     this.initialPosition = from.clone();
+//     this.duration = duration;
+//     this.elapsedTime = duration;
+//   }
 
-  fly(dt: number, actualPosition: Vector) {
-    let flyingDelta = new Vector();
-    if (
-      this.toPosition !== null &&
-      this.duration !== null &&
-      this.elapsedTime !== null &&
-      this.initialPosition !== null
-    ) {
-      this.elapsedTime -= dt;
-      const toPositionVector = this.toPosition.clone().sub(actualPosition);
-      const distanceToFlyingPosition = this.initialPosition.distanceTo(this.toPosition);
-      const flyingSpeed = distanceToFlyingPosition / this.duration;
-      flyingDelta = toPositionVector.normalize().scalar(dt * flyingSpeed);
-      if (this.elapsedTime < 0) {
-        flyingDelta = this.toPosition.clone().sub(actualPosition);
-        this.clear();
-      }
-    }
+//   fly(dt: number, actualPosition: Vector) {
+//     let flyingDelta = new Vector();
+//     if (
+//       this.toPosition !== null &&
+//       this.duration !== null &&
+//       this.elapsedTime !== null &&
+//       this.initialPosition !== null
+//     ) {
+//       this.elapsedTime -= dt;
+//       const toPositionVector = this.toPosition.clone().sub(actualPosition);
+//       const distanceToFlyingPosition = this.initialPosition.distanceTo(this.toPosition);
+//       const flyingSpeed = distanceToFlyingPosition / this.duration;
+//       flyingDelta = toPositionVector.normalize().scalar(dt * flyingSpeed);
+//       if (this.elapsedTime < 0) {
+//         flyingDelta = this.toPosition.clone().sub(actualPosition);
+//         this.clear();
+//       }
+//     }
 
 
-    return flyingDelta;
-  }
+//     return flyingDelta;
+//   }
 
-  clear() {
-    this.toPosition = null;
-    this.duration = null;
-    this.initialPosition = null;
-  }
+//   clear() {
+//     this.toPosition = null;
+//     this.duration = null;
+//     this.initialPosition = null;
+//   }
 
-}
+// }

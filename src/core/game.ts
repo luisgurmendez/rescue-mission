@@ -119,18 +119,30 @@ class Game {
     // this.stats.end()
   }
 
+  private levelPassed = (withNumOfAstronautsSaved: number) => {
+    // save to local storage withNumOfAstronautsSaved
+    this.levelsController.saveLevel(withNumOfAstronautsSaved);
+    this.levelsController.next();
+  }
+
   private generateGameApi(): GameApi {
     const dt = this.clock.getDelta() * this.gameSpeed;
-    return new GameApi(dt, this.canvasRenderingContext, this.isPaused, () => this.levelsController.next(), this.pause, this.unPause);
+    return new GameApi(dt, this.canvasRenderingContext, this.isPaused, this.levelPassed, this.pause, this.unPause);
   }
 
   private showMenu() {
     this.pause();
-    createMenu(() => this.hideMenu(), this.levelsController.getNumOfLevels(), this.levelsController.getReachedLevel(), (i: number) => this.levelsController.goToLevel(i));
+    createMenu(
+      this.hideMenu,
+      this.levelsController.getNumOfLevels(),
+      this.levelsController.getReachedLevel(),
+      this.levelsController.getSavedLevels(),
+      (i: number) => this.levelsController.goToLevel(i)
+    );
     this.showingMenu = true;
   }
 
-  private hideMenu() {
+  private hideMenu = () => {
     disposeMenu();
     this.showingMenu = false;
     this.unPause();
@@ -145,7 +157,7 @@ export class GameApi {
   readonly canvasRenderingContext: CanvasRenderingContext2D;
   readonly dt: number;
 
-  nextLevel: () => void;
+  levelPassed: (a: number) => void;
 
   readonly isPaused: boolean;
   pause: () => void;
@@ -155,14 +167,14 @@ export class GameApi {
     dt: number,
     canvasRenderingContext: CanvasRenderingContext2D,
     isPaused: boolean,
-    nextLevel: () => void,
+    levelPassed: (a: number) => void,
     pause: () => void,
     unPause: () => void
   ) {
     this.dt = dt;
     this.canvasRenderingContext = canvasRenderingContext;
     this.isPaused = isPaused;
-    this.nextLevel = nextLevel;
+    this.levelPassed = levelPassed;
     this.pause = pause;
     this.unPause = unPause;
   }

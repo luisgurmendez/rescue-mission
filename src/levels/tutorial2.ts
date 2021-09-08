@@ -9,6 +9,8 @@ import { PositionableMixin } from "../mixins/positional";
 import Color from "../utils/color";
 import LandingObjective from "./shared/LandingOnTargetPlanetObjective";
 import TimedTextSequence from "../objects/timedTextSequence";
+import generateAstronauts from "./shared/generateAstronauts";
+import { targetPlanetColor } from "./shared/targetPlanetColor";
 
 
 /**
@@ -40,15 +42,20 @@ class LandingOnOppositeSideObjective implements LevelObjective {
 
 
 function generate() {
-  const earth = new Planet(new Vector(0, 0), 5000, 140);
+  const earth = new Planet(new Vector(0, 0), 3000, 140);
   earth.hasRing = false;
-  earth.color = new Color(255, 10, 20);
+  earth.color = targetPlanetColor;
   const mark = new LandingMark(new Vector(earth.position.x, earth.position.y - earth.collisionMask.radius), earth.collisionMask.radius);
-  const objectiveInstructions = new TimedTextSequence(["Now try using you other thrusters [a,s,d]", "Can you land in the other side?"]);
+  const objectiveInstructions = new TimedTextSequence([
+    "Lets make it a bit more challenging,",
+    "can you land in the opposite side?"
+  ]);
+  const astronauts = generateAstronauts(new Vector(-200, 30), new Vector(-200, 230), new Vector(140, 140))
   const objects: BaseObject[] = [
     earth,
     mark,
-    objectiveInstructions
+    objectiveInstructions,
+    ...astronauts
   ];
 
   const level = new Level(objects, new LandingOnOppositeSideObjective(earth, earth.collisionMask.radius));
@@ -78,17 +85,17 @@ class LandingMark extends LandingMarkMixin {
       canvasRenderingContext.beginPath();
       canvasRenderingContext.setLineDash([5, 15]);
       canvasRenderingContext.strokeStyle = '#CCC';
-      canvasRenderingContext.moveTo(this.position.x, this.position.y);
-      canvasRenderingContext.bezierCurveTo(
-        this.position.x - this.radius * 3,
-        this.position.y + this.radius / 4,
-        this.position.x - this.radius * 2,
-        this.position.y + this.radius * 3,
-        this.position.x,
-        this.position.y + this.radius * 2
-      )
+      // canvasRenderingContext.moveTo(this.position.x, this.position.y);
+      // canvasRenderingContext.bezierCurveTo(
+      //   this.position.x - this.radius * 3,
+      //   this.position.y + this.radius / 4,
+      //   this.position.x - this.radius * 2,
+      //   this.position.y + this.radius * 3,
+      //   this.position.x,
+      //   this.position.y + this.radius * 2
+      // )
 
-      canvasRenderingContext.stroke();
+      // canvasRenderingContext.stroke();
 
       canvasRenderingContext.beginPath();
       canvasRenderingContext.arc(this.position.x, this.position.y + this.radius, this.radius, 0, Math.PI);

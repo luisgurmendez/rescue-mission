@@ -21,6 +21,7 @@ import { Dimensions } from "./canvas";
 import RenderElement from "../render/renderElement";
 import TimedTextSequence from "../objects/timedTextSequence";
 import RandomUtils from "../utils/random";
+import RescuedAstronautsLabel from "../objects/astronaut/savedAstronautsLabel";
 
 const pressedKeys = Keyboard.getInstance();
 
@@ -32,6 +33,7 @@ class Level implements Initializable, Disposable {
   worldDimensions: Rectangle;
   rocket: Rocket;
   objective: LevelObjective;
+  private numOfRescuedAstronauts: number = 0;
   private rocketStatusController: RocketStatusController;
   private objectLifecycleController: ObjectLifecycleController = new ObjectLifecycleController();
   private collisionController: CollisionsController = new CollisionsController();
@@ -49,9 +51,11 @@ class Level implements Initializable, Disposable {
     this.camera = new Camera();
     this.worldDimensions = worldDimensions;
     this.objective = objective;
-    this.objects.push(...objects, ...[this.rocket, this.camera]);
+    const rescuedAstronautsLabel = new RescuedAstronautsLabel();
+    this.objects.push(...objects, ...[this.rocket, this.camera, rescuedAstronautsLabel]);
     this.rocketStatusController = new RocketStatusController();
     this.statusController = new LevelStatusController(objective);
+    this.numOfRescuedAstronauts = 0;
   }
 
   update(gameApi: GameApi): void {
@@ -85,7 +89,7 @@ class Level implements Initializable, Disposable {
       if (status === LevelStatus.WON) {
         gameContext.objects.push(new TimedTextSequence([levelCompletedCompliments[RandomUtils.getIntegerInRange(0, levelCompletedCompliments.length - 1)]]))
         setTimeout(() => {
-          gameApi.nextLevel();
+          gameApi.levelPassed(this.numOfRescuedAstronauts);
         }, 2000);
       }
       if (status === LevelStatus.LOST) {
@@ -98,6 +102,10 @@ class Level implements Initializable, Disposable {
   restart() {
     this.dispose();
     this.init();
+  }
+
+  private rescueAstronaut = () => {
+    this.numOfRescuedAstronauts += 1;
   }
 
   private generateGameContext(api: GameApi): GameContext {
@@ -114,6 +122,8 @@ class Level implements Initializable, Disposable {
       this.camera,
       this.worldDimensions,
       this.rocket,
+      this.numOfRescuedAstronauts,
+      this.rescueAstronaut,
       api.pause,
       api.unPause
     );

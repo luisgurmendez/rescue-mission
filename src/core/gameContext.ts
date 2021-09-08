@@ -19,7 +19,9 @@ class GameContext {
   readonly canvasRenderingContext: CanvasRenderingContext2D;
   readonly camera: Camera;
   readonly worldDimensions: Rectangle
+  readonly numOfRescuedAstronauts: number;
 
+  rescueAstronaut: () => void;
   pause: () => void;
   unPause: () => void;
 
@@ -33,6 +35,8 @@ class GameContext {
     camera: Camera,
     worldDimensions: Rectangle,
     rocket: Rocket,
+    numOfRescuedAstronauts: number,
+    rescueAstronaut: () => void,
     pause: () => void,
     unPause: () => void
   ) {
@@ -45,6 +49,8 @@ class GameContext {
     this.camera = camera;
     this.worldDimensions = worldDimensions;
     this.rocket = rocket;
+    this.numOfRescuedAstronauts = numOfRescuedAstronauts;
+    this.rescueAstronaut = rescueAstronaut;
     this.pause = pause;
     this.unPause = unPause;
   }

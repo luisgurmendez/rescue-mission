@@ -34,13 +34,13 @@ class Astronaut extends AstronautMixins implements Disposable {
   step(context: GameContext) {
     this.angularVelocity = this.calculateAngularVelocity(context.dt);
     this.direction = this.calculateDirection(context.dt);
-    this.checkRescued();
+    this.checkRescued(context.rescueAstronaut);
   }
 
-  checkRescued() {
+  checkRescued(rescueAstronaut: () => void) {
     const collideWithRocket = this.collisions.find(obj => obj.type === ObjectType.ROCKET);
     if (collideWithRocket !== undefined) {
-      this.rescued();
+      this.rescued(rescueAstronaut);
     }
   }
 
@@ -52,8 +52,9 @@ class Astronaut extends AstronautMixins implements Disposable {
     return renderElement;
   }
 
-  rescued() {
+  rescued(rescueAstronaut: () => void) {
     this.shouldDispose = true;
+    rescueAstronaut();
   }
 
 }

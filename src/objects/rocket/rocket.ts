@@ -56,7 +56,6 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   }
 
   step(context: GameContext): void {
-    console.log(this);
     if (!this.hasLanded) {
       this.angularAcceleration = this.calculateAngularAcceleration(context);
       this.angularVelocity = this.calculateAngularVelocity(context.dt);

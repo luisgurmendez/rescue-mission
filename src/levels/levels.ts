@@ -3,6 +3,8 @@ import generateTutorialLevel from "../levels/tutorial";
 import generateTutorial2Level from "../levels/tutorial2";
 import generateLevel1 from "../levels/level1";
 import generateLevel2 from "../levels/level2";
+import generateLevel3 from "../levels/level3";
+import generateLevel4 from '../levels/level4';
 import generateBig from '../levels/superBig';
 class LevelsController {
 
@@ -12,9 +14,8 @@ class LevelsController {
 
   constructor() {
     this.levelIndex = this.getReachedLevel();
-    this.levelGenerators = [generateTutorialLevel, generateTutorial2Level, generateLevel1, generateBig];
+    this.levelGenerators = [generateTutorialLevel, generateTutorial2Level, generateLevel1, generateLevel3, generateLevel4, generateBig];
     this.level = this.levelGenerators[this.levelIndex]();
-    this.saveLevel();
   }
 
   init() {
@@ -26,7 +27,6 @@ class LevelsController {
 
   next() {
     this.levelIndex++;
-    this.saveLevel();
     this.init();
   }
 
@@ -43,11 +43,26 @@ class LevelsController {
   }
 
   getReachedLevel() {
-    return parseInt(localStorage.getItem('reachedLevel') || '0');
+    const savedLevels = this.getSavedLevels();
+    const passedLevels = Object.keys(savedLevels).map(l => parseInt(l));
+    if (passedLevels.length > 0) {
+      return Math.max(...passedLevels) + 1;
+    }
+    return 0;
   }
 
-  saveLevel() {
-    localStorage.setItem('reachedLevel', this.levelIndex.toString());
+  getSavedLevels(): SavedLevel {
+    const savedLevelsString = localStorage.getItem('savedLevels');
+    if (savedLevelsString) {
+      return JSON.parse(savedLevelsString)
+    }
+    return {};
+  }
+
+  saveLevel(savedAstronauts: number) {
+    const savedLevels = this.getSavedLevels();
+    savedLevels[this.levelIndex] = Math.max(savedLevels[this.levelIndex] || 0, savedAstronauts);
+    localStorage.setItem('savedLevels', JSON.stringify(savedLevels));
   }
 
   goToLevel(i: number) {
@@ -57,3 +72,8 @@ class LevelsController {
 }
 
 export default LevelsController;
+
+
+export interface SavedLevel {
+  [levelIndex: number]: number
+}

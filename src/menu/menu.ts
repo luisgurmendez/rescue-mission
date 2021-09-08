@@ -1,3 +1,5 @@
+import { SavedLevel } from "../levels/levels";
+import AstronautRenderUtils from "../objects/astronaut/astronautRenderUtils";
 import { callTimes } from "../utils/fn";
 
 interface MenuItem {
@@ -10,7 +12,7 @@ function noop() { }
 type Fn = () => void;
 type GoToLevelFn = (i: number) => void
 
-export function createMenu(onResume: Fn, allLevels: number, reachedLevel: number, goToLevel: GoToLevelFn) {
+export function createMenu(onResume: Fn, allLevels: number, reachedLevel: number, savedLevels: SavedLevel, goToLevel: GoToLevelFn) {
   const menuContainerEl = document.getElementById('menu-container');
   let activeMenuPageIndex = 0;
   let activeMenuElement: HTMLElement | null = null;
@@ -34,9 +36,10 @@ export function createMenu(onResume: Fn, allLevels: number, reachedLevel: number
   }
 
   const menu = createMenuContent(onResume, changeMenuPage);
+  const objective = createObjectiveContent(onBack);
   const controls = createControlsContent(onBack)
-  const levels = createLevelsContent(onBack, allLevels, reachedLevel, handleGoToLevelAndResume);
-  const menuPagesElements = [menu, controls, levels]; // Menu
+  const levels = createLevelsContent(onBack, allLevels, reachedLevel, savedLevels, handleGoToLevelAndResume);
+  const menuPagesElements = [menu, objective, controls, levels]; // Menu
 
   changeMenuPage(0);
 
@@ -55,11 +58,11 @@ function createMenuContent(onResume: Fn, onChangePage: (i: number) => void) {
   const menu = document.createElement('div');
   menu.id = 'menu';
 
-
   const items: MenuItem[] = [
     { label: 'Resume game', onClick: onResume },
-    { label: 'Controls', onClick: () => onChangePage(1), },
-    { label: 'Levels', onClick: () => onChangePage(2) },
+    { label: 'Objective', onClick: () => onChangePage(1) },
+    { label: 'Controls', onClick: () => onChangePage(2), },
+    { label: 'Levels', onClick: () => onChangePage(3) },
   ]
   const title = createMenuTitle('Menu');
   const itemElements = items.map(i => createMenuButton(i.label, i.onClick));
@@ -104,27 +107,44 @@ function createControlsContent(onBack: Fn) {
     'z - decrease game speed',
   ]
   const back = createMenuButton('< Back', onBack);
-  const controlEls = controls.map(createControlItem)
+  const controlEls = controls.map(createTextRow)
   const itemElements = [title, ...controlEls, back]
   menu.append(...itemElements);
   return menu;
 }
 
-function createControlItem(control: string) {
+export const objectiveTexts = [
+  "Use your thrusters to rescue,",
+  "as many astronauts as you can,",
+  "and try to land slowly in the blue planet"
+];
+
+function createObjectiveContent(onBack: Fn) {
+  const menu = document.createElement('div');
+  menu.id = 'menu';
+  const title = createMenuTitle('Objective')
+
+  const back = createMenuButton('< Back', onBack);
+  const objective = objectiveTexts.map(createTextRow)
+  const itemElements = [title, ...objective, back]
+  menu.append(...itemElements);
+  return menu;
+}
+
+function createTextRow(control: string) {
   const itemEl = document.createElement('div');
   itemEl.innerText = control
   itemEl.className = "control-item";
   return itemEl;
-
 }
-
 interface LevelOption {
   name: string;
+  numOfRescues: number;
   disabled: boolean;
   onClick: Fn
 }
 
-function createLevelsContent(onBack: Fn, numOfLevels: number, reachedLevel: number, goToLevel: GoToLevelFn) {
+function createLevelsContent(onBack: Fn, numOfLevels: number, reachedLevel: number, savedLevels: SavedLevel, goToLevel: GoToLevelFn) {
   const menu = document.createElement('div');
   menu.id = 'menu';
   const title = createMenuTitle('Levels')
@@ -135,6 +155,7 @@ function createLevelsContent(onBack: Fn, numOfLevels: number, reachedLevel: numb
     levels.push({
       name: `Level ${i}`,
       disabled: reachedLevel < i,
+      numOfRescues: savedLevels[i] || 0,
       onClick: () => goToLevel(i)
     });
   })
@@ -148,10 +169,27 @@ function createLevelsContent(onBack: Fn, numOfLevels: number, reachedLevel: numb
 
 
 function createLevelElement(level: LevelOption) {
+  const levelItemContainer = document.createElement('div');
+  levelItemContainer.className = 'level-item-container';
+
   const itemEl = document.createElement('button');
   itemEl.innerText = level.name;
   itemEl.disabled = level.disabled;
   itemEl.className = "menu-item level-item";
   itemEl.addEventListener('click', level.onClick);
-  return itemEl;
+
+  const astronautEls = AstronautRenderUtils.generateAstronautRescuesPixelArts(level.numOfRescues);
+  astronautEls.forEach(a => {
+    a.style.marginLeft = '4px';
+  })
+  const rescuedLabel = document.createElement('span');
+  rescuedLabel.innerText = "Rescued: "
+  rescuedLabel.className = "rescued"
+
+  levelItemContainer.appendChild(itemEl);
+  levelItemContainer.appendChild(rescuedLabel);
+  levelItemContainer.append(...astronautEls);
+
+  return levelItemContainer;
 }
+

@@ -50,7 +50,7 @@ class TimedTextSequence extends BaseObject implements Disposable {
   render() {
     const renderFn = (ctx: GameContext) => {
       const { canvasRenderingContext } = ctx;
-      canvasRenderingContext.font = "45px Arial";
+      canvasRenderingContext.font = "35px Arial";
       canvasRenderingContext.fillStyle = "#FFF";
       RenderUtils.renderText(canvasRenderingContext, this.activeTimedText.text, new Vector(Dimensions.w / 2, Dimensions.h - 80))
     }
