@@ -4,23 +4,27 @@ import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
 import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObjective";
 import { Rectangle } from "../objects/shapes";
+import { targetPlanetColor } from "./shared/targetPlanetColor";
+import Color from "../utils/color";
 
-//TODO great idea needs to check values
+//TODO win this level...
 function generate() {
-  const earth = new Planet(new Vector(0, 0), 53000, 1500)
-  const mars = new Planet(new Vector(0, -7400), 11000, 500)
+  const sun = new Planet(new Vector(0, 0), 53000, 1500)
+  sun.color = new Color(200, 225, 25);
+  const mars = new Planet(new Vector(0, -7400), 16000, 500)
+  mars.color = targetPlanetColor;
   const objects: BaseObject[] = [
-    earth,
-    mars
+    sun,
+    mars,
   ];
 
-  const level = new Level(objects, new LandingOnTargetPlanetObjective(earth), new Rectangle(20000, 20000));
+  const level = new Level(objects, new LandingOnTargetPlanetObjective(mars), new Rectangle(20000, 20000));
   level.rocket.position = new Vector(0, -1510);
 
 
-  // level.rocket.position = new Vector(-1508, 1010)
-  // level.rocket.velocity = new Vector(-90, -201);
-  // level.rocket.direction = new Vector(-0.45, -0.9).normalize();
+  // level.rocket.position = new Vector(-2000, -6800)
+  // level.rocket.velocity = new Vector(0, -370);
+  // level.rocket.direction = new Vector(0, -1).normalize();
   // (level.rocket as any).thruster.fuel = 429;
   // (level.rocket as any).hasLaunched = true;
 

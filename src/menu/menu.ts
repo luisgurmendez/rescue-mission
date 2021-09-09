@@ -153,7 +153,7 @@ function createLevelsContent(onBack: Fn, numOfLevels: number, reachedLevel: numb
   callTimes(numOfLevels, (i: number) => {
     // TODO: Have names for the levels?
     levels.push({
-      name: `Level ${i}`,
+      name: `Level ${i + 1}`,
       disabled: reachedLevel < i,
       numOfRescues: savedLevels[i] || 0,
       onClick: () => goToLevel(i)

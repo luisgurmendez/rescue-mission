@@ -50,8 +50,8 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     this.type = ObjectType.ROCKET;
     this.collisionMask = new Rectangle(13, 16)
     this.direction = new Vector(0, -1);
-    this.thruster = new RocketThruster(1000, 7607 * 1000); // 981 kN fallcon 9
-    this.secondaryThruster = new RocketThruster(300, 7607 * 1000);
+    this.thruster = new RocketThruster(16.5, 40); // 981 kN fallcon 9
+    this.secondaryThruster = new RocketThruster(5, 30);
 
   }
 
@@ -75,6 +75,9 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
     const rocketPhysicsRenderElement = new RenderElement(RocketRenderUtils.renderInfo);
     rocketPhysicsRenderElement.positionType = 'overlay';
+
+    // const accelerationVectorRenderElement = new RenderElement(RocketRenderUtils.renderAcceleration);
+    // accelerationVectorRenderElement.positionType = 'overlay';
 
     renderElement.children = [secondaryThrusterRenderElement, thrusterRenderElement, rocketPhysicsRenderElement]
 
@@ -106,7 +109,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     let angularAcceleration = 0;
 
     if (isKeyPressed('d') && this.hasLaunched) {
-      const thrustAcceleration = this.direction.clone().rotate(90).scalar(this.secondaryThrust()) // TODO uncomment top
+      const thrustAcceleration = this.direction.clone().rotate(90).scalar(this.secondaryThruster.thrust(context.dt))
       const particle = this.generateParticle(thrustAcceleration, 'top-left');
       if (particle) {
         context.objects.push(particle);
@@ -114,7 +117,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     }
 
     if (isKeyPressed('a') && this.hasLaunched) {
-      const thrustAcceleration = this.direction.clone().rotate(-90).scalar(this.secondaryThrust()) // TODO uncomment top
+      const thrustAcceleration = this.direction.clone().rotate(-90).scalar(this.secondaryThruster.thrust(context.dt))
       const particle = this.generateParticle(thrustAcceleration, 'top-right');
       if (particle) {
         context.objects.push(particle);
@@ -168,7 +171,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
     if (isKeyPressed('w')) {
       this.hasLaunched = true;
-      primaryThrustAcc = this.direction.clone().scalar(this.thrust());
+      primaryThrustAcc = this.direction.clone().scalar(this.thruster.thrust(context.dt));
       const particle = this.generateParticle(primaryThrustAcc, 'bottom', true)
       if (particle) {
         context.objects.push(particle);
@@ -176,7 +179,7 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
     }
 
     if (isKeyPressed('s')) {
-      secondaryThrustAcc = this.direction.clone().scalar(-this.secondaryThrust() / 2); // TODO uncomment top
+      secondaryThrustAcc = this.direction.clone().scalar(-this.secondaryThruster.thrust(context.dt));
       const particle = this.generateParticle(secondaryThrustAcc, 'top');
       if (particle) {
         context.objects.push(particle);
@@ -186,26 +189,6 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
     return primaryThrustAcc.add(secondaryThrustAcc)
   }
-
-  private secondaryThrust() {
-    const thustForce = this.secondaryThruster.thrust();
-    if (thustForce > 0) {
-      // f = m*a
-      // return this.mass / thustForce;
-      return 30;
-    }
-    return 0;
-  };
-
-  private thrust() {
-    const thustForce = this.thruster.thrust();
-    if (thustForce > 0) {
-      // f = m*a
-      // return this.mass / thustForce;
-      return 40;
-    }
-    return 0;
-  };
 }
 
 export default Rocket;

@@ -8,27 +8,22 @@ import Color from "../utils/color";
 import { targetPlanetColor } from "./shared/targetPlanetColor";
 
 function generate() {
-  const earth = new Planet(new Vector(0, 100), 3000, 100);
-  const mars = new Planet(new Vector(0, 480), 2000, 75);
+  const earth = new Planet(new Vector(0, 0), 5000, 300);
+  const mars = new Planet(new Vector(0, 680), 6000, 120);
   mars.color = targetPlanetColor;
-  const whiteDwarf = new Planet(new Vector(240, 0), 10500, 45)
-  whiteDwarf.color = Color.white();
-  const whiteDwarf2 = new Planet(new Vector(-240, 0), 10500, 45)
-  whiteDwarf2.color = Color.white();
 
-  whiteDwarf2.hasRing = false;
-  whiteDwarf.hasRing = false;
+  const astronauts = generateAstronauts(new Vector(0, -400), new Vector(150, 400), new Vector(-150, 400))
 
-  const astronauts = generateAstronauts(new Vector(0, -200), new Vector(150, 600), new Vector(-150, 600))
+  astronauts[0].velocity = new Vector(0, -30);
+  astronauts[1].velocity = new Vector(10, 20);
+  astronauts[2].velocity = new Vector(-10, 20);
   const objects: BaseObject[] = [
     earth,
     mars,
-    whiteDwarf,
-    whiteDwarf2,
     ...astronauts
   ];
   const level = new Level(objects, new LandingOnTargetPlanetObjective(mars));
-  level.rocket.position = new Vector(0, -10);
+  level.rocket.position = new Vector(0, -310);
   level.camera.follow(level.rocket);
   return level;
 }

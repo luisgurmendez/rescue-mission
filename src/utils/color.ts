@@ -38,6 +38,14 @@ class Color {
     )
   }
 
+  static white() {
+    return new Color(255, 255, 255);
+  }
+
+  static black() {
+    return new Color(0, 0, 0);
+  }
+
   rgba() {
     return `rgba(${this.r},${this.g},${this.b},${this.a})`
   }

@@ -135,14 +135,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
   set zoom(_z: number) {
     if (!this.locked) {
-      this._zoom = _z;
-      if (_z > MAX_ZOOM) {
-        this._zoom = MAX_ZOOM;
-      }
-
-      if (_z < MIN_ZOOM) {
-        this._zoom = MIN_ZOOM;
-      }
+      this._zoom = Math.min(Math.max(_z, MIN_ZOOM), MAX_ZOOM);
     }
   }
 

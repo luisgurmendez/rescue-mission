@@ -61,17 +61,16 @@ class RocketThruster implements Renderable<RocketThrusterRenderOptions> {
     return renderElement;
   }
 
-  // TODO: thrust sound!
-  thrust(): number {
+  thrust(dt: number): number {
     if (!this.isEmpty()) {
-      this.fuel -= 1;
+      this.fuel -= dt;
       return this.thrustPower;
     }
     return 0;
   }
 
   isEmpty() {
-    return this.fuel === 0;
+    return this.fuel < 0;
   }
 }
 

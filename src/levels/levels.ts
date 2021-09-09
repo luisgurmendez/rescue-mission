@@ -3,6 +3,8 @@ import generateTutorialLevel from "../levels/tutorial";
 import generateTutorial2Level from "../levels/tutorial2";
 import generateLevel1 from "../levels/level1";
 import generateLevel2 from "../levels/level2";
+import generateLevel5 from "../levels/level5";
+import generateLevel6 from "../levels/level6";
 import generateLevel3 from "../levels/level3";
 import generateLevel4 from '../levels/level4';
 import generateBig from '../levels/superBig';
@@ -14,7 +16,7 @@ class LevelsController {
 
   constructor() {
     this.levelIndex = this.getReachedLevel();
-    this.levelGenerators = [generateTutorialLevel, generateTutorial2Level, generateLevel1, generateLevel3, generateLevel4, generateBig];
+    this.levelGenerators = [generateTutorialLevel, generateTutorial2Level, generateLevel1, generateLevel3, generateLevel4, generateLevel5, generateLevel6, generateBig];
     this.level = this.levelGenerators[this.levelIndex]();
   }
 

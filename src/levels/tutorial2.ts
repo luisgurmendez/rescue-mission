@@ -48,7 +48,7 @@ function generate() {
   const mark = new LandingMark(new Vector(earth.position.x, earth.position.y - earth.collisionMask.radius), earth.collisionMask.radius);
   const objectiveInstructions = new TimedTextSequence([
     "Lets make it a bit more challenging,",
-    "can you land in the opposite side?"
+    "can you land on the opposite side?"
   ]);
   const astronauts = generateAstronauts(new Vector(-200, 30), new Vector(-200, 230), new Vector(140, 140))
   const objects: BaseObject[] = [

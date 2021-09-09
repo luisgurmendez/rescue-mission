@@ -5,7 +5,6 @@ import { Dimensions } from "../../core/canvas";
 
 class RocketRenderUtils {
 
-
   static renderInfo(context: GameContext) {
     const { rocket, canvasRenderingContext, canvasRenderingContext: { canvas } } = context;
     canvasRenderingContext.font = "15px Arial";

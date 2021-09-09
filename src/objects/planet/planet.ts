@@ -12,6 +12,7 @@ import RenderElement from '../../render/renderElement';
 import Color from '../../utils/color';
 import RandomUtils from '../../utils/random';
 import { AffectedByGravitationableMixin } from '../../mixins/affectedByGravitational';
+import { Dimensions } from '../../core/canvas';
 
 const PlanetMixins = AffectedByGravitationableMixin(GravitationalMixin(
   PhysicableMixin(

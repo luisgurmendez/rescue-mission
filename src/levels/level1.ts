@@ -13,7 +13,7 @@ function generate() {
   jupiter.color = targetPlanetColor;
   const astronauts = generateAstronauts(new Vector(0, -300), new Vector(100, -600), new Vector(800, -500))
   const objectiveInstructions = new TimedTextSequence([
-    "From now on, your task is to land in the blue planet",
+    "From now on, your task is to land on the blue planet",
     "remember to rescue as many astronauts as possible"
   ]);
   const objects: BaseObject[] = [

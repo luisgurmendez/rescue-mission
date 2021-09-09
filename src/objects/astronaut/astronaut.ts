@@ -34,6 +34,7 @@ class Astronaut extends AstronautMixins implements Disposable {
   step(context: GameContext) {
     this.angularVelocity = this.calculateAngularVelocity(context.dt);
     this.direction = this.calculateDirection(context.dt);
+    this.position = this.calculatePosition(context.dt);
     this.checkRescued(context.rescueAstronaut);
   }
 
