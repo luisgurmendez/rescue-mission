@@ -6,6 +6,7 @@ import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObject
 import generateAstronauts from "./shared/generateAstronauts";
 import Color from "../utils/color";
 import { targetPlanetColor } from "./shared/targetPlanetColor";
+import { Rectangle } from "objects/shapes";
 
 function generate() {
   const earth = new Planet(new Vector(0, -2900), 3000, 100);
@@ -26,7 +27,7 @@ function generate() {
     whiteDwarf3,
     ...astronauts
   ];
-  const level = new Level(objects, new LandingOnTargetPlanetObjective(earth));
+  const level = new Level(objects, new LandingOnTargetPlanetObjective(earth), new Rectangle(9000, 9000));
   level.rocket.position = new Vector(0, -110);
   return level;
 }
