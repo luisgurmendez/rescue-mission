@@ -6,7 +6,7 @@ import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObject
 import generateAstronauts from "./shared/generateAstronauts";
 import Color from "../utils/color";
 import { targetPlanetColor } from "./shared/targetPlanetColor";
-import { Rectangle } from "objects/shapes";
+import { Rectangle } from "../objects/shapes";
 
 function generate() {
   const earth = new Planet(new Vector(0, -2900), 3000, 100);
