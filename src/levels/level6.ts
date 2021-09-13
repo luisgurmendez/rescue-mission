@@ -4,26 +4,25 @@ import BaseObject from "../objects/baseObject";
 import Vector from "../physics/vector";
 import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObjective";
 import generateAstronauts from "./shared/generateAstronauts";
-import Color from "../utils/color";
 import { targetPlanetColor } from "./shared/targetPlanetColor";
 
 function generate() {
-  const mars = new Planet(new Vector(0, 0), 4000, 200);
-  const earth = new Planet(new Vector(0, 680), 4000, 120);
+  const mars = new Planet(new Vector(0, 0), 3000, 90);
+  const earth = new Planet(new Vector(0, 680), 3000, 120);
   earth.color = targetPlanetColor;
 
-  const astronauts = generateAstronauts(new Vector(0, -300), new Vector(150, 400), new Vector(-150, 400))
+  const astronauts = generateAstronauts(new Vector(0, -200), new Vector(50, 820), new Vector(-50, 820))
 
-  astronauts[0].velocity = new Vector(0, -30);
-  astronauts[1].velocity = new Vector(10, 20);
-  astronauts[2].velocity = new Vector(-10, 20);
+  astronauts[0].velocity = new Vector(0, -20);
+  astronauts[1].velocity = new Vector(5, 10);
+  astronauts[2].velocity = new Vector(-5, 10);
   const objects: BaseObject[] = [
     earth,
     mars,
     ...astronauts
   ];
   const level = new Level(objects, new LandingOnTargetPlanetObjective(earth));
-  level.rocket.position = new Vector(0, -210);
+  level.rocket.position = new Vector(0, -100);
   return level;
 }
 

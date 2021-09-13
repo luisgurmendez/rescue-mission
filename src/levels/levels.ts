@@ -7,6 +7,7 @@ import generateLevel1 from "../levels/level1";
 import generateLevel2 from "../levels/level2";
 import generateLevel5 from "../levels/level5";
 import generateLevel6 from "../levels/level6";
+import generateLevel8 from "../levels/level8";
 import generateLevel7 from "../levels/level7";
 import generateLevel3 from "../levels/level3";
 import generateLevel4 from '../levels/level4';
@@ -29,6 +30,7 @@ class LevelsController {
       generateLevel2,
       generateLevel6,
       generateLevel7,
+      generateLevel8,
       generateLevel4,
       generateBig,
       generateEndingScreen
