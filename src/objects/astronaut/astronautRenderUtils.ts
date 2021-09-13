@@ -11,10 +11,7 @@ class AstronautRenderUtils {
     canvasRenderingContext.strokeStyle = '#FFF'
 
     // rotate
-    canvasRenderingContext.translate(astronaut.position.x, astronaut.position.y);
-    canvasRenderingContext.rotate(astronaut.direction.angleTo(new Vector(1, 0)))
-    canvasRenderingContext.translate(-astronaut.position.x, -astronaut.position.y);
-
+    RenderUtils.rotateSelf(canvasRenderingContext, astronaut.position, astronaut.direction.angleTo(new Vector(1, 0)))
     const canvas = AstronautRenderUtils.generateAstronautPixelArt()
 
     canvasRenderingContext.drawImage(

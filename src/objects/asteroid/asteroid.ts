@@ -6,7 +6,6 @@ import { Rectangle } from "../../objects/shapes";
 import { PositionableMixin } from "../../mixins/positional";
 import RenderElement from "../../render/renderElement";
 import GameContext from "../../core/gameContext";
-import RenderUtils from "../../render/utils";
 import RandomUtils from "../../utils/random";
 
 const AsteroidMixins =
@@ -16,6 +15,9 @@ const AsteroidMixins =
 
 type Polygon = Vector[]
 
+/**
+ * @deprecated
+ */
 class Asteroid extends AsteroidMixins implements Renderable {
 
   shape: Polygon;

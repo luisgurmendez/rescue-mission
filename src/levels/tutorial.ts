@@ -7,10 +7,7 @@ import RenderElement from "../render/renderElement";
 import { PositionableMixin } from "../mixins/positional";
 import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObjective";
 import TimedTextSequence from "../objects/timedTextSequence";
-import Astronaut from "../objects/astronaut/astronaut";
 import generateAstronauts from "./shared/generateAstronauts";
-import Color from "../utils/color";
-import { objectiveTexts } from "../menu/menu";
 import { targetPlanetColor } from "./shared/targetPlanetColor";
 
 /**
@@ -43,24 +40,23 @@ class LandingAndAltitudeObjective implements LevelObjective {
 }
 
 function generate() {
-  const altitudeMark = 200;
-  const earth = new Planet(new Vector(0, 0), 6000, 150)
+  // const altitudeMark = 100;
+  const earth = new Planet(new Vector(0, 0), 4000, 150)
   earth.color = targetPlanetColor;
-  const altitudeMarkObj = new AltitudeMark(new Vector(earth.position.x - 30, earth.position.y - earth.collisionMask.radius), altitudeMark);
-  const astronauts = generateAstronauts(new Vector(0, -230), new Vector(0, -380), new Vector(0, -470))
-  const objectiveInstructions = new TimedTextSequence(["Your first mission is to pass the line mark,", "and make a safe landing.", "Good luck!"]);
+  // const altitudeMarkObj = new AltitudeMark(new Vector(earth.position.x - 30, earth.position.y - earth.collisionMask.radius), altitudeMark);
+  const astronauts = generateAstronauts(new Vector(0, -230), new Vector(0, -250), new Vector(0, -300))
+  // const objectiveInstructions = new TimedTextSequence(["Your first mission is to pass the line mark,", "and make a safe landing.", "Good luck!"]);
 
   const objects: BaseObject[] = [
     earth,
-    altitudeMarkObj,
-    objectiveInstructions,
+    // altitudeMarkObj,
+    // objectiveInstructions,
     ...astronauts
   ];
-  const level = new Level(objects, new LandingAndAltitudeObjective(earth, altitudeMark));
+  const level = new Level(objects, new LandingOnTargetPlanetObjective(earth))//new LandingAndAltitudeObjective(earth, altitudeMark));
   level.rocket.position = new Vector(0, -160);
   level.init = async () => {
     level.camera.follow(level.rocket);
-    level.camera.zoom = 2.5;
   };
   return level;
 

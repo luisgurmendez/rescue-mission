@@ -6,94 +6,25 @@ import LandingOnTargetPlanetObjective from "./shared/LandingOnTargetPlanetObject
 import { Rectangle } from "../objects/shapes";
 import { targetPlanetColor } from "./shared/targetPlanetColor";
 import Color from "../utils/color";
+import generateAstronauts from "./shared/generateAstronauts";
 
 //TODO win this level...
 function generate() {
   const sun = new Planet(new Vector(0, 0), 53000, 1500)
   sun.color = new Color(200, 225, 25);
-  const mars = new Planet(new Vector(0, -7400), 16000, 500)
+  const mars = new Planet(new Vector(0, -7400), 16000, 870)
   mars.color = targetPlanetColor;
+  const astronaurs = generateAstronauts(new Vector(85, -1515), new Vector(270, -1510), new Vector(-1415, 1145));
   const objects: BaseObject[] = [
     sun,
     mars,
+    ...astronaurs
   ];
 
   const level = new Level(objects, new LandingOnTargetPlanetObjective(mars), new Rectangle(20000, 20000));
   level.rocket.position = new Vector(0, -1510);
-
-
-  // level.rocket.position = new Vector(-2000, -6800)
-  // level.rocket.velocity = new Vector(0, -370);
-  // level.rocket.direction = new Vector(0, -1).normalize();
-  // (level.rocket as any).thruster.fuel = 429;
-  // (level.rocket as any).hasLaunched = true;
-
-  //   "velocity": {
-  //       "x": -90.88797925091109,
-  //       "y": -201.0541651075038
-  //   },
-  //   "acceleration": {
-  //       "x": 24.216678496769276,
-  //       "y": -16.284161315900143
-  //   },
-  //   "angularAcceleration": 0,
-  //   "angularVelocity": 7.022882637617124,
-  //   "direction": {
-  //       "x": -0.4590693433838671,
-  //       "y": -0.9167581725361186
-  //   },
-
-
-  level.camera.follow(level.rocket);
-
   return level;
 }
 
 
 export default generate;
-
-
-
-// {
-//   "type": 3,
-//   "id": "rocket",
-//   "position": {
-//       "x": -1508.618309175777,
-//       "y": 1010.0969130555033
-//   },
-//   "collisionMask": {
-//       "w": 13,
-//       "h": 16
-//   },
-//   "collisions": [],
-//   "velocity": {
-//       "x": -90.88797925091109,
-//       "y": -201.0541651075038
-//   },
-//   "acceleration": {
-//       "x": 24.216678496769276,
-//       "y": -16.284161315900143
-//   },
-//   "angularAcceleration": 0,
-//   "angularVelocity": 7.022882637617124,
-//   "direction": {
-//       "x": -0.4590693433838671,
-//       "y": -0.9167581725361186
-//   },
-//   "mass": 549054,
-//   "hasLaunched": true,
-//   "hasLanded": false,
-//   "hasExploded": false,
-//   "landedOnPlanet": null,
-//   "shouldDispose": false,
-//   "thruster": {
-//       "fuel": 429,
-//       "thrustPower": 7607000,
-//       "maxFuel": 1000
-//   },
-//   "secondaryThruster": {
-//       "fuel": 203,
-//       "thrustPower": 7607000,
-//       "maxFuel": 300
-//   }
-// }

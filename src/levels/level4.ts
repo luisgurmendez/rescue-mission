@@ -29,7 +29,7 @@ function generate() {
   ];
   const level = new Level(objects, new LandingOnTargetPlanetObjective(mars));
   level.rocket.position = new Vector(0, -10);
-  level.camera.follow(level.rocket);
+  level.camera.zoom = 0.57;
   return level;
 }
 

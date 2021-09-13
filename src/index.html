@@ -8,25 +8,28 @@
     * {
       margin: 0;
       padding: 0;
+      font-family: Comic Sans MS;
     }
 
     body {
       overflow: hidden;
-      font-family: Arial, Helvetica, sans-serif;
     }
 
-    #canvas-container {
+    #c {
       /* position: absolute; */
       width: 100vw;
       height: 100vh;
     }
 
-    #menu-container {
+    .f {
       position: absolute;
       top: 0px;
       bottom: 0px;
       left: 0px;
       right: 0px;
+    }
+
+    #mc {
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -34,7 +37,7 @@
       pointer-events: none;
     }
 
-    #menu {
+    #m {
       font-size: 32px;
       padding: 32px;
       background-color: rgba(255, 255, 255, 0.9);
@@ -48,17 +51,15 @@
       overflow-y: auto;
     }
 
-    .menu-title {
-      font-size: 36px;
+    .m-t {
+      font-size: 42px;
       margin-top: 20px;
+      color: rgb(213, 45, 7);
     }
 
-
-    .menu-item {
+    .m-i {
       margin-top: 16px;
-      padding: 8px;
-      padding-left: 16px;
-      padding-right: 16px;
+      padding: 8px 16px;
       border: 1px solid black;
       border-radius: 4px;
       background: transparent;
@@ -66,39 +67,40 @@
       cursor: pointer;
     }
 
-    .menu-item:hover {
+    .m-i:hover {
       background: #ddd;
     }
 
-    #menu-backdrop {
-      position: absolute;
-      top: 0px;
-      bottom: 0px;
-      left: 0px;
-      right: 0px;
+    #m-b {
       z-index: 0;
       background: rgba(0, 0, 0, 0.4);
       pointer-events: all;
     }
 
-    .level-item:disabled {
-      background: rgb(160, 160, 160);
+    .l-s {
+      border: 1px solid rgb(60, 60, 255);
+      background: rgb(60, 60, 255, 0.7);
     }
 
-    .control-item {
+    .l-a {
+      border: 1px solid rgba(60, 255, 66, 0.7);
+      background: rgba(60, 255, 66, 0.7);
+    }
+
+    .c-i {
       margin-top: 8px;
       font-size: 24px;
     }
 
-    .rescued {
+    .r {
       font-size: 16px;
     }
   </style>
 </head>
 
 <body>
-  <div id="canvas-container">
-    <div id="menu-container">
+  <div id="c">
+    <div id="mc" class="f">
     </div>
   </div>
 </body>

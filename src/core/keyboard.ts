@@ -1,12 +1,3 @@
-
-export const LEFT = 'ArrowLeft';
-export const UP = 'ArrowUp';
-export const RIGHT = 'ArrowRight';
-export const DOWN = 'ArrowDown';
-export const SPACE = ' ';
-
-export type Arrow = typeof LEFT | typeof RIGHT | typeof DOWN | typeof UP
-export type ArrowKeysPressedMapping = { [key in Arrow]: boolean }
 export type PressedKeysMapping = { [key: string]: boolean }
 class Keyboard {
 
@@ -21,11 +12,11 @@ class Keyboard {
   }
 
   private keyUpHanlder = (e: KeyboardEvent) => {
-    this.pressedKeys[e.key as Arrow] = false;
+    this.pressedKeys[e.key] = false;
   }
 
   private keyDownHanlder = (e: KeyboardEvent) => {
-    this.pressedKeys[e.key as Arrow] = true;
+    this.pressedKeys[e.key] = true;
   }
 
   public isKeyPressed = (key: string) => {
@@ -47,6 +38,10 @@ class Keyboard {
     }
 
     return Keyboard.instance;
+  }
+
+  public isPressingAnyKey() {
+    return Object.keys(this.pressedKeys).some(key => this.pressedKeys[key]);
   }
 }
 

@@ -13,7 +13,7 @@ import { wait } from "../utils/async";
 const MAX_ZOOM = 14;
 const MIN_ZOOM = 0.01;
 
-class Camera extends BaseObject implements Positionable, Stepable, Disposable, Renderable, Initializable {
+class Camera extends BaseObject implements Positionable, Stepable, Disposable, Initializable {
 
   _position: Vector;
   viewport: Rectangle;
@@ -187,17 +187,17 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, R
 
   }
 
-  render() {
-    const renderFn = (gameContext: GameContext) => {
-      const { canvasRenderingContext, canvasRenderingContext: { canvas } } = gameContext;
-      canvasRenderingContext.font = "15px Arial";
-      canvasRenderingContext.fillStyle = "#FFF";
-      canvasRenderingContext.fillText(`(${this.position.x.toFixed(0)},${this.position.y.toFixed(0)})`, canvas.width - 120, 20);
-    }
-    const renderElement = new RenderElement(renderFn);
-    renderElement.positionType = 'overlay';
-    return renderElement
-  }
+  // render() {
+  // const renderFn = (gameContext: GameContext) => {
+  //   const { canvasRenderingContext, canvasRenderingContext: { canvas } } = gameContext;
+  //   canvasRenderingContext.font = "15px Arial";
+  //   canvasRenderingContext.fillStyle = "#FFF";
+  //   canvasRenderingContext.fillText(`(${this.position.x.toFixed(0)},${this.position.y.toFixed(0)})`, canvas.width - 120, 20);
+  // }
+  // const renderElement = new RenderElement(renderFn);
+  // renderElement.positionType = 'overlay';
+  // return renderElement
+  // }
 
 
   // there is a known bug where the promise resolves before the flying duration when the game is on pause

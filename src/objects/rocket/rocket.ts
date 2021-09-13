@@ -46,11 +46,10 @@ class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
   constructor(position: Vector) {
     super('rocket');
     this.position = position;
-    this.mass = 549054; // falcon 9 weight
     this.type = ObjectType.ROCKET;
     this.collisionMask = new Rectangle(13, 16)
     this.direction = new Vector(0, -1);
-    this.thruster = new RocketThruster(16.5, 40); // 981 kN fallcon 9
+    this.thruster = new RocketThruster(16.5, 40);
     this.secondaryThruster = new RocketThruster(5, 30);
 
   }

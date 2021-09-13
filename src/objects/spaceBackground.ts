@@ -73,8 +73,7 @@ export class StarPool extends SpaceBackgroundMixin {
       });
 
       inCameraBoundsStars.forEach(s => {
-        // TODO: To make the effect of far away stars
-        const trasposedStarPosition = s.position.clone() //.add(camera.position.clone().scalar(1 - (s.depth) / camera.zoom)) //.add(camera.position.clone());
+        const trasposedStarPosition = s.position.clone()
         canvasRenderingContext.fillStyle = new Color(255, 255, 255, 1 - (s.depth) / camera.zoom).rgba()
         canvasRenderingContext.beginPath();
         canvasRenderingContext.arc(trasposedStarPosition.x, trasposedStarPosition.y, s.shape.radius, 0, 2 * Math.PI);

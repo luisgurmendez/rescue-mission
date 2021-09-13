@@ -29,7 +29,6 @@ class RenderController {
     const overlayRenderElements = renderElements.filter(element => element.positionType === 'overlay');
     const normalRenderElements = renderElements.filter(element => element.positionType === 'normal');
 
-
     // Rendering
     this.clearCanvas(canvasRenderingContext);
 

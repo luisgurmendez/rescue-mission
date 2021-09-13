@@ -32,7 +32,6 @@ class Game {
     });
     // window.addEventListener('focus', this.unPause);
 
-    // TODO: experimental game speed change
     window.addEventListener('keydown', (e) => {
       if (e.key === 'x') {
         this.gameSpeed += 1;
@@ -56,20 +55,11 @@ class Game {
         this.levelsController.restart();
       }
 
-      if (e.key === '0' || e.key === '1' || e.key === '2' || e.key === '3') {
-        this.levelsController.goToLevel(parseInt(e.key));
-      }
-    })
-
-    // Follow rocket on space
-    window.addEventListener('keydown', (e) => {
       if (e.key === ' ') {
         const level = this.levelsController.getLevel();
         level.camera.follow(level.rocket);
       }
-    });
 
-    window.addEventListener('keydown', (e) => {
       if (e.key === 'p' && !this.showingMenu) {
         if (this.isPaused) {
           this.unPause()
@@ -78,6 +68,8 @@ class Game {
         }
       }
     })
+
+    this.showMenu();
   }
 
   unPause = () => {
@@ -90,12 +82,11 @@ class Game {
     this.clock.stop();
   }
 
-  loop = (externalUpdate?: () => void) => {
+  loop = () => {
     return () => {
       // this.stats.begin()
-      externalUpdate && externalUpdate();
       this.update();
-      requestAnimationFrame(this.loop(externalUpdate));
+      requestAnimationFrame(this.loop());
       this.afterUpdate()
     }
   }
@@ -134,7 +125,7 @@ class Game {
     createMenu(
       this.hideMenu,
       this.levelsController.getNumOfLevels(),
-      this.levelsController.getReachedLevel(),
+      this.levelsController.levelIndex,
       this.levelsController.getSavedLevels(),
       (i: number) => this.levelsController.goToLevel(i)
     );

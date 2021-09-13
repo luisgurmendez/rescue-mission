@@ -9,7 +9,7 @@ class RocketRenderUtils {
     const { rocket, canvasRenderingContext, canvasRenderingContext: { canvas } } = context;
     canvasRenderingContext.font = "15px Arial";
     canvasRenderingContext.fillStyle = "#FFF";
-    const text = `speed: ${rocket.speed.toFixed(0)}  ,  position: (${rocket.position.x.toFixed(0)},${rocket.position.y.toFixed(0)})`
+    const text = `speed: ${rocket.speed.toFixed(0)} km/h`
     const textWidth = canvasRenderingContext.measureText(text).width;
     canvasRenderingContext.fillText(text, Dimensions.w - (textWidth + 20), Dimensions.h - 20);
   }
@@ -41,9 +41,7 @@ class RocketRenderUtils {
     }
 
     // rotate
-    canvasRenderingContext.translate(rocket.position.x, rocket.position.y);
-    canvasRenderingContext.rotate(rocket.direction.angleTo(new Vector(0, -1)))
-    canvasRenderingContext.translate(-rocket.position.x, -rocket.position.y);
+    RenderUtils.rotateSelf(canvasRenderingContext, rocket.position, rocket.direction.angleTo(new Vector(0, -1)))
 
     // Renders the rocket pixel art 
     // TODO: improve

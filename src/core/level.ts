@@ -25,7 +25,6 @@ import RescuedAstronautsLabel from "../objects/astronaut/savedAstronautsLabel";
 
 const pressedKeys = Keyboard.getInstance();
 
-// TODO: how to restart levels without having to call init again?
 class Level implements Initializable, Disposable {
 
   objects: BaseObject[] = [];
@@ -52,10 +51,12 @@ class Level implements Initializable, Disposable {
     this.worldDimensions = worldDimensions;
     this.objective = objective;
     const rescuedAstronautsLabel = new RescuedAstronautsLabel();
-    this.objects.push(...objects, ...[this.rocket, this.camera, rescuedAstronautsLabel]);
+    const openMenuLabel = new Text();
+    this.objects.push(...objects, ...[this.rocket, this.camera, rescuedAstronautsLabel, openMenuLabel]);
     this.rocketStatusController = new RocketStatusController();
     this.statusController = new LevelStatusController(objective);
     this.numOfRescuedAstronauts = 0;
+    this.camera.follow(this.rocket);
   }
 
   update(gameApi: GameApi): void {
@@ -131,13 +132,11 @@ class Level implements Initializable, Disposable {
 
 }
 
-
 export default Level;
 
 export interface LevelObjective extends Stepable {
   completed(): boolean
 }
-
 
 
 enum LevelStatus {
@@ -179,5 +178,22 @@ class RestartLevelLabelObject extends BaseObject implements Renderable {
     const renderEl = new RenderElement(renderFn);
     renderEl.positionType = 'overlay'
     return renderEl;
+  }
+}
+
+
+export class Text extends BaseObject {
+
+  render() {
+    const renderFn = (ctx: GameContext) => {
+      const canvasRenderingContext = ctx.canvasRenderingContext;
+      canvasRenderingContext.fillStyle = '#FFF';
+      canvasRenderingContext.font = '15px Arial';
+      RenderUtils.renderText(canvasRenderingContext, 'Press [m] to toggle menu', new Vector(100, Dimensions.h - 30));
+    }
+
+    const rEl = new RenderElement(renderFn);
+    rEl.positionType = 'overlay';
+    return rEl;
   }
 }

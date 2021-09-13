@@ -25,6 +25,9 @@ const MoonMixins = AffectedByGravitationableMixin(
   )
 );
 
+/**
+ * @deprecated
+ */
 class Moon extends MoonMixins {
 
   constructor(position: Vector) {
@@ -35,7 +38,6 @@ class Moon extends MoonMixins {
     this.gravitationalThreshold = 150;
     this.velocity = new Vector(30, 0)
     this.collisionMask = new Circle(4);
-    this.mass = 100;
     this.direction = new Vector(0, -1);
   }
 

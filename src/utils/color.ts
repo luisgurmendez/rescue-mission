@@ -21,7 +21,7 @@ class Color {
   }
 
   // Randomizes a rgba color between a range of number, or with a fixed value for certain values.
-  static random(r: ColorUnitInRange = 255, g: ColorUnitInRange = 255, b: ColorUnitInRange = 255, a: ColorUnitInRange = 255) {
+  static random(r: ColorUnitInRange = 255, g: ColorUnitInRange = 255, b: ColorUnitInRange = 255) {
 
     function randomizeColorUnit(u: ColorUnitInRange): number {
       if (Array.isArray(u)) {
@@ -34,7 +34,6 @@ class Color {
       randomizeColorUnit(r),
       randomizeColorUnit(g),
       randomizeColorUnit(b),
-      randomizeColorUnit(a)
     )
   }
 

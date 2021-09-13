@@ -58,6 +58,12 @@ class RenderUtils {
     return canvas;
   }
 
+  static rotateSelf(canvasRenderingContext: CanvasRenderingContext2D, position: Vector, angle: number) {
+    canvasRenderingContext.translate(position.x, position.y);
+    canvasRenderingContext.rotate(angle)
+    canvasRenderingContext.translate(-position.x, -position.y);
+  }
+
 }
 
 export default RenderUtils;

@@ -17,10 +17,6 @@ class Vector {
     return Math.sqrt(Math.pow(this.x - v.x, 2) + Math.pow(this.y - v.y, 2));
   }
 
-  dotProduct(v: Vector) {
-    return this.x * v.x + this.y * v.y;
-  }
-
   lengthSq() {
     return Math.pow(this.x, 2) + Math.pow(this.y, 2);
   }
@@ -52,10 +48,6 @@ class Vector {
     return this;
   }
 
-  negate() {
-    this.scalar(-1);
-  }
-
   set(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -79,12 +71,6 @@ class Vector {
     this.y = old.x * sin + old.y * cos
 
     return this;
-  }
-
-  static random(): Vector {
-    const v = new Vector(1, 0);
-    v.rotate(RandomUtils.getValueInRange(0, Math.PI * 2));
-    return v;
   }
 
 }

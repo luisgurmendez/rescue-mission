@@ -7,7 +7,6 @@ export interface Physicable extends Positionable {
   velocity: Vector;
   direction: Vector;
   acceleration: Vector;
-  mass: number;
   speed: number;
   angularAcceleration: number;
   angularVelocity: number;
@@ -28,7 +27,6 @@ export function PhysicableMixin<TBase extends PositionableConstructor>(Base: TBa
     angularAcceleration: number = 0;
     angularVelocity: number = 0;
     direction: Vector = new Vector();
-    mass = 0;
 
     get speed(): number {
       return this.velocity.length();

@@ -35,6 +35,8 @@ class Planet extends PlanetMixins {
   ringColor: Color;
   rotation: number;
 
+  showGravityThreshold: boolean = true;
+
   constructor(position: Vector, gravitationalForce: number, radius: number, hasRing: boolean = RandomUtils.getRandomBoolean(0.3), isMoon: boolean = false) {
     super();
 
@@ -67,7 +69,7 @@ class Planet extends PlanetMixins {
     canvasRenderingContext.fillStyle = this.color.rgba();
     canvasRenderingContext.strokeStyle = this.color.rgba();
 
-    if (!this.isMoon) {
+    if (this.showGravityThreshold) {
       canvasRenderingContext.save();
       canvasRenderingContext.beginPath();
       canvasRenderingContext.setLineDash([5, 15]);
@@ -83,9 +85,7 @@ class Planet extends PlanetMixins {
     if (this.hasRing && !this.isMoon) {
 
       // To rotate the ring :
-      canvasRenderingContext.translate(this.position.x, this.position.y);
-      canvasRenderingContext.rotate(this.rotation)
-      canvasRenderingContext.translate(-this.position.x, -this.position.y);
+      RenderUtils.rotateSelf(canvasRenderingContext, this.position, this.rotation);
 
       canvasRenderingContext.beginPath();
       canvasRenderingContext.strokeStyle = this.ringColor.rgba();

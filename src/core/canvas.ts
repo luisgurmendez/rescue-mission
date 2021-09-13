@@ -6,7 +6,7 @@ class CanvasGenerator {
   static generateCanvas() {
     let canvasRenderingContext: CanvasRenderingContext2D;
     const canvas = document.createElement('canvas');
-    const containerEl = document.getElementById('canvas-container');
+    const containerEl = document.getElementById('c');
     if (containerEl) {
 
       const onContainerResize = () => {
@@ -21,15 +21,16 @@ class CanvasGenerator {
       const possibleNullCanvasContext = canvas.getContext('2d');
 
       if (possibleNullCanvasContext === undefined) {
-        throw Error('Browser doesnt support canvas!');
+        throw '';//Error('Browser doesnt support canvas!');
       }
 
       canvasRenderingContext = possibleNullCanvasContext!;
       onContainerResize();
       containerEl.appendChild(canvas);
       window.addEventListener('resize', onContainerResize);
-    } else {
-      throw Error('No canvas container');
+    }
+    else {
+      throw '';//Error('No canvas container');
     }
 
     return canvasRenderingContext;

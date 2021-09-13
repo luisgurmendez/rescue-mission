@@ -30,7 +30,6 @@ class Particle extends ParticleMixins implements Disposable {
     this.position = new Vector();
     this.type = ObjectType.PARTICLE;
     this.velocity = new Vector(0, 0)
-    this.mass = 0;
     this.direction = new Vector(0, -1);
     this.ttl = ttl;
     this.maxTTL = ttl;

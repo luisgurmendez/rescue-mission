@@ -8,11 +8,11 @@ import Color from "../utils/color";
 import { targetPlanetColor } from "./shared/targetPlanetColor";
 
 function generate() {
-  const earth = new Planet(new Vector(0, 0), 5000, 300);
-  const mars = new Planet(new Vector(0, 680), 6000, 120);
-  mars.color = targetPlanetColor;
+  const mars = new Planet(new Vector(0, 0), 4000, 200);
+  const earth = new Planet(new Vector(0, 680), 4000, 120);
+  earth.color = targetPlanetColor;
 
-  const astronauts = generateAstronauts(new Vector(0, -400), new Vector(150, 400), new Vector(-150, 400))
+  const astronauts = generateAstronauts(new Vector(0, -300), new Vector(150, 400), new Vector(-150, 400))
 
   astronauts[0].velocity = new Vector(0, -30);
   astronauts[1].velocity = new Vector(10, 20);
@@ -22,9 +22,8 @@ function generate() {
     mars,
     ...astronauts
   ];
-  const level = new Level(objects, new LandingOnTargetPlanetObjective(mars));
-  level.rocket.position = new Vector(0, -310);
-  level.camera.follow(level.rocket);
+  const level = new Level(objects, new LandingOnTargetPlanetObjective(earth));
+  level.rocket.position = new Vector(0, -210);
   return level;
 }
 
