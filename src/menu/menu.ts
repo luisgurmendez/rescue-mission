@@ -165,7 +165,6 @@ function createLevelsContent(onBack: Fn, numOfLevels: number, inLevel: number, s
   const back = createMenuButton('< Back', onBack);
   const levels: LevelOption[] = [];
   callTimes(numOfLevels, (i: number) => {
-    // TODO: Have names for the levels?
     levels.push({
       name: `Level ${i + 1}`,
       numOfRescues: savedLevels[i] || 0,

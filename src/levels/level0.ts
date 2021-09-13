@@ -9,7 +9,6 @@ import { targetPlanetColor } from "./shared/targetPlanetColor";
 function generate() {
   const earth = new Planet(new Vector(0, 0), 4000, 150)
   earth.color = targetPlanetColor;
-  earth.hasRing = true;
   const astronauts = generateAstronauts(new Vector(0, -230), new Vector(0, -250), new Vector(0, -300))
 
   const objects: BaseObject[] = [

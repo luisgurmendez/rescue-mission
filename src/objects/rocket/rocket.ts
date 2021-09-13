@@ -30,7 +30,6 @@ const RocketMixins = AffectedByGravitationableMixin(
 );
 
 
-// TODO: Should we make gravity affect the angular acceleration? 
 class Rocket extends RocketMixins implements Renderable, Stepable, Disposable {
 
   private thruster: RocketThruster;

@@ -4,9 +4,7 @@ import CanvasGenerator from "./canvas";
 import { createMenu, disposeMenu } from "../menu/menu";
 import LevelsController from "../levels/levels";
 
-// TODO: implement r to restart
 const pressedKeys = Keyboard.getInstance();
-
 class Game {
 
   private clock: Clock;
@@ -91,9 +89,6 @@ class Game {
     }
   }
 
-  /**
-   * TODO: Remove GameApi completely!
-   */
   private update() {
     try {
       const level = this.levelsController.getLevel();

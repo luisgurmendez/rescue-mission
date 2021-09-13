@@ -44,7 +44,6 @@ class RocketRenderUtils {
     RenderUtils.rotateSelf(canvasRenderingContext, rocket.position, rocket.direction.angleTo(new Vector(0, -1)))
 
     // Renders the rocket pixel art 
-    // TODO: improve
     const canvas = RenderUtils.generatePixelArt(
       "eeeccd34722449c89b568",
       "@@@JI@@@@@PJIA@@@@R|OI@@@@b|I@@@@b|I@@@@b|I@@@@b|I@@@@RJII@@@@RJiI@@@@RJII@@@@RJIy@@@XRJIyF@@[RJIyw@@[RJIyw@@[RJIyw@@[`ddxw@",

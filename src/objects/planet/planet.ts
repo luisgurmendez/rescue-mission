@@ -23,10 +23,6 @@ const PlanetMixins = AffectedByGravitationableMixin(GravitationalMixin(
 )
 );
 
-
-// TODO: add a isMoon variable to make planets affectedByGravitational. This way we can eliminate the Moon class
-// TODO: add color and density
-// TODO: add hover func to see a planet's properties
 class Planet extends PlanetMixins {
 
   hasRing: boolean = true;

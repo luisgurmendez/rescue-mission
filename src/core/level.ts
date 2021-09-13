@@ -84,7 +84,6 @@ class Level implements Initializable, Disposable {
   dispose() { };
 
   private handleLevelEnding(gameContext: GameContext, gameApi: GameApi, status: LevelStatus) {
-    // TODO: We should show won/lost dialogs etc....
     const levelCompletedCompliments = ['Great job!', 'Awesome!', 'Nice!', 'Landed!', 'Nailed it!']
     if (status !== LevelStatus.PLAYING) {
       if (status === LevelStatus.WON) {

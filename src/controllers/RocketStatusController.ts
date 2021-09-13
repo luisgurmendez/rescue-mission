@@ -1,3 +1,5 @@
+import Vector from "../physics/vector";
+import Intersections from "../utils/intersections";
 import GameContext from "../core/gameContext";
 import { ObjectType } from "../objects/objectType";
 import Planet from "../objects/planet/planet";
@@ -13,7 +15,7 @@ class RocketStatusController {
     const { rocket } = context;
     if (this.isRocketCollidingWithHardObject(rocket)) {
       const planetLandingAttempt = this.isRocketAttemptingToLand(rocket);
-      if (planetLandingAttempt !== null && !planetLandingAttempt.isMoon) {
+      if ((planetLandingAttempt !== null && !planetLandingAttempt.isMoon)) {
         if (this.isLandingInACorrectAngle(rocket, planetLandingAttempt) && this.isLandingSlowly(rocket)) {
           rocket.land(planetLandingAttempt);
         } else {
@@ -24,6 +26,13 @@ class RocketStatusController {
       }
     }
 
+    // if (this.isRocketOutOfWorld(context)) {
+    //   rocket.explode(context);
+    // }
+  }
+
+  private isRocketOutOfWorld(context: GameContext) {
+    return !Intersections.isPointInsideRectangle(context.rocket.position, context.worldDimensions, new Vector());
   }
 
   private isRocketAttemptingToLand(rocket: Rocket): Planet | null {
