@@ -83,7 +83,7 @@ class RenderController {
     canvasRenderingContext.rect(0, 0, canvasDimensions.w, canvasDimensions.h);
     canvasRenderingContext.fillStyle = new Color(0, 0, 0, 0.5).rgba();
     canvasRenderingContext.fill();
-    canvasRenderingContext.font = "45px Arial"
+    canvasRenderingContext.font = "45px Comic Sans MS"
     canvasRenderingContext.fillStyle = "#FFF";
     RenderUtils.renderText(canvasRenderingContext, 'Press [p] to unpause', new Vector(canvasDimensions.w / 2, 0));
   }

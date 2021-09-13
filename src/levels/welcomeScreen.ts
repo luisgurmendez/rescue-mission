@@ -42,11 +42,11 @@ export class Text extends BaseObject {
   render() {
     const renderFn = (ctx: GameContext) => {
       const canvasRenderingContext = ctx.canvasRenderingContext;
-      canvasRenderingContext.font = '75px Arial';
+      canvasRenderingContext.font = '75px Comic Sans MS';
       canvasRenderingContext.fillStyle = '#F00';
       RenderUtils.renderText(canvasRenderingContext, 'Rescue Mission', new Vector(Dimensions.w / 2, 40));
       canvasRenderingContext.fillStyle = '#FFF';
-      canvasRenderingContext.font = '45px Arial';
+      canvasRenderingContext.font = '45px Comic Sans MS';
       RenderUtils.renderText(canvasRenderingContext, '[Press any key]', new Vector(Dimensions.w / 2, Dimensions.h / 2 + 100));
     }
 

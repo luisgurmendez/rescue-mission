@@ -171,7 +171,7 @@ class RestartLevelLabelObject extends BaseObject implements Renderable {
 
   render() {
     const renderFn = (ctx: GameContext) => {
-      ctx.canvasRenderingContext.font = '45px Arial';
+      ctx.canvasRenderingContext.font = '45px Comic Sans MS';
       ctx.canvasRenderingContext.fillStyle = '#FFF';
       RenderUtils.renderText(ctx.canvasRenderingContext, "Press [r] to restart level", new Vector(Dimensions.w / 2, 20));
     }
@@ -188,7 +188,7 @@ export class Text extends BaseObject {
     const renderFn = (ctx: GameContext) => {
       const canvasRenderingContext = ctx.canvasRenderingContext;
       canvasRenderingContext.fillStyle = '#FFF';
-      canvasRenderingContext.font = '15px Arial';
+      canvasRenderingContext.font = '15px Comic Sans MS';
       RenderUtils.renderText(canvasRenderingContext, 'Press [m] to toggle menu', new Vector(100, Dimensions.h - 30));
     }
 

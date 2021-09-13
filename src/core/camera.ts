@@ -190,7 +190,7 @@ class Camera extends BaseObject implements Positionable, Stepable, Disposable, I
   // render() {
   // const renderFn = (gameContext: GameContext) => {
   //   const { canvasRenderingContext, canvasRenderingContext: { canvas } } = gameContext;
-  //   canvasRenderingContext.font = "15px Arial";
+  //   canvasRenderingContext.font = "15px Comic Sans MS";
   //   canvasRenderingContext.fillStyle = "#FFF";
   //   canvasRenderingContext.fillText(`(${this.position.x.toFixed(0)},${this.position.y.toFixed(0)})`, canvas.width - 120, 20);
   // }

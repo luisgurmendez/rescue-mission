@@ -7,7 +7,7 @@ class RocketRenderUtils {
 
   static renderInfo(context: GameContext) {
     const { rocket, canvasRenderingContext, canvasRenderingContext: { canvas } } = context;
-    canvasRenderingContext.font = "15px Arial";
+    canvasRenderingContext.font = "15px Comic Sans MS";
     canvasRenderingContext.fillStyle = "#FFF";
     const text = `speed: ${rocket.speed.toFixed(0)} km/h`
     const textWidth = canvasRenderingContext.measureText(text).width;
@@ -26,7 +26,7 @@ class RocketRenderUtils {
     canvasRenderingContext.lineTo(line.x, line.y);
     canvasRenderingContext.stroke();
     canvasRenderingContext.restore();
-    canvasRenderingContext.font = "7px Arial";
+    canvasRenderingContext.font = "7px Comic Sans MS";
     canvasRenderingContext.fillStyle = "#FFF";
     canvasRenderingContext.fillText(`${(rocket.direction.angleTo(new Vector(0, -1)) * 180 / Math.PI).toFixed(2)}º`, rocket.position.x + 10, rocket.position.y);
   }
